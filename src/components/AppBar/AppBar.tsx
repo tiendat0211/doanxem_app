@@ -88,7 +88,7 @@ AppBar.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : unit24) + unit18,
+    paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + unit18,
     paddingBottom: unit18,
     paddingHorizontal: unit16,
     alignItems: "center",
