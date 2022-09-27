@@ -17,7 +17,7 @@ import MyDrawer from "./src/screens/HomeScreen/MyDrawer";
 import RuleWithLoginScreen from "./src/screens/RuleWithLoginScreen/RuleWithLoginScreen";
 import SettingScreen from "./src/screens/SettingScreen/SettingScreen";
 import FilterScreen from "./src/screens/FilterScreen/FilterScreen";
-import LanguageScreen from "./src/screens/LanguageScreen/Language";
+import LanguageScreen from "./src/screens/LanguageScreen/LanguageScreen";
 import ViewModeScreen from "./src/screens/ViewModeScreen/ViewModeScreen";
 import NotiSettingScreen from "./src/screens/NotiSettingScreen/NotiSettingScreen";
 import BlockUserScreen from "./src/screens/BlockUserScreen/BlockUserScreen";
