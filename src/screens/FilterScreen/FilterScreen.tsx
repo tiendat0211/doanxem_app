@@ -16,7 +16,7 @@ import {
   unit60,
   unit75, unit8,
 } from "../../utils/appUnit";
-import { IC_ARROWLEFT, IC_CHECK, IC_DRAWER, IC_FILTER, IC_FILTERCHECK, IC_GAME } from "../../assets/path";
+import { IC_ARROWLEFT, IC_CHECK2, IC_DRAWER, IC_FILTER, IC_FILTERCHECK, IC_GAME } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
 import { fontSize14, fontSize16, fontSize20 } from "../../styles/AppFonts";
@@ -54,7 +54,7 @@ const FakeData = [
 
 const FilterScreen: React.FC = () => {
   const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
   const [listItem, setListItem]  = useState<number[]>([]);
   const [checkAll, setCheckAll] = useState(false)
 
@@ -151,7 +151,7 @@ const FilterScreen: React.FC = () => {
               listItem?.forEach( (value) => {
                if (index === value){
                  return <Image
-                   source={IC_CHECK}
+                   source={IC_CHECK2}
                    style={{
                      width: unit24,
                      height: unit24,
@@ -160,7 +160,7 @@ const FilterScreen: React.FC = () => {
                  />
                } else {
                  return <Image
-                   source={IC_CHECK}
+                   source={IC_CHECK2}
                    style={{
                      width: unit24,
                      height: unit24,

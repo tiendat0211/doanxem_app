@@ -20,7 +20,7 @@ export const Drawer = createDrawerNavigator();
 
 export default function MyDrawer() {
 
-  const language = useLanguage();
+  const { language } = useLanguage();
   const {colorPallet} = useTheme()
 
   return (

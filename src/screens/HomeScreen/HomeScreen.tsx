@@ -29,7 +29,7 @@ const HomeScreen: React.FC = () => {
   const { authData, signOut } = useAuth();
   const user = authData.user;
   const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([

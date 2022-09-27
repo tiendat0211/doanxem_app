@@ -27,7 +27,7 @@ import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 
 const ProfileScreen: React.FC = () => {
   const { colorPallet } = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal

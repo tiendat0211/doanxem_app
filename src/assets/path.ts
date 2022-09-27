@@ -44,6 +44,9 @@ export const IC_ENGLISH = require('./icons/ic_english.png');
 export const IC_VIETNAM = require('./icons/ic_vietnam.png');
 export const IC_CHECK2 = require('./icons/ic_Check.png');
 export const IC_TRASH= require('./icons/ic_trash.png');
+export const IC_CALENDER= require('./icons/ic_calendar.png');
+export const IC_PHONE= require('./icons/ic_phone.png');
+export const IC_EDIT_PROFILE= require('./icons/ic_edit_profile.png');
 
 
 // Files

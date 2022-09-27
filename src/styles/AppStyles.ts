@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { unit24 } from "../utils/appUnit";
+import { unit16, unit24 } from "../utils/appUnit";
 
 const AppStyles = StyleSheet.create({
   container: {
@@ -17,7 +17,12 @@ const AppStyles = StyleSheet.create({
   icon24:{
     width:unit24,
     height:unit24
-  }
+  },
+  bottomSheetView:{
+    justifyContent: "space-between",
+    flex: 1,
+    marginVertical: unit16,
+  },
 })
 
 export default AppStyles

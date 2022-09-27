@@ -57,7 +57,7 @@ const VerifyOTPScreen: React.FC = () => {
 
   const {signIn} = useAuth()
   const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (!timeFormat) return;
@@ -101,7 +101,6 @@ const VerifyOTPScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={email}
-            maxLength={10}
             setValue={setEmail}
             contentStyle={{
               marginBottom: unit28,

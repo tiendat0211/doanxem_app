@@ -54,7 +54,7 @@ const FakeData = ['Bài viết','Người dùng',
 
 const SearchScreen: React.FC = () => {
   const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
   const [searchWord, setSearchWord] = useState("");
 
   return (

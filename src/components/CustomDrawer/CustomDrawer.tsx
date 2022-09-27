@@ -23,7 +23,6 @@ import { dimension, fontSize14, fontSize16, fontSize18, fontSize20 } from "../..
 import AppColors from "../../styles/AppColors";
 
 export default function CustomDrawer(props: any) {
-  const language = useLanguage();
   const { colorPallet } = useTheme()
 
   return (
@@ -146,7 +145,7 @@ export default function CustomDrawer(props: any) {
             Phiên bản 1,24 Beta
           </AppText>
         </View>
-     
+
       </View>
 
     </>

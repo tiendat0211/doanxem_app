@@ -13,7 +13,7 @@ import { NavigationRef } from "../../../App";
 
 const OnboardingScreen: React.FC = () => {
 
-  const language = useLanguage();
+  const { language } = useLanguage();
   const {colorPallet} = useTheme()
 
   return <SafeAreaView style={[AppStyles.centerContainer, {

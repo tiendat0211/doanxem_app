@@ -59,7 +59,7 @@ const LoginScreen: React.FC = () => {
 
 
   const { signIn } = useAuth();
-  const language = useLanguage();
+  const { language } = useLanguage();
   const {colorPallet} = useTheme()
 
 
@@ -97,7 +97,6 @@ const LoginScreen: React.FC = () => {
             <ValidateEditText
               colorPallet={colorPallet}
               textValue={email}
-              maxLength={10}
               setValue={setEmail}
               contentStyle={{
                 marginBottom: unit20,
@@ -114,7 +113,6 @@ const LoginScreen: React.FC = () => {
             <ValidateEditText
               colorPallet={colorPallet}
               textValue={password}
-              maxLength={10}
               setValue={setPassword}
               contentStyle={{
                 marginBottom: unit20,

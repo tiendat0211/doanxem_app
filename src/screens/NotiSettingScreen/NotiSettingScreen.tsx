@@ -17,21 +17,21 @@ const data: ViewItemProps[] = [
     {
       title: 'Nhận thông báo ứng dụng',
       onPress: () => {
-       
+
       },
       icRight: IC_CHECK2,
     },
     {
       title: 'Khi có người comment',
       onPress: () => {
-        
+
       },
       icRight: IC_CHECK2,
     },
     {
         title: 'Khi có người thích bài viết',
         onPress: () => {
-          
+
         },
         icRight: IC_CHECK2,
       },
@@ -39,7 +39,7 @@ const data: ViewItemProps[] = [
 
 const NotiSettingScreen: React.FC = () => {
   const { colorPallet } = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
   return (
     <SafeAreaView

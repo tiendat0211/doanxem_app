@@ -64,21 +64,21 @@ const data: SettingItemProps[] = [
     iconLeft: IC_SHARE,
     title: 'Chia sẻ ứng dụng',
     onPress: () => {
-     
+
     },
   },
   {
     iconLeft: IC_STAR,
     title: 'Đánh giá ứng dụng',
     onPress: () => {
-      
+
     },
   },
   {
     iconLeft: IC_LOGOUT,
     title: 'Đăng xuất',
     onPress: () => {
-      
+
     },
   },
 ]
@@ -86,7 +86,7 @@ const data: SettingItemProps[] = [
 
 const SettingScreen: React.FC = () => {
   const { colorPallet } = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
   return (
     <SafeAreaView
@@ -121,10 +121,10 @@ const SettingScreen: React.FC = () => {
           }}
         />
         {
-          data.map((value) => {
+          data.map((value, index) => {
             return <>
               <SettingItem
-                key={value.title}
+                key={index}
                 iconLeft={value.iconLeft}
                 title={value.title}
                 onPress={value.onPress}

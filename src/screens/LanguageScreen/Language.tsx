@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, SafeAreaView, StatusBar, Text, View, ViewStyle } from "react-native";
+import { Image, SafeAreaView, ScrollView, StatusBar, Text, View, ViewStyle } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
@@ -11,30 +11,28 @@ import { fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
 import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
+import SelectItem from "../../components/SelectItem/SelectItem";
+import { LangType, setLang, setTheme, ThemeType } from "../../store/slice/settingSlice";
+import useScreenState from "../../hooks/useScreenState";
+import { useAppDispatch } from "../../store/store";
 
-
-const data: LanguageItemProps[] = [
-    {
-      iconLeft: IC_ENGLISH,
-      title: 'English',
-      onPress: () => {
-       
-      },
-      icRight: IC_CHECK2,
-    },
-    {
-      iconLeft: IC_VIETNAM,
-      title: 'Tiếng việt',
-      onPress: () => {
-        
-      },
-      icRight: IC_CHECK2,
-    },
-]
 
 const LanguageScreen: React.FC = () => {
   const { colorPallet } = useTheme()
-  const language = useLanguage();
+  const {language, lang, setLanguage} = useLanguage();
+  const { isLoading, setLoading, mounted } = useScreenState();
+  const dispatch = useAppDispatch();
+
+  function changeLanguage(lang: LangType) {
+    setLoading(true);
+    setTimeout(() => {
+      if (mounted) {
+        dispatch(setLang(lang));
+        console.log(lang)
+      }
+      setLoading(false);
+    }, 0);
+  }
 
   return (
     <SafeAreaView
@@ -57,79 +55,44 @@ const LanguageScreen: React.FC = () => {
         }}
       />
 
-      <View>
+      <ScrollView>
+        <SelectItem
+          onPress={() => {
+            setLanguage("en");
+          }}
+          leftImageSource={IC_ENGLISH}
+          leftImageProps={{
+            height: unit24,
+            width: unit32
+          }}
+          appTxtStyle={{
+            color: colorPallet.color_text_blue_3
+          }}
+          title={language?.langEN}
+          rightImageSource={ lang === "en" ? IC_CHECK2 : undefined}
+          rightImageProps = {{ tintColor: AppColors.color_primary}}
+        />
 
-        {
-          data.map((value) => {
-            return <>
-              <LaguageItem
-                key={value.title}
-                iconLeft={value.iconLeft}
-                title={value.title}
-                onPress={value.onPress}
-                icRight={value.icRight}
-              />
-            </>
-          })
-        }
-      </View>
+        <SelectItem
+          onPress={() => {
+            setLanguage("vi");
+          }}
+          leftImageSource={IC_VIETNAM}
+          leftImageProps={{
+            height: unit24,
+            width: unit32
+          }}
+        appTxtStyle={{
+            color: colorPallet.color_text_blue_3
+          }}
+          title={language?.langVN}
+          rightImageSource={lang === "vi" ? IC_CHECK2 : undefined}
+          rightImageProps = {{ tintColor: AppColors.color_primary}}
+        />
+      </ScrollView>
 
     </SafeAreaView>
   )
 };
 
 export default LanguageScreen;
-
-interface LanguageItemProps {
-  iconLeft: any,
-  title: string,
-  onPress?(): any,
-  icRight: any,
-}
-
-const LaguageItem: React.FC<LanguageItemProps> = (props) => {
-  const { iconLeft, title, onPress ,icRight} = props;
-  const { colorPallet } = useTheme()
-  return (
-    <>
-      <PressView
-        style={{
-          flexDirection: 'row',
-          marginHorizontal: unit20,
-          alignItems: 'center',
-          paddingVertical: unit17,
-        }}
-        onPress={onPress}
-      >
-        <Image
-          source={iconLeft}
-          style={{
-            width: unit32,
-            height: unit24,
-            marginRight: unit16,
-            borderRadius: unit5,
-          }}
-        />
-        <AppText
-          style={{
-            fontSize: fontSize16,
-            color: colorPallet.color_text_blue_3,
-            flexGrow: 1,
-          }}
-        >
-          {title}
-        </AppText>
-        <Image
-          source={icRight}
-          style={{
-            width: unit24,
-            height: unit24,
-            tintColor: AppColors.color_primary ,
-          }}
-        />
-      </PressView>
-    </>
-  );
-}
-
-

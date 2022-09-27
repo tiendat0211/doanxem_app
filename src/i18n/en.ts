@@ -48,12 +48,18 @@ const enLang: BaseLanguage = {
   waitTab: 'Đợi duyệt',
   postedTab: 'Đã đăng',
   filter: 'Lọc nội dung',
-  languageSetting: 'Thay đổi ngôn ngữ',
+  languageSetting: 'Change Language',
   viewMode: 'Chế độ hiển thị',
   notiSetting: 'Trung tâm thông báo',
   blockUser: 'Danh sách chặn',
   infoUser: 'Thông tin tài khoản',
   changPass: 'Thay đổi mật mã',
+  lightTheme: 'Chế độ sáng',
+  darkTheme: 'Chế độ ban đêm',
+  langVN: 'Vietnamese',
+  langEN: 'English',
+  DateTime: 'Ngày/Tháng/Năm sinh',
+  save:'Lưu lại'
 };
 
 export default enLang;

@@ -31,8 +31,8 @@ const Fakedata: BlockItemProps[] = [
 ]
 
 const BlockUserScreen: React.FC = () => {
-    const { colorPallet } = useTheme()
-    const language = useLanguage();
+  const { colorPallet } = useTheme()
+  const { language } = useLanguage();
 
     return (
         <SafeAreaView

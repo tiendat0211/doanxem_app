@@ -56,7 +56,7 @@ const ResetPasswordScreen: React.FC = () => {
 
   const {signIn} = useAuth()
   const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
 
 
@@ -92,7 +92,6 @@ const ResetPasswordScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={password}
-            maxLength={10}
             setValue={setPassword}
             contentStyle={{
               marginBottom: unit20,
@@ -114,7 +113,6 @@ const ResetPasswordScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={repeatPassword}
-            maxLength={10}
             setValue={setRepeatPassword}
             contentStyle={{
               marginBottom: unit28,

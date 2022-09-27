@@ -10,7 +10,9 @@ const vnLang: BaseLanguage = {
   placeholder_email: 'Báo danh bằng email',
   placeholder_password: 'Nhập mật mã',
   forgot_password:'Quên mật mã',
-  
+  langVN: 'Việt Nam',
+  langEN: 'Tiếng Anh',
+  languageSetting: 'Thay đổi ngôn ngữ'
 };
 
 export default vnLang;

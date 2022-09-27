@@ -19,7 +19,7 @@ import AppBar from "../../components/AppBar/AppBar";
 
 const NotificationScreen: React.FC = () => {
   const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
   return (
     <SafeAreaView

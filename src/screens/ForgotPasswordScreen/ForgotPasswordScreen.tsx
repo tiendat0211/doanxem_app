@@ -34,7 +34,7 @@ const ForgotPasswordScreen: React.FC = () => {
   const [isValid, setValid] = useState(false);
   const {signIn} = useAuth()
   const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const { language } = useLanguage();
 
 
   return <SafeAreaView
@@ -69,7 +69,6 @@ const ForgotPasswordScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={email}
-            maxLength={10}
             setValue={setEmail}
             contentStyle={{
               marginBottom: unit28,
