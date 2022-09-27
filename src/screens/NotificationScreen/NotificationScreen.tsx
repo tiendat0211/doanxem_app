@@ -21,15 +21,10 @@ import useScreenState from "../../hooks/useScreenState";
 
 
 const NotificationScreen: React.FC = () => {
-<<<<<<< HEAD
   const {colorPallet} = useTheme()
   const { language } = useLanguage();
-=======
-  const { colorPallet } = useTheme()
-  const language = useLanguage();
->>>>>>> _nam
 
-  const dataNotification = 
+  const dataNotification =
   {
     today:[
       {
@@ -128,7 +123,7 @@ const NotificationScreen: React.FC = () => {
       },
     ]
   }
-  
+
 
   return (
     <SafeAreaView
@@ -154,7 +149,7 @@ const NotificationScreen: React.FC = () => {
       style={{
         paddingTop:unit16
       }}>
-        <AppText 
+        <AppText
         fontType="semiBold"
         style={{
           marginStart:unit20,
@@ -207,7 +202,7 @@ export default NotificationScreen;
 interface NotiFollowDay {
   data : any[]
 }
- 
+
 export const NotiFollowDayItem :React.FC<NotiFollowDay> = (props) => {
 
   const { isLoading, setLoading, setError, mounted } = useScreenState();
@@ -279,7 +274,7 @@ export const NotiView: React.FC<NotiViewProps> = (props) => {
     // listNotificationUnReadOffline,
     // updateList,
     // readAllNotifications,
-    
+
   } = props;
   const { colorPallet } = useTheme();
   const [seenNoti,setSeenNoti] = useState<boolean>(seen)

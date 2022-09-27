@@ -35,7 +35,6 @@ import AppBar from "../../components/AppBar/AppBar";
 import ValidateEditText from "../../components/ValidateEditText/ValidateEditText";
 import AppButton from "../../components/AppButton/AppButton";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
-import ChooseDateView from "./components/ChooseDateView";
 import { useAppSelector } from "../../store/store";
 
 
