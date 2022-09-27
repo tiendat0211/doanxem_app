@@ -38,14 +38,14 @@ const data: ViewItemProps[] = [
 ]
 
 const NotiSettingScreen: React.FC = () => {
-  const { colorPallet } = useTheme()
+  const { colorPallet , theme} = useTheme()
   const { language } = useLanguage();
 
   return (
     <SafeAreaView
       style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -92,7 +92,7 @@ interface ViewItemProps {
 
 const ViewItem: React.FC<ViewItemProps> = (props) => {
   const { title, onPress ,icRight} = props;
-  const { colorPallet } = useTheme()
+  const { colorPallet, theme } = useTheme()
   return (
     <>
       <PressView

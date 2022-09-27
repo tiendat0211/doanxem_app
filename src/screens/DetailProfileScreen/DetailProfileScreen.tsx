@@ -1,5 +1,17 @@
 import React, { useRef, useState } from "react";
-import { Dimensions, FlatList, Image, SafeAreaView, ScrollView, StatusBar, Text, View, ViewStyle } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+  ViewStyle,
+} from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
@@ -36,17 +48,20 @@ import ValidateEditText from "../../components/ValidateEditText/ValidateEditText
 import AppButton from "../../components/AppButton/AppButton";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
 import { useAppSelector } from "../../store/store";
+import ChooseDateView from "./components/ChooseDateView";
 
 
 const DetailProfileScreen: React.FC = () => {
-  const { colorPallet } = useTheme()
+  const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
-  const bottomSheetRef = useRef<BottomSheet>();
-  const [startDateTime, setStartDateTime] = useState<Date>();
+  const [startDateTime, setStartDateTime] = useState<Date>(new Date());
   const [email,setEmail] = useState("nguyenvana@gmai.com");
   const [phone,setPhone] = useState("0583978668");
   const [name,setName] = useState("Doitraicolieu");
   const localeCode = useAppSelector(state => state.setting.lang);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
 
   function openBottomSheet() {
     bottomSheetRef.current?.snapToIndex(0);
@@ -68,7 +83,7 @@ const DetailProfileScreen: React.FC = () => {
         <SafeAreaView
             style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
             <StatusBar
-                barStyle={"dark-content"}
+              barStyle={ theme === 'light' ? "dark-content" : "light-content"}
                 backgroundColor={AppColors.color_transparent}
             />
             <AppBar
@@ -85,11 +100,20 @@ const DetailProfileScreen: React.FC = () => {
                 }}
             />
 
+          <KeyboardAvoidingView
+            style={{
+              justifyContent: "center",
+              flex:1
+            }}
+            keyboardVerticalOffset={150}
+          >
             <ScrollView
-                style={{
-                    marginTop: unit24,
-                    marginHorizontal: unit20
-                }}
+              style={{
+                marginTop: unit24,
+                marginHorizontal: unit20,
+                flex:1,
+              }}
+              showsVerticalScrollIndicator={false}
             >
 
               <View
@@ -123,8 +147,10 @@ const DetailProfileScreen: React.FC = () => {
                   />
                 </PressView>
                 <AppText
+                  fontType={'regular'}
                   style={{
                     fontSize: fontSize16,
+                    color:colorPallet.color_text_blue_3
                   }}
                 >
                   @ngoclongg2010
@@ -132,21 +158,21 @@ const DetailProfileScreen: React.FC = () => {
               </View>
 
 
-            <ValidateEditText
+              <ValidateEditText
                 colorPallet={colorPallet}
                 textValue={name}
                 setValue={setName}
                 contentStyle={{
-                    marginBottom: unit20,
+                  marginBottom: unit20,
                 }}
                 placeholder={language?.placeholder_email}
                 checkValidFunctions={[
                 ]}
                 leftIcon={IC_EMAIL}
                 tintColorIcon={colorPallet.color_text_gray_3}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
-            />
+                // isValid={phoneValid}
+                // setValid={setPhoneValid}
+              />
               <PressView
                 onPress={openBottomSheet}
                 style={{
@@ -216,11 +242,13 @@ const DetailProfileScreen: React.FC = () => {
                 onPress={() => {}}
               />
             </ScrollView>
+          </KeyboardAvoidingView>
 
           {/*<BottomSheet*/}
           {/*  backgroundStyle={{*/}
           {/*    backgroundColor: colorPallet.color_background_3,*/}
           {/*  }}*/}
+          {/*  ref={bottomSheetRef}*/}
           {/*  backdropComponent={(props) =>*/}
           {/*    <BottomSheetBackdrop*/}
           {/*      {...props}*/}
@@ -230,7 +258,6 @@ const DetailProfileScreen: React.FC = () => {
           {/*      pressBehavior={"close"}*/}
           {/*    />*/}
           {/*  }*/}
-          {/*  ref={bottomSheetRef}*/}
           {/*  index={-1}*/}
           {/*  snapPoints={[unit300]}>*/}
           {/*  <BottomSheetView*/}

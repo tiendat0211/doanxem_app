@@ -59,7 +59,14 @@ const enLang: BaseLanguage = {
   langVN: 'Vietnamese',
   langEN: 'English',
   DateTime: 'Ngày/Tháng/Năm sinh',
-  save:'Lưu lại'
+  save:'Lưu lại',
+  oldPass:'Nhập mật mã cũ',
+  newPass: 'Nhập mật mã mới',
+  newPassAgain: 'Xác nhận lại mật mã mới',
+  rankScreen:'Bảng xếp hạng',
+  hardTab:'Chăm chỉ',
+  likeTab:'Yêu thích',
+  interestedTab:'Quan tâm',
 };
 
 export default enLang;

@@ -53,7 +53,7 @@ const FakeData = ['Bài viết','Người dùng',
 ]
 
 const SearchScreen: React.FC = () => {
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
   const [searchWord, setSearchWord] = useState("");
 
@@ -61,7 +61,7 @@ const SearchScreen: React.FC = () => {
     <SafeAreaView
       style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -77,53 +77,55 @@ const SearchScreen: React.FC = () => {
           borderBottomColor:colorPallet.color_divider_3
         }}
       />
-
-      <SearchBar
-        onSearchPress={() => {
-        }}
-        setSearchWord={setSearchWord}
-        searchWord={searchWord} />
-
-      <FlatList
-        horizontal={true}
-        style={{
-          backgroundColor: colorPallet.color_background_3,
-          paddingVertical: unit20,
-          flexGrow: 0,
-          marginLeft: unit12,
-        }}
-        showsHorizontalScrollIndicator={false}
-       data={FakeData}
-        renderItem={({item, index}) => {
-          return <PressView
-
-          >
-            <AppText
-              style={{
-                borderRadius: unit75,
-                borderColor: AppColors.color_primary,
-                borderWidth: unit1,
-                fontSize: fontSize14,
-                color: AppColors.color_primary,
-                paddingHorizontal: unit16,
-                paddingVertical: unit6,
-                marginHorizontal: unit8
-              }}
-            >
-              {item}
-            </AppText>
-          </PressView>
-        }}
-      />
-
-
-      <View
-        style={{
-          flexGrow:1,
-        }}
-      >
-
+      <View style={{
+        shadowColor:AppColors.color_primary,
+        shadowOffset: {
+          width: 0,
+          height: unit12,
+        },
+        shadowOpacity: 0.58,
+        shadowRadius: unit16,
+        elevation: unit24,
+      }}>
+        <SearchBar
+          onSearchPress={() => {
+          }}
+          setSearchWord={setSearchWord}
+          searchWord={searchWord} />
       </View>
+
+        <FlatList
+          horizontal={true}
+          style={{
+            backgroundColor: colorPallet.color_background_3,
+            paddingVertical: unit20,
+            flexGrow: 0,
+            marginLeft: unit12,
+
+          }}
+          showsHorizontalScrollIndicator={false}
+          data={FakeData}
+          renderItem={({item, index}) => {
+            return <PressView
+            >
+              <AppText
+                style={{
+                  borderRadius: unit75,
+                  borderColor: AppColors.color_primary,
+                  borderWidth: unit1,
+                  fontSize: fontSize14,
+                  color: AppColors.color_primary,
+                  paddingHorizontal: unit16,
+                  paddingVertical: unit6,
+                  marginHorizontal: unit8
+                }}
+              >
+                {item}
+              </AppText>
+            </PressView>
+          }}
+        />
+
 
     </SafeAreaView>
   )

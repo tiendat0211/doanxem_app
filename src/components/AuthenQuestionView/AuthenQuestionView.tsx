@@ -20,7 +20,7 @@ const AuthenQuestionView: React.FC<AuthenQuestionViewProps> = ({
   buttonText,
   onPress,
 }) => {
-  const {colorPallet} = useTheme();
+  const {colorPallet, theme} = useTheme();
   return (
     <View style={style}>
       <View style={{
@@ -32,7 +32,7 @@ const AuthenQuestionView: React.FC<AuthenQuestionViewProps> = ({
           fontType="regular"
           style={
             {
-              color: colorPallet.color_text_blue_3,
+              color: theme === 'light' ? colorPallet.color_text_blue_3 : colorPallet.color_text_gray_1,
               fontSize: fontSize16
             }
           }>

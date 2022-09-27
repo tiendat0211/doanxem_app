@@ -18,7 +18,7 @@ import { useAppDispatch } from "../../store/store";
 
 
 const LanguageScreen: React.FC = () => {
-  const { colorPallet } = useTheme()
+  const { colorPallet, theme } = useTheme()
   const {language, lang, setLanguage} = useLanguage();
   const { isLoading, setLoading, mounted } = useScreenState();
   const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ const LanguageScreen: React.FC = () => {
     <SafeAreaView
       style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -65,9 +65,6 @@ const LanguageScreen: React.FC = () => {
             height: unit24,
             width: unit32
           }}
-          appTxtStyle={{
-            color: colorPallet.color_text_blue_3
-          }}
           title={language?.langEN}
           rightImageSource={ lang === "en" ? IC_CHECK2 : undefined}
           rightImageProps = {{ tintColor: AppColors.color_primary}}
@@ -81,9 +78,6 @@ const LanguageScreen: React.FC = () => {
           leftImageProps={{
             height: unit24,
             width: unit32
-          }}
-        appTxtStyle={{
-            color: colorPallet.color_text_blue_3
           }}
           title={language?.langVN}
           rightImageSource={lang === "vi" ? IC_CHECK2 : undefined}

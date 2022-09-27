@@ -39,14 +39,14 @@ const RegisterScreen: React.FC = () => {
 
   const [isValid, setValid] = useState(false);
   const {signIn} = useAuth()
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
 
 
   return <SafeAreaView
     style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
     <StatusBar
-      barStyle={"dark-content"}
+      barStyle={ theme === 'light' ? "dark-content" : "light-content"}
       backgroundColor={AppColors.color_transparent}
     />
 

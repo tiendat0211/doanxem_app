@@ -21,7 +21,7 @@ interface ChooseDateViewProps {
     width,
     localeCode,
   } = props;
-  const { colorPallet } = useTheme();
+   const { colorPallet, theme } = useTheme()
   const [draftSelectedStartDate, setDraftSelectedStartDate] = useState(selectedStartDate);
   const { language } = useLanguage();
 

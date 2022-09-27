@@ -11,7 +11,7 @@ function AppLoading() {
       <StatusBar
         translucent
         backgroundColor={AppColors.color_transparent}
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
       />
       <LottieView
         style={styles.loadingView}

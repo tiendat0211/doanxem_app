@@ -23,7 +23,7 @@ import { dimension, fontSize14, fontSize16, fontSize18, fontSize20 } from "../..
 import AppColors from "../../styles/AppColors";
 
 export default function CustomDrawer(props: any) {
-  const { colorPallet } = useTheme()
+  const { colorPallet ,theme} = useTheme()
 
   return (
     <>
@@ -31,7 +31,7 @@ export default function CustomDrawer(props: any) {
         style={{
           flex: 1,
           flexDirection: 'row',
-          backgroundColor: '#0B2347',
+          backgroundColor: theme === 'light' ? '#0B2347' : '#36354B',
         }}>
         <View
           style={{
@@ -63,6 +63,7 @@ export default function CustomDrawer(props: any) {
                     width: unit28,
                     height: unit28,
                     borderRadius: unit20,
+                    tintColor: theme === 'light' ? colorPallet.color_text_blue_1 : colorPallet.color_text_gray_1
                   }}
                 />
               </PressView>
@@ -83,6 +84,7 @@ export default function CustomDrawer(props: any) {
                   style={{
                     width: unit28,
                     height: unit28,
+                    tintColor:  theme === 'light' ? colorPallet.color_text_blue_1 : colorPallet.color_text_gray_1
                   }}
                 />
               </PressView>
@@ -109,6 +111,7 @@ export default function CustomDrawer(props: any) {
                 }}
               >
                 <AppText
+                  fontType={'bold'}
                   style={{
                     color: colorPallet.color_text_blue_1,
                     fontSize: fontSize18,
@@ -118,6 +121,7 @@ export default function CustomDrawer(props: any) {
                   _Nghiencoliemsi_
                 </AppText>
                 <AppText
+                  fontType={'regular'}
                   style={{
                     color: colorPallet.color_text_gray_3,
                     fontSize: fontSize14,

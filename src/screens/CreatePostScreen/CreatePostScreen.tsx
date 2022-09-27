@@ -1,25 +1,17 @@
 import React from "react";
-import { Button, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, View } from "react-native";
+import {  SafeAreaView, StatusBar} from "react-native";
 import AppStyles from "../../styles/AppStyles";
-import useAuth from "../../hooks/useAuth";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { unit1, unit12, unit20, unit24, unit32 } from "../../utils/appUnit";
-import { IC_DRAWER, IC_FILTER } from "../../assets/path";
-import AppText from "../../components/AppText/AppText";
+import { IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { fontSize16, fontSize20 } from "../../styles/AppFonts";
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
-import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
-import TextRule from "../../components/TextRule/TextRule";
 import AppBar from "../../components/AppBar/AppBar";
 
 
-const RuleScreen: React.FC = () => {
-  const {colorPallet, theme} = useTheme()
+const CreatePostScreen: React.FC = () => {
+  const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
 
   return (
@@ -30,10 +22,14 @@ const RuleScreen: React.FC = () => {
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
-        title={language?.Rule}
+        title={language?.Home}
         leftIcon={IC_DRAWER}
+        rightIcon={IC_FILTER}
         leftIconOnClick={()=>{
           NavigationRef.current?.dispatch(DrawerActions.openDrawer)
+        }}
+        rightIconOnClick={()=>{
+          NavigationRef.current?.navigate('FilterScreen')
         }}
         titleStyle={{
           color: colorPallet.color_text_blue_1
@@ -42,14 +38,11 @@ const RuleScreen: React.FC = () => {
           borderBottomColor:colorPallet.color_divider_3
         }}
       />
-      <ScrollView style={{flex: 1}}>
-        <TextRule/>
-      </ScrollView>
 
     </SafeAreaView>
   )
 };
 
-export default RuleScreen;
+export default CreatePostScreen;
 
 

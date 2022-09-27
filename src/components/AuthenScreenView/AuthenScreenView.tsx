@@ -21,7 +21,7 @@ const AuthenScreenView: React.FC<AuthenScreenViewProps> = ({
                                                              style,
                                                              contentStyle
                                                            }) => {
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
   return (
     <View style={style}>
       <Image
@@ -34,6 +34,7 @@ const AuthenScreenView: React.FC<AuthenScreenViewProps> = ({
       />
 
       <AppText
+        fontType={'bold'}
         style={{
           textAlign: "center",
           fontSize: fontSize18,
@@ -43,7 +44,7 @@ const AuthenScreenView: React.FC<AuthenScreenViewProps> = ({
         {name}
       </AppText>
       <AppText
-
+        fontType={'regular'}
         style={{
           textAlign: "center",
           fontSize: fontSize14,

@@ -19,14 +19,14 @@ interface UserProfileItem {
 
 const UserProfileItem: React.FC<UserProfileItem> = (props) => {
     let { img_src, name, email, style } = props;
-    const { colorPallet } = useTheme();
-    return (
+  const { colorPallet, theme } = useTheme()
+  return (
         <>
             <View
                 style={[style, {
                     marginHorizontal: unit20,
                     borderRadius: unit16,
-                    backgroundColor: AppColors.color_white,
+                    backgroundColor: colorPallet.color_background_1,
                     paddingHorizontal: unit20,
                     paddingVertical: unit16,
                     flexDirection: 'row',
@@ -47,6 +47,7 @@ const UserProfileItem: React.FC<UserProfileItem> = (props) => {
                     }}
                 >
                     <AppText
+                      fontType={'bold'}
                         style={{
                             color: colorPallet.color_text_blue_1,
                             fontSize: fontSize18,
@@ -56,8 +57,9 @@ const UserProfileItem: React.FC<UserProfileItem> = (props) => {
                         {name}
                     </AppText>
                     <AppText
+                      fontType={'regular'}
                         style={{
-                            color: colorPallet.color_text_gray_3,
+                            color: theme === 'light' ? colorPallet.color_text_gray_3 : colorPallet.color_text_gray_4,
                             fontSize: fontSize14,
                             paddingBottom: unit6,
                         }}

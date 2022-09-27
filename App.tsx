@@ -22,6 +22,9 @@ import ViewModeScreen from "./src/screens/ViewModeScreen/ViewModeScreen";
 import NotiSettingScreen from "./src/screens/NotiSettingScreen/NotiSettingScreen";
 import BlockUserScreen from "./src/screens/BlockUserScreen/BlockUserScreen";
 import DetailProfileScreen from "./src/screens/DetailProfileScreen/DetailProfileScreen";
+import ChangPasswordScreen from "./src/screens/ChangePasswordScreen/ChangePasswordScreen";
+import { useTheme } from "./src/hooks/useTheme";
+import CreatePostScreen from "./src/screens/CreatePostScreen/CreatePostScreen";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -40,7 +43,9 @@ export type RootStackParamList = {
   ViewModeScreen: undefined,
   NotiSettingScreen: undefined,
   BlockUserScreen: undefined,
-  DetailProfileScreen: undefined
+  DetailProfileScreen: undefined,
+  ChangPasswordScreen: undefined,
+  CreatePostScreen: undefined,
 };
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -49,6 +54,7 @@ export const NavigationRef = React.createRef<NavigationContainerRef<RootStackPar
 const App = () => {
   const { authData, signOut } = useAuth();
   const user = authData.user;
+  const { colorPallet, theme} = useTheme()
 
   useEffect(() => {
     addOnUnAuthorizeListener(() => {
@@ -64,7 +70,7 @@ const App = () => {
     initialMetrics={initialWindowMetrics}>
     <StatusBar
       translucent
-      barStyle={"dark-content"}
+      barStyle={ theme === 'light' ? "dark-content" : "light-content"}
       backgroundColor={AppColors.color_transparent}
     />
     <NavigationContainer
@@ -107,6 +113,12 @@ const App = () => {
               <RootStack.Screen
                 name={"DetailProfileScreen"}
                 component={DetailProfileScreen} />
+              <RootStack.Screen
+                name={"ChangPasswordScreen"}
+                component={ChangPasswordScreen} />
+              <RootStack.Screen
+                name={"CreatePostScreen"}
+                component={CreatePostScreen} />
             </>
             :
             <>

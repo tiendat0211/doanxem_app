@@ -40,7 +40,7 @@ const ViewModeScreen: React.FC = () => {
     <SafeAreaView
       style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -62,9 +62,6 @@ const ViewModeScreen: React.FC = () => {
           onPress={() => {
             changeTheme("light");
           }}
-          appTxtStyle={{
-            color: colorPallet.color_text_blue_3
-          }}
           title={language?.lightTheme}
           rightImageSource={theme === "light" ? IC_CHECK2 : undefined}
           rightImageProps = {{ tintColor: AppColors.color_primary}}
@@ -73,9 +70,6 @@ const ViewModeScreen: React.FC = () => {
         <SelectItem
           onPress={() => {
             changeTheme("dark");
-          }}
-          appTxtStyle={{
-            color: colorPallet.color_text_blue_3
           }}
           title={language?.darkTheme}
           rightImageSource={theme === "dark" ? IC_CHECK2 : undefined}

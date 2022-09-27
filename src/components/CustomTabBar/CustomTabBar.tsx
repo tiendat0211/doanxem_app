@@ -24,7 +24,7 @@ import AppColors from "../../styles/AppColors";
 import { TabBar } from "react-native-tab-view";
 
 export default function CustomTabBar (props : any){
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
 
   return(
     <>

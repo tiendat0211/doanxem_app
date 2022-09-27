@@ -3,25 +3,10 @@ import { Button, Dimensions, Image, Platform, SafeAreaView, StatusBar, Text, Vie
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import NewTab from "./tabs/NewTab/NewTab";
-import TopTab from "./tabs/TopTab/TopTab";
-import HotTab from "./tabs/HotTab/HotTab";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import {
-  unit1, unit10, unit100,
-  unit12,
-  unit15,
-  unit16,
-  unit20,
-  unit24,
-  unit32,
-  unit35,
-  unit48,
-  unit5, unit50, unit56,
-  unit8,
-} from "../../utils/appUnit";
-import { IC_ARROWLEFT, IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
+import { unit1, unit12, unit15, unit16, unit20, unit24, unit32, unit35, unit5, unit8 } from "../../utils/appUnit";
+import { IC_ARROWLEFT, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
 import { AppFonts, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
@@ -30,33 +15,31 @@ import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
-import CustomTabBar from "../../components/CustomTabBar/CustomTabBar";
+
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import NewTab from "../HomeScreen/tabs/NewTab/NewTab";
+import TopTab from "../HomeScreen/tabs/TopTab/TopTab";
+import HotTab from "../HomeScreen/tabs/HotTab/HotTab";
+import HardTab from "./tabs/HardTab/HotTab";
+import LikeTab from "./tabs/LikeTab/NewTab";
+import InterestedTab from "./tabs/InterestedTab/TopTab";
 
-const Tab = createMaterialTopTabNavigator();
-const Drawer = createDrawerNavigator();
-
-
-const HomeScreen: React.FC = () => {
-  const { authData, signOut } = useAuth();
-  const user = authData.user;
-  const {colorPallet, theme } = useTheme()
+const RankScreen: React.FC = () => {
+  const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'new', title: language?.newTab },
-    { key: 'top', title: language?.topTab },
-    { key: 'hot', title: language?.hotTab },
+    { key: 'hard', title: language?.hardTab },
+    { key: 'like', title: language?.likeTab },
+    { key: 'interested', title: language?.interestedTab },
   ]);
 
   const renderScene = SceneMap({
-    new: NewTab,
-    hot: HotTab,
-    top: TopTab
+    hard: HardTab,
+    like: LikeTab,
+    interested: InterestedTab
   });
-
-
 
   return (
     <SafeAreaView
@@ -66,43 +49,18 @@ const HomeScreen: React.FC = () => {
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
-        title={language?.Home}
+        title={language?.rankScreen}
         leftIcon={IC_DRAWER}
-        rightIcon={IC_FILTER}
         leftIconOnClick={()=>{
           NavigationRef.current?.dispatch(DrawerActions.openDrawer)
         }}
-        rightIconOnClick={()=>{
-          NavigationRef.current?.navigate('FilterScreen')
-        }}
         titleStyle={{
           color: colorPallet.color_text_blue_1
-      }}
+        }}
         containerStyle={{
           borderBottomColor:colorPallet.color_divider_3
-      }}
+        }}
       />
-
-      <PressView
-        style={{
-          position:'absolute',
-          bottom: unit32,
-          right: unit32,
-        }}
-        onPress={() => {
-          NavigationRef.current?.navigate('CreatePostScreen');
-          console.log('click');
-        }}
-      >
-        <Image
-          source={IC_CREATE}
-          style={{
-            width:unit48,
-            height: unit48,
-            borderRadius: unit56,
-          }}
-        />
-      </PressView>
 
       <TabView
         navigationState={{ index, routes }}
@@ -115,8 +73,9 @@ const HomeScreen: React.FC = () => {
               flexDirection: 'row',
               paddingVertical: unit15,
             }}
+            scrollEnabled={true}
             activeColor={AppColors.color_primary}
-            inactiveColor={ theme === 'light' ?  colorPallet.color_text_blue_3 : AppColors.color_text4}
+            inactiveColor={colorPallet.color_text_blue_3}
             indicatorStyle={{ backgroundColor: AppColors.color_primary }}
             style={{
               backgroundColor: colorPallet.color_background_1,
@@ -128,7 +87,7 @@ const HomeScreen: React.FC = () => {
               shadowOpacity: 0.58,
               shadowRadius: unit16,
               elevation: unit24,
-          }}
+            }}
             labelStyle={{
               fontSize: fontSize18,
               fontFamily:AppFonts.bold,
@@ -137,28 +96,37 @@ const HomeScreen: React.FC = () => {
             renderIcon={ ({route, focused} ) => {
               return <Image
                 source={
-                route.key === 'new'
-                  ? IC_NEWTAB
-                  :  route.key === 'top'
-                  ? IC_TOPTAB:
-                  IC_HOTTAB
+                  route.key === 'hard'
+                    ? IC_NEWTAB
+                    :  route.key === 'like'
+                      ? IC_TOPTAB:
+                      IC_HOTTAB
                 }
                 style={{
                   height: unit24,
                   width: unit24,
-                  tintColor : focused
-                    ? AppColors.color_primary
-                    : theme === 'light' ?  colorPallet.color_text_blue_3 : AppColors.color_text4
-              }}
+                  tintColor : focused ? AppColors.color_primary : colorPallet.color_text_blue_3
+                }}
               />
             }}
           />
         }}
       />
     </SafeAreaView>
+    //   style={AppStyles.centerContainer}>
+    //   <Text>HOME SCREEN</Text>
+    //   <Text>{user?.username || "Not sign in"}</Text>
+    //   <Button
+    //     onPress={
+    //       () => {
+    //         signOut();
+    //       }
+    //     }
+    //     title={"Logout"} />
+    // </SafeAreaView>;
   )
 };
 
-export default HomeScreen;
+export default RankScreen;
 
 

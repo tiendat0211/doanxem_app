@@ -16,7 +16,16 @@ import {
   unit60,
   unit75, unit8,
 } from "../../utils/appUnit";
-import { IC_ARROWLEFT, IC_CHECK2, IC_DRAWER, IC_FILTER, IC_FILTERCHECK, IC_GAME } from "../../assets/path";
+import {
+  IC_ARROWLEFT,
+  IC_CHECK2,
+  IC_DRAWER,
+  IC_FILTER,
+  IC_FILTERCHECK,
+  IC_GAME,
+  IC_NEW, IC_QUESTION, IC_STYLE,
+  IC_SWORD,
+} from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
 import { fontSize14, fontSize16, fontSize20 } from "../../styles/AppFonts";
@@ -32,66 +41,47 @@ const FakeData = [
   },
   {
     id: 1,
-    title: 'Game',
-    img_src: IC_GAME
+    title: 'Tin tức',
+    img_src: IC_NEW
   },
   {
     id: 2,
-    title: 'Game',
-    img_src: IC_GAME
+    title: 'NSFW 18+',
+    img_src: IC_SWORD
   },
   {
     id: 3,
-    title: 'Game',
-    img_src: IC_GAME
+    title: 'Tư vấn & Hỏi đáp',
+    img_src: IC_QUESTION
   },
   {
     id: 4,
-    title: 'Game',
-    img_src: IC_GAME
+    title: 'Phong cách',
+    img_src: IC_STYLE
   }
 ]
 
 const FilterScreen: React.FC = () => {
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
-  const [listItem, setListItem]  = useState<number[]>([]);
-  const [checkAll, setCheckAll] = useState(false)
 
-  // const allCheck = () =>{
-  //   if (checkAll == false){
-  //     FakeData.forEach( (value) => {
-  //       return listItem?.push(value.id);
-  //     })
-  //     setListItem(listItem);
-  //     setCheckAll(true)
-  //     console.log(listItem);
-  //   }else {
-  //     setListItem([])
-  //     setCheckAll(false)
-  //   }
-  // }
-  //
-  // useEffect(() =>{
-  //   allCheck();
-  // },[listItem])
+  const [checkedGrade,setCheckedGrade] = useState(
+    new Array(FakeData.length).fill(false)
+  )
 
-  // function onCheckItem(item : number) {
-  //   listItem.forEach((value) =>{
-  //    if (item !== value){
-  //      return listItem.push(item)
-  //    }else {
-  //      return  listItem.pop(item)
-  //    }
-  //   })
-  // }
+  const handleGrade = (position:any) => {
+    const updatedCheckedState = checkedGrade.map((item, index) =>
+      index === position ? !item : item,
+    );
 
+    setCheckedGrade(updatedCheckedState);
+  }
 
   return (
     <SafeAreaView
       style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -107,6 +97,9 @@ const FilterScreen: React.FC = () => {
           borderBottomColor:colorPallet.color_divider_3
         }}
         rightIcon={IC_FILTERCHECK}
+        rightIconOnClick={
+          () => setCheckedGrade(Array(FakeData.length).fill(true))
+        }
       />
 
 
@@ -124,8 +117,7 @@ const FilterScreen: React.FC = () => {
               alignItems: 'center',
             }}
             onPress={() =>{
-              listItem.push(index);
-              setListItem(listItem);
+             handleGrade(index);
             }}
           >
             <Image
@@ -147,35 +139,17 @@ const FilterScreen: React.FC = () => {
               {item.title}
             </AppText>
 
-            {
-              listItem?.forEach( (value) => {
-               if (index === value){
-                 return <Image
-                   source={IC_CHECK2}
-                   style={{
-                     width: unit24,
-                     height: unit24,
-                     tintColor: colorPallet.color_text_gray_3
-                   }}
-                 />
-               } else {
-                 return <Image
-                   source={IC_CHECK2}
-                   style={{
-                     width: unit24,
-                     height: unit24,
-                     tintColor: AppColors.color_primary
-                   }}
-                 />
-               }
-              })
-            }
-
+            <Image
+              source={IC_CHECK2}
+              style={{
+                width: unit24,
+                height: unit24,
+                tintColor: checkedGrade[index] === true ? AppColors.color_primary : colorPallet.color_text_gray_3,
+              }}
+            />
           </PressView>
         }}
       />
-
-
     </SafeAreaView>
   )
 };

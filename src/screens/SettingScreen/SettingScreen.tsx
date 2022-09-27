@@ -36,7 +36,7 @@ const data: SettingItemProps[] = [
     iconLeft: IC_LOCK,
     title: 'Thay đổi mật khẩu',
     onPress: () => {
-      NavigationRef.current?.navigate("HomeScreen");
+      NavigationRef.current?.navigate("ChangPasswordScreen");
     },
   },
   {
@@ -74,25 +74,19 @@ const data: SettingItemProps[] = [
 
     },
   },
-  {
-    iconLeft: IC_LOGOUT,
-    title: 'Đăng xuất',
-    onPress: () => {
-
-    },
-  },
 ]
 
 
 const SettingScreen: React.FC = () => {
-  const { colorPallet } = useTheme()
+  const { colorPallet , theme } = useTheme()
   const { language } = useLanguage();
+  const { authData, signOut } = useAuth();
 
   return (
     <SafeAreaView
       style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -132,6 +126,38 @@ const SettingScreen: React.FC = () => {
             </>
           })
         }
+
+        <PressView
+          style={{
+            flexDirection: 'row',
+            marginHorizontal: unit20,
+            alignItems: 'center',
+            paddingVertical: unit17,
+          }}
+          onPress={() => {
+            signOut();
+          }}
+        >
+          <Image
+            source={IC_LOGOUT}
+            style={{
+              width: unit24,
+              height: unit24,
+              tintColor: AppColors.color_warning ,
+              marginRight: unit16
+            }}
+          />
+          <AppText
+            fontType={'regular'}
+            style={{
+              fontSize: fontSize16,
+              color: AppColors.color_warning
+            }}
+          >
+            Đăng xuất
+          </AppText>
+        </PressView>
+
       </ScrollView>
 
     </SafeAreaView>
@@ -148,7 +174,7 @@ interface SettingItemProps {
 
 const SettingItem: React.FC<SettingItemProps> = (props) => {
   const { iconLeft, title, onPress } = props;
-  const { colorPallet } = useTheme()
+  const { colorPallet, theme } = useTheme()
   return (
     <>
       <PressView
@@ -165,14 +191,15 @@ const SettingItem: React.FC<SettingItemProps> = (props) => {
           style={{
             width: unit24,
             height: unit24,
-            tintColor: title === 'Đăng xuất' ? AppColors.color_warning : AppColors.color_primary ,
+            tintColor: AppColors.color_primary ,
             marginRight: unit16
           }}
         />
         <AppText
+          fontType={'regular'}
           style={{
             fontSize: fontSize16,
-            color: title === 'Đăng xuất' ? AppColors.color_warning : colorPallet.color_text_blue_3
+            color: theme === 'light' ? colorPallet.color_text_blue_3 : colorPallet.color_text_gray_1,
           }}
         >
           {title}

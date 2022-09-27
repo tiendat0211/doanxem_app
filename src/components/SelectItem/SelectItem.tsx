@@ -6,6 +6,7 @@ import { unit16, unit18 } from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
 import { useTheme } from "../../hooks/useTheme";
 import { fontSize16 } from "../../styles/AppFonts";
+import AppColors from "../../styles/AppColors";
 
 interface SelectItemProps extends PressableProps {
   title: string,
@@ -28,7 +29,7 @@ const SelectItem: React.FC<SelectItemProps> = (
     appTxtStyle,
   } = props;
   const s = props.style
-  const { colorPallet } = useTheme();
+  const { colorPallet, theme } = useTheme()
   return <PressView
     {...props}
     style={[AppStyles.alignRow, {
@@ -44,7 +45,7 @@ const SelectItem: React.FC<SelectItemProps> = (
 
     <AppText
       style={[{
-        color: colorPallet.color_text_blue_3,
+        color: theme === 'light' ? colorPallet.color_text_blue_3 : AppColors.color_text2,
         fontSize: fontSize16 ,
         paddingHorizontal:  leftImageSource?  unit16 : 0,
         flexGrow: 1,

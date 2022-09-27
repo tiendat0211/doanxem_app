@@ -56,7 +56,7 @@ const VerifyOTPScreen: React.FC = () => {
   const [disableClick, setDisableClick] = useState(false);
 
   const {signIn} = useAuth()
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const VerifyOTPScreen: React.FC = () => {
   return <SafeAreaView
     style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
     <StatusBar
-      barStyle={"dark-content"}
+      barStyle={ theme === 'light' ? "dark-content" : "light-content"}
       backgroundColor={AppColors.color_transparent}
     />
 
