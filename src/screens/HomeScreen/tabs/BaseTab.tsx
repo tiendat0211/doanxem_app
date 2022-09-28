@@ -38,8 +38,11 @@ import { StatusModel } from "../../../model/StatusModel";
 const FakeData : StatusModel[] = [
   {
     post_id: 1,
-    user_img: IMG_LOGO,
-    user_name: '_designtoichet_',
+    user :  {
+      id :102,
+      avatar: IMG_LOGO,
+      name: '_designtoichet_'
+    },
     time: '4 giờ trước',
     status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
     status_img: IMG_POST,
@@ -49,8 +52,11 @@ const FakeData : StatusModel[] = [
 
   {
     post_id: 1,
-    user_img: IMG_LOGO,
-    user_name: '_designtoichet_',
+    user :  {
+      id :102,
+      avatar: IMG_LOGO,
+      name: '_designtoichet_'
+    },
     time: '4 giờ trước',
     status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
     status_img: IMG_ONBOARDING,
@@ -75,17 +81,19 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         style={{
           backgroundColor: colorPallet.color_background_3,
           flex: 1,
-          paddingVertical: unit24
         }}
       >
         <FlatList
-          showsHorizontalScrollIndicator={false}
+          style={{
+            paddingTop:unit24
+          }}
+          showsVerticalScrollIndicator={false}
           data={FakeData}
           renderItem={({ item, index }) => {
             return <StatusItem
               key={item.post_id}
-              user_img={item.user_img}
-              user_name={item.user_name}
+              user_img={item.user.avatar}
+              user_name={item.user.name}
               time={item.time}
               status_content={item.status_content}
               status_img={item.status_img}

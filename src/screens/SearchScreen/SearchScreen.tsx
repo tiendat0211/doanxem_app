@@ -18,7 +18,7 @@ import {
   unit60,
   unit75, unit8,
 } from "../../utils/appUnit";
-import { IC_DRAWER, IC_FILTER, IMG_LOGO } from "../../assets/path";
+import { IC_DRAWER, IC_FILTER, IMG_LOGO, IMG_ONBOARDING, IMG_POST } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
 import { fontSize14, fontSize16, fontSize20 } from "../../styles/AppFonts";
@@ -29,62 +29,22 @@ import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import SearchComponent from "./components/SearchComponent";
+import { StatusModel } from "../../model/StatusModel";
+import StatusItem from "../../components/StatusItem/StatusItem";
+import { fakePost, FakeTabs, fakeUserLists } from "../../utils/fakeData";
+import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 
-const FakeData = [
-  {
-    script: 'Bài viết',
-    type: 'post'
-  },
-  {
-    script: 'Người dùng',
-    type: 'user'
-  },
-  {
-    script: 'Tag',
-    type: 'tag'
-  },
-  {
-    script: 'Bộ lạc 1',
-    type: 'bolac1'
-  },
-]
 
-const fakePost = [
-  {
-    id :1 ,
-    time :4 ,
-    user : {
-      name : '_designtoichet_',
-      avatar : IMG_LOGO
-    },
-    title: '@conzoihuypham I thought, what can we do here that’ll make a impact, so ...xem thêm',
-    image: IMG_LOGO,
-    comments : '2,5k',
-    likes : '1,2k'
-  },
-  {
-    id :2 ,
-    time :4 ,
-    user : {
-      name : '_designtoichet_',
-      avatar : IMG_LOGO
-    },
-    title: '@conzoihuypham I thought, what can we do here that’ll make a impact, so ...xem thêm',
-    image: IMG_LOGO,
-    comments : '2,5k',
-    likes : '1,2k'
-  },
-]
 
 const SearchScreen: React.FC = () => {
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [searchWord, setSearchWord] = useState("");
-  const [typeSearch, setTypeSearch] = useState(FakeData[0].type)
+  const [typeSearch, setTypeSearch] = useState(FakeTabs[0].type)
 
   return (
     <SafeAreaView
-      style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
+      style={[AppStyles.container, { backgroundColor: colorPallet.color_background_2 }]}>
       <StatusBar
         barStyle={theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
@@ -111,7 +71,7 @@ const SearchScreen: React.FC = () => {
         shadowOpacity: 0.58,
         shadowRadius: unit16,
         elevation: unit24,
-        }}>
+      }}>
         <SearchBar
           onSearchPress={() => {
           }}
@@ -125,10 +85,11 @@ const SearchScreen: React.FC = () => {
           backgroundColor: colorPallet.color_background_3,
           paddingVertical: unit20,
           flexGrow: 0,
-          marginLeft: unit12,
+          paddingLeft: unit12,
+
         }}
         showsHorizontalScrollIndicator={false}
-        data={FakeData}
+        data={FakeTabs}
         renderItem={({ item, index }) => {
           return (
             <SearchComponent
@@ -139,17 +100,51 @@ const SearchScreen: React.FC = () => {
           )
         }}
       />
-      <ScrollView
+      <View
         style={{
-          paddingHorizontal : typeSearch === 'user' ? unit20 : undefined
+          flex: 1
         }}
       >
-        {/* {
-          typeSearch === 'post' && {
-
-          }
-        } */}
-      </ScrollView>
+        {
+          typeSearch === 'post' &&
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={fakePost}
+            renderItem={({ item, index }) => {
+              return <StatusItem
+                key={item.post_id}
+                user_img={item.user.avatar}
+                user_name={item.user.name}
+                time={item.time}
+                status_content={item.status_content}
+                status_img={item.status_img}
+                comment_counts={item.comment_counts}
+                reaction_counts={item.reaction_counts}
+              />
+            }}
+          />
+        }
+        {
+          typeSearch === 'user' &&
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={fakeUserLists}
+            renderItem={({ item, index }) => {
+              return (
+                <UserProfileItem
+                  key={item.id}
+                  img_src={item.avatar}
+                  name={item.name}
+                  email={item.user_name}
+                  style={{
+                    marginBottom: unit12,
+                  }}
+                />
+              )
+            }}
+          />
+        }
+      </View>
 
 
     </SafeAreaView>
