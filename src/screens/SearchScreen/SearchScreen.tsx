@@ -18,7 +18,7 @@ import {
   unit60,
   unit75, unit8,
 } from "../../utils/appUnit";
-import { IC_DRAWER, IC_FILTER } from "../../assets/path";
+import { IC_DRAWER, IC_FILTER, IMG_LOGO } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
 import { fontSize14, fontSize16, fontSize20 } from "../../styles/AppFonts";
@@ -28,57 +28,82 @@ import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import SearchBar from "../../components/SearchBar/SearchBar";
+import SearchComponent from "./components/SearchComponent";
 
-const FakeData = ['Bài viết','Người dùng',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
-  'Tag',
+const FakeData = [
+  {
+    script: 'Bài viết',
+    type: 'post'
+  },
+  {
+    script: 'Người dùng',
+    type: 'user'
+  },
+  {
+    script: 'Tag',
+    type: 'tag'
+  },
+  {
+    script: 'Bộ lạc 1',
+    type: 'bolac1'
+  },
+]
+
+const fakePost = [
+  {
+    id :1 ,
+    time :4 ,
+    user : {
+      name : '_designtoichet_',
+      avatar : IMG_LOGO
+    },
+    title: '@conzoihuypham I thought, what can we do here that’ll make a impact, so ...xem thêm',
+    image: IMG_LOGO,
+    comments : '2,5k',
+    likes : '1,2k'
+  },
+  {
+    id :2 ,
+    time :4 ,
+    user : {
+      name : '_designtoichet_',
+      avatar : IMG_LOGO
+    },
+    title: '@conzoihuypham I thought, what can we do here that’ll make a impact, so ...xem thêm',
+    image: IMG_LOGO,
+    comments : '2,5k',
+    likes : '1,2k'
+  },
 ]
 
 const SearchScreen: React.FC = () => {
-  const {colorPallet, theme} = useTheme()
+  const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [searchWord, setSearchWord] = useState("");
+  const [typeSearch, setTypeSearch] = useState(FakeData[0].type)
 
   return (
     <SafeAreaView
-      style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
+      style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
       <StatusBar
-        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
+        barStyle={theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
         title={language?.Search}
         leftIcon={IC_DRAWER}
-        leftIconOnClick={()=>{
+        leftIconOnClick={() => {
           NavigationRef.current?.dispatch(DrawerActions.openDrawer)
         }}
         titleStyle={{
           color: colorPallet.color_text_blue_1
         }}
         containerStyle={{
-          borderBottomColor:colorPallet.color_divider_3
+          borderBottomColor: colorPallet.color_divider_3
         }}
       />
       <View style={{
-        shadowColor:AppColors.color_primary,
+        shadowColor: AppColors.color_primary,
         shadowOffset: {
           width: 0,
           height: unit12,
@@ -86,7 +111,7 @@ const SearchScreen: React.FC = () => {
         shadowOpacity: 0.58,
         shadowRadius: unit16,
         elevation: unit24,
-      }}>
+        }}>
         <SearchBar
           onSearchPress={() => {
           }}
@@ -94,37 +119,37 @@ const SearchScreen: React.FC = () => {
           searchWord={searchWord} />
       </View>
 
-        <FlatList
-          horizontal={true}
-          style={{
-            backgroundColor: colorPallet.color_background_3,
-            paddingVertical: unit20,
-            flexGrow: 0,
-            marginLeft: unit12,
+      <FlatList
+        horizontal={true}
+        style={{
+          backgroundColor: colorPallet.color_background_3,
+          paddingVertical: unit20,
+          flexGrow: 0,
+          marginLeft: unit12,
+        }}
+        showsHorizontalScrollIndicator={false}
+        data={FakeData}
+        renderItem={({ item, index }) => {
+          return (
+            <SearchComponent
+              item={item}
+              selectedType={typeSearch}
+              setSelectedType={setTypeSearch}
+            />
+          )
+        }}
+      />
+      <ScrollView
+        style={{
+          paddingHorizontal : typeSearch === 'user' ? unit20 : undefined
+        }}
+      >
+        {/* {
+          typeSearch === 'post' && {
 
-          }}
-          showsHorizontalScrollIndicator={false}
-          data={FakeData}
-          renderItem={({item, index}) => {
-            return <PressView
-            >
-              <AppText
-                style={{
-                  borderRadius: unit75,
-                  borderColor: AppColors.color_primary,
-                  borderWidth: unit1,
-                  fontSize: fontSize14,
-                  color: AppColors.color_primary,
-                  paddingHorizontal: unit16,
-                  paddingVertical: unit6,
-                  marginHorizontal: unit8
-                }}
-              >
-                {item}
-              </AppText>
-            </PressView>
-          }}
-        />
+          }
+        } */}
+      </ScrollView>
 
 
     </SafeAreaView>
