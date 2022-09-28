@@ -67,6 +67,7 @@ const enLang: BaseLanguage = {
   hardTab:'Chăm chỉ',
   likeTab:'Yêu thích',
   interestedTab:'Quan tâm',
+  viewMore: 'xem thêm',
 };
 
 export default enLang;

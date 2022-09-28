@@ -1,6 +1,7 @@
 // IMAGE
 export const IMG_ONBOARDING= require('./images/img_onboarding.png');
 export const IMG_LOGO= require('./images/img_logo.png');
+export const IMG_POST= require('./images/img_post.png');
 
 // ICON
 
@@ -55,6 +56,11 @@ export const IC_SWORD= require('./icons/ic_sword.png');
 export const IC_QUESTION= require('./icons/ic_question.png');
 export const IC_STYLE= require('./icons/ic_style.png');
 export const IC_CREATE= require('./icons/ic_create.png');
+export const IC_OPTION= require('./icons/ic_option.png');
+export const IC_COMMENT= require('./icons/ic_comment.png');
+export const IC_REACTION= require('./icons/ic_reaction.png');
+export const IC_SHAREPOST= require('./icons/ic_sharePost.png');
+export const IC_SAVE= require('./icons/ic_save.png');
 
 // Files
 export const LOADING_ANIM = require('./loading-animation.json');

@@ -3,38 +3,34 @@ import { Button, Dimensions, Image, Platform, SafeAreaView, StatusBar, Text, Vie
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import NewTab from "./tabs/NewTab/NewTab";
-import TopTab from "./tabs/TopTab/TopTab";
-import HotTab from "./tabs/HotTab/HotTab";
+import NewTab from "./tabs/NewTab";
+import TopTab from "./tabs/TopTab";
+import HotTab from "./tabs/HotTab";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
-  unit1, unit10, unit100,
+  unit10,
   unit12,
   unit15,
   unit16,
-  unit20,
-  unit24,
-  unit32,
-  unit35,
-  unit48,
-  unit5, unit50, unit56,
-  unit8,
+  unit24, unit32, unit48, unit50, unit56,
+
 } from "../../utils/appUnit";
-import { IC_ARROWLEFT, IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
-import AppText from "../../components/AppText/AppText";
+import { IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import { AppFonts, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
-import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
-import CustomTabBar from "../../components/CustomTabBar/CustomTabBar";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import PressView from "../../components/PressView/PressView";
 
-const Tab = createMaterialTopTabNavigator();
-const Drawer = createDrawerNavigator();
+
+const renderScene = SceneMap({
+  new: NewTab,
+  hot: HotTab,
+  top: TopTab
+});
 
 
 const HomeScreen: React.FC = () => {
@@ -49,14 +45,6 @@ const HomeScreen: React.FC = () => {
     { key: 'top', title: language?.topTab },
     { key: 'hot', title: language?.hotTab },
   ]);
-
-  const renderScene = SceneMap({
-    new: NewTab,
-    hot: HotTab,
-    top: TopTab
-  });
-
-
 
   return (
     <SafeAreaView
@@ -82,27 +70,6 @@ const HomeScreen: React.FC = () => {
           borderBottomColor:colorPallet.color_divider_3
       }}
       />
-
-      <PressView
-        style={{
-          position:'absolute',
-          bottom: unit32,
-          right: unit32,
-        }}
-        onPress={() => {
-          NavigationRef.current?.navigate('CreatePostScreen');
-          console.log('click');
-        }}
-      >
-        <Image
-          source={IC_CREATE}
-          style={{
-            width:unit48,
-            height: unit48,
-            borderRadius: unit56,
-          }}
-        />
-      </PressView>
 
       <TabView
         navigationState={{ index, routes }}
@@ -155,6 +122,26 @@ const HomeScreen: React.FC = () => {
           />
         }}
       />
+      <PressView
+        style={{
+          position:'absolute',
+          bottom: unit32,
+          right: unit32,
+        }}
+        onPress={() => {
+          NavigationRef.current?.navigate('CreatePostScreen');
+          console.log('click');
+        }}
+      >
+        <Image
+          source={IC_CREATE}
+          style={{
+            width:unit48,
+            height: unit48,
+            borderRadius: unit56,
+          }}
+        />
+      </PressView>
     </SafeAreaView>
   )
 };
