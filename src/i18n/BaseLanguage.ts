@@ -65,6 +65,7 @@ interface BaseLanguage {
   hardTab:string;
   likeTab:string;
   interestedTab:string;
+  viewMore: string;
 }
 
 export default BaseLanguage;

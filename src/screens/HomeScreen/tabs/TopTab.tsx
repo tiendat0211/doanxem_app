@@ -1,5 +1,6 @@
 import React from "react";
-import useAuth from "../../../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
+import BaseTab from "./BaseTab";
 
 
 const TopTab: React.FC = () => {
@@ -7,6 +8,7 @@ const TopTab: React.FC = () => {
   const user = authData.user;
   return (
     <>
+      <BaseTab type={'new'}/>
     </>
   )
 };

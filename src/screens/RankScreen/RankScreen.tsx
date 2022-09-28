@@ -17,9 +17,9 @@ import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import NewTab from "../HomeScreen/tabs/NewTab/NewTab";
-import TopTab from "../HomeScreen/tabs/TopTab/TopTab";
-import HotTab from "../HomeScreen/tabs/HotTab/HotTab";
+import NewTab from "../HomeScreen/tabs/NewTab";
+import TopTab from "../HomeScreen/tabs/TopTab";
+import HotTab from "../HomeScreen/tabs/HotTab";
 import HardTab from "./tabs/HardTab/HotTab";
 import LikeTab from "./tabs/LikeTab/NewTab";
 import InterestedTab from "./tabs/InterestedTab/TopTab";
