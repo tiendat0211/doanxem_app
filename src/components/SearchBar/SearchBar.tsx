@@ -17,15 +17,15 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = (props) => {
   let { searchWord, setSearchWord, onSearchPress } = props;
   const width = dimension.width;
-  const { colorPallet } = useTheme();
-  const language = useLanguage()
+  const { colorPallet, theme } = useTheme();
+  const { language } = useLanguage()
   return <View style={[AppStyles.alignRow, {
     marginVertical: unit12,
     marginHorizontal: unit20,
     paddingHorizontal: unit20,
     paddingVertical: unit12,
     borderRadius: unit10,
-    backgroundColor: colorPallet.color_background_3,
+    backgroundColor: colorPallet.color_background_3 ,
   }]}>
     <PressView
       onPress={onSearchPress}>

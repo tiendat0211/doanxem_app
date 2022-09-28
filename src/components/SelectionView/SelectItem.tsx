@@ -15,7 +15,7 @@ interface SelectItemProps extends PressableProps {
 
 const SelectItem: React.FC<SelectItemProps> = (props) => {
   let { title, focused } = props;
-  const { colorPallet } = useTheme();
+  const { colorPallet, theme } = useTheme()
   return <PressView
     {...props}
     style={[{

@@ -1,6 +1,17 @@
 import React, { useState } from "react";
-import { ColorValue, Image, Platform, StyleProp, Text, TextInput, TextInputProps, View, ViewStyle } from "react-native";
-import {  dimension, fontSize14 } from "../../styles/AppFonts";
+import {
+  ColorValue,
+  Image,
+  ImageStyle,
+  Platform,
+  StyleProp,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
+  ViewStyle,
+} from "react-native";
+import { AppFonts, dimension, fontSize14 } from "../../styles/AppFonts";
 import { unit10, unit100, unit12, unit14, unit155, unit16, unit18, unit20, unit24, unit5 } from "../../utils/appUnit";
 import PressView from "../PressView/PressView";
 import IThemeColors from "../../styles/theme/IThemeColors";
@@ -96,7 +107,7 @@ const ValidateEditText: React.FC<ValidateEditTextProps> = props => {
               width: dimension.width - unit155,
               fontSize: fontSize14,
               color: colorPallet.color_text_blue_3,
-              // fontFamily: AppFonts.semiBold,
+              fontFamily: AppFonts.semiBold,
             },
             inputStyle,
           ]}

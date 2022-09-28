@@ -52,6 +52,19 @@ interface BaseLanguage {
   blockUser: string;
   infoUser: string;
   changPass: string;
+  lightTheme: string;
+  darkTheme: string;
+  langVN: string;
+  langEN: string;
+  DateTime: string;
+  save: string;
+  oldPass: string;
+  newPass: string;
+  newPassAgain: string;
+  rankScreen: string;
+  hardTab:string;
+  likeTab:string;
+  interestedTab:string;
 }
 
 export default BaseLanguage;

@@ -31,14 +31,14 @@ const Fakedata: BlockItemProps[] = [
 ]
 
 const BlockUserScreen: React.FC = () => {
-    const { colorPallet } = useTheme()
-    const language = useLanguage();
+  const { colorPallet, theme} = useTheme()
+  const { language } = useLanguage();
 
     return (
         <SafeAreaView
             style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
             <StatusBar
-                barStyle={"dark-content"}
+              barStyle={ theme === 'light' ? "dark-content" : "light-content"}
                 backgroundColor={AppColors.color_transparent}
             />
             <AppBar
@@ -85,7 +85,7 @@ interface BlockItemProps {
 
 const BlockItem: React.FC<BlockItemProps> = (props) => {
     const { img_src, name, onPress } = props;
-    const { colorPallet } = useTheme()
+    const { colorPallet,theme } = useTheme()
     return (
         <>
             <PressView
@@ -107,9 +107,10 @@ const BlockItem: React.FC<BlockItemProps> = (props) => {
                     }}
                 />
                 <AppText
+                  fontType={"regular"}
                     style={{
                         fontSize: fontSize16,
-                        color: colorPallet.color_text_blue_3,
+                        color: theme === 'light' ?  colorPallet.color_text_blue_3 : AppColors.color_text2,
                         flexGrow: 1,
                     }}
                 >
@@ -120,7 +121,7 @@ const BlockItem: React.FC<BlockItemProps> = (props) => {
                     style={{
                         width: unit24,
                         height: unit24,
-                        tintColor: colorPallet.color_text_gray_3,
+                        tintColor: theme === 'light' ?  colorPallet.color_text_gray_3 : colorPallet.color_text_gray_4,
                     }}
                 />
             </PressView>

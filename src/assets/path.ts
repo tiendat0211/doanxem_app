@@ -46,7 +46,15 @@ export const IC_ENGLISH = require('./icons/ic_english.png');
 export const IC_VIETNAM = require('./icons/ic_vietnam.png');
 export const IC_CHECK2 = require('./icons/ic_Check.png');
 export const IC_TRASH= require('./icons/ic_trash.png');
-
+export const IC_CALENDER= require('./icons/ic_calendar.png');
+export const IC_PHONE= require('./icons/ic_phone.png');
+export const IC_EDIT_PROFILE= require('./icons/ic_edit_profile.png');
+export const IC_OLDPASS= require('./icons/ic_lockSimpleOpen.png');
+export const IC_NEW= require('./icons/ic_new.png');
+export const IC_SWORD= require('./icons/ic_sword.png');
+export const IC_QUESTION= require('./icons/ic_question.png');
+export const IC_STYLE= require('./icons/ic_style.png');
+export const IC_CREATE= require('./icons/ic_create.png');
 
 // Files
 export const LOADING_ANIM = require('./loading-animation.json');

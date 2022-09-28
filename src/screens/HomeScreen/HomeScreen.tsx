@@ -8,11 +8,23 @@ import TopTab from "./tabs/TopTab/TopTab";
 import HotTab from "./tabs/HotTab/HotTab";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { unit1, unit12, unit15, unit20, unit24, unit32, unit35, unit5, unit8 } from "../../utils/appUnit";
-import { IC_ARROWLEFT, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
+import {
+  unit1, unit10, unit100,
+  unit12,
+  unit15,
+  unit16,
+  unit20,
+  unit24,
+  unit32,
+  unit35,
+  unit48,
+  unit5, unit50, unit56,
+  unit8,
+} from "../../utils/appUnit";
+import { IC_ARROWLEFT, IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
-import { fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
+import { AppFonts, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import PressView from "../../components/PressView/PressView";
@@ -28,8 +40,8 @@ const Drawer = createDrawerNavigator();
 const HomeScreen: React.FC = () => {
   const { authData, signOut } = useAuth();
   const user = authData.user;
-  const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const {colorPallet, theme } = useTheme()
+  const { language } = useLanguage();
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -50,7 +62,7 @@ const HomeScreen: React.FC = () => {
     <SafeAreaView
       style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -71,6 +83,26 @@ const HomeScreen: React.FC = () => {
       }}
       />
 
+      <PressView
+        style={{
+          position:'absolute',
+          bottom: unit32,
+          right: unit32,
+        }}
+        onPress={() => {
+          NavigationRef.current?.navigate('CreatePostScreen');
+          console.log('click');
+        }}
+      >
+        <Image
+          source={IC_CREATE}
+          style={{
+            width:unit48,
+            height: unit48,
+            borderRadius: unit56,
+          }}
+        />
+      </PressView>
 
       <TabView
         navigationState={{ index, routes }}
@@ -84,14 +116,22 @@ const HomeScreen: React.FC = () => {
               paddingVertical: unit15,
             }}
             activeColor={AppColors.color_primary}
-            inactiveColor={colorPallet.color_text_blue_3}
+            inactiveColor={ theme === 'light' ?  colorPallet.color_text_blue_3 : AppColors.color_text4}
             indicatorStyle={{ backgroundColor: AppColors.color_primary }}
             style={{
-              backgroundColor: AppColors.color_white,
+              backgroundColor: colorPallet.color_background_1,
+              shadowColor:AppColors.color_primary,
+              shadowOffset: {
+                width: 0,
+                height: unit12,
+              },
+              shadowOpacity: 0.58,
+              shadowRadius: unit16,
+              elevation: unit24,
           }}
             labelStyle={{
               fontSize: fontSize18,
-              fontWeight: '700',
+              fontFamily:AppFonts.bold,
               textTransform: 'none',
             }}
             renderIcon={ ({route, focused} ) => {
@@ -106,34 +146,16 @@ const HomeScreen: React.FC = () => {
                 style={{
                   height: unit24,
                   width: unit24,
-                  tintColor : focused ? AppColors.color_primary : colorPallet.color_text_blue_3
+                  tintColor : focused
+                    ? AppColors.color_primary
+                    : theme === 'light' ?  colorPallet.color_text_blue_3 : AppColors.color_text4
               }}
               />
             }}
           />
         }}
       />
-
-      <Button
-          onPress={
-            () => {
-              signOut();
-            }
-          }
-          title={"Logout"} />
-
     </SafeAreaView>
-    //   style={AppStyles.centerContainer}>
-    //   <Text>HOME SCREEN</Text>
-    //   <Text>{user?.username || "Not sign in"}</Text>
-    //   <Button
-    //     onPress={
-    //       () => {
-    //         signOut();
-    //       }
-    //     }
-    //     title={"Logout"} />
-    // </SafeAreaView>;
   )
 };
 

@@ -26,12 +26,12 @@ import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 
 
 const ProfileScreen: React.FC = () => {
-  const { colorPallet } = useTheme()
-  const language = useLanguage();
+  const { colorPallet , theme} = useTheme()
+  const { language } = useLanguage();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
-  const snapPointsVertical = useMemo(() => ['68%', '85%'], []);
+  const snapPointsVertical = useMemo(() => ['69%', '85%'], []);
   const renderCustomHandle = useCallback(
     (props) => <CustomHandle title="Custom Handle Example" {...props} />,
     [],
@@ -59,7 +59,7 @@ const ProfileScreen: React.FC = () => {
     <SafeAreaView
       style={AppStyles.container}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -72,13 +72,21 @@ const ProfileScreen: React.FC = () => {
           color: colorPallet.color_text_blue_1
         }}
         containerStyle={{
-          borderBottomColor: colorPallet.color_divider_3
+          borderBottomColor: colorPallet.color_divider_3,
+          shadowColor:AppColors.color_primary,
+          shadowOffset: {
+            width: 0,
+            height: unit12,
+          },
+          shadowOpacity: 0.58,
+          shadowRadius: unit16,
+          elevation: unit24,
         }}
       />
 
       <View
         style={{
-          backgroundColor: colorPallet.color_background_4,
+          backgroundColor: colorPallet.color_background_3,
         }}
       >
 
@@ -88,6 +96,15 @@ const ProfileScreen: React.FC = () => {
           email={"@ngoclongg2010"}
           style={{
             marginVertical: unit24,
+            shadowColor:AppColors.color_primary,
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.30,
+            shadowRadius: 4.65,
+
+            elevation: 8,
           }}
         />
 
@@ -113,9 +130,9 @@ const ProfileScreen: React.FC = () => {
               tabStyle={{ flexDirection: 'row' }}
               activeColor={AppColors.color_primary}
               inactiveColor={colorPallet.color_text_gray_3}
-              indicatorStyle={{ backgroundColor: AppColors.color_white }}
+              indicatorStyle={{ backgroundColor: colorPallet.color_background_1 }}
               style={{
-                backgroundColor: AppColors.color_white,
+                backgroundColor: colorPallet.color_background_1,
               }}
               labelStyle={{
                 fontSize: fontSize16,

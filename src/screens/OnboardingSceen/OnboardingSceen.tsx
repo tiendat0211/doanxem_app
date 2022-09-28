@@ -13,8 +13,8 @@ import { NavigationRef } from "../../../App";
 
 const OnboardingScreen: React.FC = () => {
 
-  const language = useLanguage();
-  const {colorPallet} = useTheme()
+  const { language } = useLanguage();
+  const {colorPallet, theme} = useTheme()
 
   return <SafeAreaView style={[AppStyles.centerContainer, {
     backgroundColor: AppColors.color_white,
@@ -22,7 +22,7 @@ const OnboardingScreen: React.FC = () => {
     <StatusBar
       translucent
       backgroundColor={AppColors.color_transparent}
-      barStyle={"dark-content"}
+      barStyle={ theme === 'light' ? "dark-content" : "light-content"}
     />
     <View
       style={{
@@ -41,23 +41,23 @@ const OnboardingScreen: React.FC = () => {
       />
       <Image source={IMG_ONBOARDING} style={{width: 334.5, height: 336.5}}/>
       <AppText
-        // fontType="medium"
+        fontType={'bold'}
         style={{
           textAlign: "center",
           fontSize: fontSize24,
           marginTop: unit35,
           marginBottom: unit16,
-          color: colorPallet.color_text_blue_1,
+          color: '#0B2347',
         }}>
         {language?.onboarding_title}
       </AppText>
       <AppText
-        fontType="regular"
+        fontType={'regular'}
         style={{
           textAlign: "center",
           marginHorizontal: unit52,
           fontSize: fontSize16,
-          color: colorPallet.color_text_gray_3
+          color: '#ADADAD',
         }}>
         {language?.onboarding_slogan}
       </AppText>

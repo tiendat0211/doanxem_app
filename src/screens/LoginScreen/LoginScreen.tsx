@@ -59,14 +59,14 @@ const LoginScreen: React.FC = () => {
 
 
   const { signIn } = useAuth();
-  const language = useLanguage();
-  const {colorPallet} = useTheme()
+  const { language } = useLanguage();
+  const {colorPallet, theme} = useTheme()
 
 
   return <SafeAreaView
     style={[AppStyles.centerContainer,{backgroundColor: colorPallet.color_background_1}]}>
     <StatusBar
-      barStyle={"dark-content"}
+      barStyle={ theme === 'light' ? "dark-content" : "light-content"}
       backgroundColor={AppColors.color_transparent}
     />
     <KeyboardAvoidingView
@@ -97,7 +97,6 @@ const LoginScreen: React.FC = () => {
             <ValidateEditText
               colorPallet={colorPallet}
               textValue={email}
-              maxLength={10}
               setValue={setEmail}
               contentStyle={{
                 marginBottom: unit20,
@@ -114,7 +113,6 @@ const LoginScreen: React.FC = () => {
             <ValidateEditText
               colorPallet={colorPallet}
               textValue={password}
-              maxLength={10}
               setValue={setPassword}
               contentStyle={{
                 marginBottom: unit20,
@@ -143,7 +141,7 @@ const LoginScreen: React.FC = () => {
               }}
             >
               <AppText
-                fontType={"regular"}
+                fontType={"semiBold"}
                 style={{
                   textAlign: "center",
                   fontSize: fontSize14,
@@ -186,6 +184,7 @@ const LoginScreen: React.FC = () => {
               </AppText>
               <View style={{flexDirection:'row'}}>
                 <LoginOptions
+                  fontType={'bold'}
                   title={'Google'}
                   imageSource={IC_GOOGLE}
                   contentStyle={{
@@ -197,6 +196,7 @@ const LoginScreen: React.FC = () => {
                   }}
                 />
                 <LoginOptions
+                  fontType={'bold'}
                   title={'Facebook'}
                   imageSource={IC_FACEBOOK}
                   contentStyle={{
@@ -240,7 +240,7 @@ const LoginOptions: React.FC<LoginOptionsProps> = ({
                                                      contentStyle,
                                                      onPress,
                                                    }) => {
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
   return (
     <PressView onPress={onPress}>
       <View
@@ -251,7 +251,7 @@ const LoginOptions: React.FC<LoginOptionsProps> = ({
             justifyContent: "center",
             paddingVertical: unit14,
             width: (Dimensions.get('screen').width - 65)/2,
-            backgroundColor: AppColors.color_white,
+            backgroundColor: colorPallet.color_background_1,
             borderRadius: unit6,
             borderColor:  colorPallet.color_divider_2,
             borderWidth: unit1,

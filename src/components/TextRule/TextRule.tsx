@@ -6,7 +6,7 @@ import { unit12, unit16, unit20, unit23 } from "../../utils/appUnit";
 import { fontSize14 } from "../../styles/AppFonts";
 
 const RuleText: React.FC = () => {
-  const {colorPallet} = useTheme()
+  const {colorPallet, theme} = useTheme()
 
   return (
     <View style={styles.container}>

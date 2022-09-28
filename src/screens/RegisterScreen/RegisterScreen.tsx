@@ -39,14 +39,14 @@ const RegisterScreen: React.FC = () => {
 
   const [isValid, setValid] = useState(false);
   const {signIn} = useAuth()
-  const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const {colorPallet, theme} = useTheme()
+  const { language } = useLanguage();
 
 
   return <SafeAreaView
     style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
     <StatusBar
-      barStyle={"dark-content"}
+      barStyle={ theme === 'light' ? "dark-content" : "light-content"}
       backgroundColor={AppColors.color_transparent}
     />
 
@@ -81,7 +81,6 @@ const RegisterScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={registerName}
-            maxLength={10}
             setValue={setRegisterName}
             contentStyle={{
               marginBottom: unit20,
@@ -98,7 +97,6 @@ const RegisterScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={email}
-            maxLength={10}
             setValue={setEmail}
             contentStyle={{
               marginBottom: unit20,
@@ -115,7 +113,6 @@ const RegisterScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={password}
-            maxLength={10}
             setValue={setPassword}
             contentStyle={{
               marginBottom: unit20,
@@ -137,7 +134,6 @@ const RegisterScreen: React.FC = () => {
           <ValidateEditText
             colorPallet={colorPallet}
             textValue={repeatPassword}
-            maxLength={10}
             setValue={setRepeatPassword}
             contentStyle={{
               marginBottom: unit20,

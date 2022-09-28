@@ -21,10 +21,10 @@ import useScreenState from "../../hooks/useScreenState";
 
 
 const NotificationScreen: React.FC = () => {
-  const { colorPallet } = useTheme()
-  const language = useLanguage();
+  const {colorPallet, theme} = useTheme()
+  const { language } = useLanguage();
 
-  const dataNotification = 
+  const dataNotification =
   {
     today:[
       {
@@ -123,13 +123,13 @@ const NotificationScreen: React.FC = () => {
       },
     ]
   }
-  
+
 
   return (
     <SafeAreaView
       style={[AppStyles.container, { backgroundColor: colorPallet.color_background_3 }]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
@@ -149,7 +149,7 @@ const NotificationScreen: React.FC = () => {
       style={{
         paddingTop:unit16
       }}>
-        <AppText 
+        <AppText
         fontType="semiBold"
         style={{
           marginStart:unit20,
@@ -202,7 +202,7 @@ export default NotificationScreen;
 interface NotiFollowDay {
   data : any[]
 }
- 
+
 export const NotiFollowDayItem :React.FC<NotiFollowDay> = (props) => {
 
   const { isLoading, setLoading, setError, mounted } = useScreenState();
@@ -274,9 +274,9 @@ export const NotiView: React.FC<NotiViewProps> = (props) => {
     // listNotificationUnReadOffline,
     // updateList,
     // readAllNotifications,
-    
+
   } = props;
-  const { colorPallet } = useTheme();
+  const { colorPallet, theme } = useTheme();
   const [seenNoti,setSeenNoti] = useState<boolean>(seen)
   return (
     <PressView
@@ -303,7 +303,7 @@ export const NotiView: React.FC<NotiViewProps> = (props) => {
         paddingHorizontal: unit20,
         paddingVertical: unit16,
         marginBottom: unit8,
-        backgroundColor: !seenNoti ? '#F2F8FF': colorPallet.color_background_1,
+        backgroundColor: !seenNoti ? theme === 'light' ? '#F2F8FF' : '#181824' : colorPallet.color_background_1,
       }}>
       <View
         style={{

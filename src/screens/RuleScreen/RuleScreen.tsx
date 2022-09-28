@@ -19,14 +19,14 @@ import AppBar from "../../components/AppBar/AppBar";
 
 
 const RuleScreen: React.FC = () => {
-  const {colorPallet} = useTheme()
-  const language = useLanguage();
+  const {colorPallet, theme} = useTheme()
+  const { language } = useLanguage();
 
   return (
     <SafeAreaView
       style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
       <StatusBar
-        barStyle={"dark-content"}
+        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar

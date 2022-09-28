@@ -17,6 +17,7 @@ import PressView from "../PressView/PressView";
 import AppColors from "../../styles/AppColors";
 import { unit1, unit10, unit16, unit18, unit20, unit24, unit6 } from "../../utils/appUnit";
 import { useTheme } from "../../hooks/useTheme";
+import AppText from "../AppText/AppText";
 
 type AppBarProps = {
   title: string,
@@ -53,27 +54,48 @@ const AppBar: React.FC<AppBarProps> = (
     };
   }
   const isCenter = titleType === "center";
+  const {colorPallet, theme} = useTheme()
 
-  return <View style={[styles.container, containerStyle]}>
+  return <View style={[
+    styles.container,
+    containerStyle,
+    {
+      backgroundColor: colorPallet.color_background_1,
+      borderBottomColor: colorPallet.color_divider_2 ,
+    }
+  ]}>
     <PressView
       onPress={leftIconOnClick}
      >
       <Image
         source={leftIcon}
-        style={[leftIconStyle,styles.leftIcon]}
+        style={[
+          leftIconStyle,
+          styles.leftIcon,
+          {
+            tintColor: colorPallet.color_text_blue_1
+          }
+        ]}
       />
     </PressView>
-    <Text
+    <AppText
+      fontType={'bold'}
       style={[styles.title, titleStyle, {
         textAlign: isCenter ? "center" : "left",
       }]}
-    >{title}</Text>
+    >{title}</AppText>
 
     <PressView
       onPress={rightIconOnClick}>
       <Image
         source={rightIcon}
-        style={[rightIconStyle ,styles.rightIcon]}
+        style={[
+          rightIconStyle ,
+          styles.rightIcon,
+          {
+            tintColor: colorPallet.color_text_blue_1
+          }
+        ]}
       />
     </PressView>
   </View>;
@@ -92,8 +114,6 @@ const styles = StyleSheet.create({
     paddingBottom: unit18,
     paddingHorizontal: unit16,
     alignItems: "center",
-    backgroundColor: "white",
-    borderBottomColor: '#F2F1F1',
     borderBottomWidth: unit1,
   },
   title: {
