@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Dimensions, FlatList, Image, SafeAreaView, StatusBar, Text, View } from "react-native";
 import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
@@ -10,18 +10,18 @@ import {
   unit100, unit12,
   unit16, unit18,
   unit20,
-  unit24,
+  unit24, unit300,
   unit32,
-  unit40,
+  unit40, unit400,
   unit48,
   unit5,
-  unit50,
+  unit50, unit500,
   unit56, unit8,
 } from "../../../utils/appUnit";
 import { NavigationRef } from "../../../../App";
 import {
   IC_COMMENT,
-  IC_CREATE,
+  IC_CREATE, IC_DOWNLOAD,
   IC_OPTION,
   IC_REACTION, IC_SAVE, IC_SHAREPOST,
   IMG_LOGO,
@@ -29,44 +29,25 @@ import {
   IMG_POST,
 } from "../../../assets/path";
 import AppText from "../../../components/AppText/AppText";
-import { fontSize12, fontSize16 } from "../../../styles/AppFonts";
+import { AppFonts, fontSize12, fontSize16 } from "../../../styles/AppFonts";
 import FooterItem from "../../../components/FooterItem/FooterItem";
 import StatusItem from "../../../components/StatusItem/StatusItem";
 import { StatusModel } from "../../../model/StatusModel";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import SelectItem from "../../../components/SelectItem/SelectItem";
 
-
-const FakeData : StatusModel[] = [
-  {
-    post_id: 1,
-    user_img: IMG_LOGO,
-    user_name: '_designtoichet_',
-    time: '4 giờ trước',
-    status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
-    status_img: IMG_POST,
-    comment_counts: '2,5k',
-    reaction_counts: '1,2k',
-  },
-
-  {
-    post_id: 1,
-    user_img: IMG_LOGO,
-    user_name: '_designtoichet_',
-    time: '4 giờ trước',
-    status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
-    status_img: IMG_ONBOARDING,
-    comment_counts: '2,5k',
-    reaction_counts: '1,2k',
-  }
-]
 
 interface BaseTabProps {
-  type: string;
+  data: StatusModel[],
+  fetchContent?: () => void,
 }
 
 const BaseTab: React.FC<BaseTabProps> = (props) => {
   const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
   const [viewMore, setViewMore] = useState(true);
+
+  const {data, fetchContent} = props
 
 
   return(
@@ -75,12 +56,16 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         style={{
           backgroundColor: colorPallet.color_background_3,
           flex: 1,
-          paddingVertical: unit24
+          paddingBottom: unit20
         }}
       >
         <FlatList
+          style={{
+            paddingTop: unit24,
+          }}
           showsHorizontalScrollIndicator={false}
-          data={FakeData}
+          data={data}
+          onRefresh={fetchContent}
           renderItem={({ item, index }) => {
             return <StatusItem
               key={item.post_id}
@@ -91,10 +76,15 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               status_img={item.status_img}
               comment_counts={item.comment_counts}
               reaction_counts={item.reaction_counts}
+              onPressComment={() =>{
+                NavigationRef.current?.navigate('DetailStatusScreen')
+              }}
+              onPressImage={() =>{
+                NavigationRef.current?.navigate('DetailStatusScreen')
+              }}
             />
           }}
         />
-
       </View>
     </>
   );

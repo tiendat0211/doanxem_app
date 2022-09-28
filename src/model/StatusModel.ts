@@ -5,6 +5,6 @@ export interface StatusModel {
   time: string,
   status_content: string,
   status_img: any,
-  comment_counts: string,
-  reaction_counts: string,
+  comment_counts: number,
+  reaction_counts: number,
 }

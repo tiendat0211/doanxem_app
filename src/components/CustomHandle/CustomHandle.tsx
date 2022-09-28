@@ -121,10 +121,9 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#262837",
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#262837",
+
   },
   indicator: {
     position: "absolute",

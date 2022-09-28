@@ -68,6 +68,8 @@ const enLang: BaseLanguage = {
   likeTab:'Yêu thích',
   interestedTab:'Quan tâm',
   viewMore: 'xem thêm',
+  detailScreen:'Chi tiết bài viết',
+  placeholder_input: 'Chém gió gì đó nào',
 };
 
 export default enLang;

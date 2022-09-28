@@ -116,14 +116,12 @@ const SettingScreen: React.FC = () => {
         />
         {
           data.map((value, index) => {
-            return <>
-              <SettingItem
+            return <SettingItem
                 key={index}
                 iconLeft={value.iconLeft}
                 title={value.title}
                 onPress={value.onPress}
               />
-            </>
           })
         }
 

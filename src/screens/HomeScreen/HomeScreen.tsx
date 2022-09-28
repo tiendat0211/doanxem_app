@@ -1,22 +1,18 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button, Dimensions, Image, Platform, SafeAreaView, StatusBar, Text, View } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import NewTab from "./tabs/NewTab";
-import TopTab from "./tabs/TopTab";
-import HotTab from "./tabs/HotTab";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
   unit10,
   unit12,
   unit15,
-  unit16,
-  unit24, unit32, unit48, unit50, unit56,
+  unit16, unit20,
+  unit24, unit32, unit400, unit48, unit50, unit56,
 
 } from "../../utils/appUnit";
-import { IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
+import { IC_CREATE, IC_DOWNLOAD, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import { AppFonts, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
@@ -24,6 +20,11 @@ import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import PressView from "../../components/PressView/PressView";
+import NewTab from "./tabs/NewTab";
+import HotTab from "./tabs/HotTab";
+import TopTab from "./tabs/TopTab";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import SelectItem from "../../components/SelectItem/SelectItem";
 
 
 const renderScene = SceneMap({
@@ -38,6 +39,13 @@ const HomeScreen: React.FC = () => {
   const user = authData.user;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+
+  function openBottomSheet() {
+    bottomSheetRef.current?.snapToIndex(0);
+  }
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -142,6 +150,122 @@ const HomeScreen: React.FC = () => {
           }}
         />
       </PressView>
+
+      {/* BottomSheet */}
+      <BottomSheet
+        backgroundStyle={{
+          backgroundColor: colorPallet.color_background_3,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: colorPallet.color_background_3
+        }}
+        ref={bottomSheetRef}
+        backdropComponent={(props) =>
+          <BottomSheetBackdrop
+            {...props}
+            enableTouchThrough={false}
+            disappearsOnIndex={-1}
+            appearsOnIndex={0}
+            pressBehavior={"close"}
+          />
+        }
+        index={-1}
+        snapPoints={[unit400]}>
+        <View
+          style={{
+            backgroundColor: colorPallet.color_background_1,
+            borderRadius: unit10,
+            marginHorizontal: unit20,
+            marginBottom: unit12
+          }}
+        >
+          <SelectItem
+            title={'Lưu ảnh vào bộ nhớ'}
+            rightImageSource={IC_DOWNLOAD}
+
+            appTxtStyle={{
+              fontFamily: AppFonts.semiBold,
+              fontSize: unit16
+            }}
+          />
+        </View>
+
+        <View
+          style={{
+            backgroundColor: colorPallet.color_background_1,
+            borderRadius: unit10,
+            marginHorizontal: unit20,
+            marginBottom: unit12
+          }}
+        >
+          <SelectItem
+            title={'Lưu ảnh vào bộ nhớ'}
+            rightImageSource={IC_DOWNLOAD}
+
+            appTxtStyle={{
+              fontFamily: AppFonts.semiBold,
+              fontSize: unit16
+            }}
+          />
+        </View>
+
+        <View
+          style={{
+            backgroundColor: colorPallet.color_background_1,
+            borderRadius: unit10,
+            marginHorizontal: unit20,
+            marginBottom: unit12
+          }}
+        >
+          <SelectItem
+            title={'Lưu ảnh vào bộ nhớ'}
+            rightImageSource={IC_DOWNLOAD}
+
+            appTxtStyle={{
+              fontFamily: AppFonts.semiBold,
+              fontSize: unit16
+            }}
+          />
+        </View>
+
+        <View
+          style={{
+            backgroundColor: colorPallet.color_background_1,
+            borderRadius: unit10,
+            marginHorizontal: unit20,
+            marginBottom: unit12
+          }}
+        >
+          <SelectItem
+            title={'Lưu ảnh vào bộ nhớ'}
+            rightImageSource={IC_DOWNLOAD}
+            appTxtStyle={{
+              fontFamily: AppFonts.semiBold,
+              fontSize: unit16
+            }}
+          />
+        </View>
+
+        <View
+          style={{
+            backgroundColor: colorPallet.color_background_1,
+            borderRadius: unit10,
+            marginHorizontal: unit20,
+            marginBottom: unit12
+          }}
+        >
+          <SelectItem
+            title={'Lưu ảnh vào bộ nhớ'}
+            rightImageSource={IC_DOWNLOAD}
+
+            appTxtStyle={{
+              fontFamily: AppFonts.semiBold,
+              fontSize: unit16
+            }}
+          />
+        </View>
+
+      </BottomSheet>
     </SafeAreaView>
   )
 };

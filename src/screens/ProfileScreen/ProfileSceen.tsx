@@ -33,7 +33,14 @@ const ProfileScreen: React.FC = () => {
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
   const snapPointsVertical = useMemo(() => ['69%', '85%'], []);
   const renderCustomHandle = useCallback(
-    (props) => <CustomHandle title="Custom Handle Example" {...props} />,
+    (props) => <CustomHandle
+      {...props}
+      title="Custom Handle Example"
+      style={{
+        borderBottomColor: colorPallet.color_background_1,
+        backgroundColor: colorPallet.color_background_1,
+      }}
+    />,
     [],
   );
 
