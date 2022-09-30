@@ -2,6 +2,7 @@
 export const IMG_ONBOARDING= require('./images/img_onboarding.png');
 export const IMG_LOGO= require('./images/img_logo.png');
 export const IMG_POST= require('./images/img_post.png');
+export const IMG_NO_PICTURE= require('./images/imgNoPicture.png');
 
 // ICON
 
