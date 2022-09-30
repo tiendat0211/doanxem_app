@@ -2,6 +2,7 @@
 export const IMG_ONBOARDING= require('./images/img_onboarding.png');
 export const IMG_LOGO= require('./images/img_logo.png');
 export const IMG_POST= require('./images/img_post.png');
+export const IMG_NO_PICTURE= require('./images/imgNoPicture.png');
 
 // ICON
 
@@ -33,6 +34,8 @@ export const IC_RANK = require('./icons/ic_rank.png');
 export const IC_NEWTAB = require('./icons/ic_newTab.png');
 export const IC_HOTTAB = require('./icons/ic_hotTab.png');
 export const IC_TOPTAB = require('./icons/ic_topTab.png');
+export const IC_CLOSE= require('./icons/ic_X.png');
+export const IC_DELETE_TAG= require('./icons/ic_delete_tag.png');
 export const IC_FILTERCHECK = require('./icons/ic_filterChecked.png');
 export const IC_GAME = require('./icons/ic_gameController.png');
 export const IC_DETAILPROFILE = require('./icons/ic_detailProfile.png');

@@ -1,44 +1,361 @@
-import React from "react";
-import {  SafeAreaView, StatusBar} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Alert, Dimensions, Image, PermissionsAndroid, Platform, SafeAreaView, StatusBar, Text, TextInput, View, ViewProps } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
+import { IC_ARROWLEFT, IC_CLOSE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB, IMG_LOGO, IMG_NO_PICTURE } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { unit1, unit10, unit12, unit132, unit14, unit144, unit16, unit20, unit22, unit40, unit8 } from "../../utils/appUnit";
+import AppText from "../../components/AppText/AppText";
+import { dimension, fontSize12 } from "../../styles/AppFonts";
+import { fakeTags } from "../../utils/fakeData";
+import TagItem from "./components/TagItem";
+import { Asset, CameraOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { showToastErrorMessage } from "../../utils/Toaster";
+import ModalFileSelect from "./components/ModalFileSelect";
+import PressView from "../../components/PressView/PressView";
+import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
+import FastImage from "react-native-fast-image";
 
+const options = {
+  mediaType : 'mixed',
+  quality: 0.3,
+  storageOptions: {
+    skipBackup: true,
+  },
+  noData: false,
+};
 
-const CreatePostScreen: React.FC = () => {
-  const {colorPallet, theme } = useTheme()
+const widthWD = Dimensions.get('window').width
+const heightWD = Dimensions.get('window').height
+
+interface CreatePostScreenProps extends ViewProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onApply?: () => void;
+}
+
+const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
+  const { setOpen, open, onApply } = props;
+  const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
+  const [script, setScript] = useState('')
+  const [openModal, setOpenModal] = useState(false)
+  const [heightImgOrVid, setHeightImgOrVid] = useState(300)
+  const [image, setImage] = useState<Asset>({
+    uri: undefined,
+    type: "",
+    fileName: "",
+  });
 
+  if (!open) {
+    return null;
+  }
+  const clearData = () => {
+    setScript(''),
+      setImage({})
+  }
+
+  const getImageFromLib = async () => {
+    try {
+      const res = await launchImageLibrary({
+        mediaType: "photo",
+        quality: 0.5,
+        maxHeight: 1024,
+        maxWidth: 1024,
+      });
+
+      if (res.assets) {
+        const img = res.assets[0];
+        setImage({
+          uri: img.uri,
+          type: img?.type,
+          fileName: img?.fileName,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      showToastErrorMessage("Ảnh quá dung lượng");
+    }
+  };
+  async function checkPerMissionCamera(): Promise<boolean> {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: "Cool Photo App Camera Permission",
+          message:
+            "Cool Photo App needs access to your camera " +
+            "so you can take awesome pictures.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can use the camera");
+        return true;
+      } else {
+        console.log("Camera permission denied");
+        return false;
+      }
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+
+  const takePicture = async () => {
+    if (Platform.OS === 'android') {
+      const hasPermission = await checkPerMissionCamera();
+      if (!hasPermission) {
+        console.log('Vui lòng cấp quyền để sử dụng tính năng này!');
+        return;
+      }
+    } 
+    try {
+      const option: CameraOptions = {
+        mediaType: "photo",
+        cameraType:'back',
+        presentationStyle:"currentContext",
+        maxWidth:dimension.width,
+        maxHeight:dimension.height
+      }
+      const res = await launchCamera(option, (cameraRes) => {
+      
+      });
+
+      if (res.assets) {
+        
+        const img = res.assets[0];
+        setHeightImgOrVid(img.height!)
+        setImage({
+          uri: img.uri,
+          type: img?.type,
+          fileName: img?.fileName,
+          height:img.height,
+          width:img.width
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      showToastErrorMessage("Ảnh quá dung lượng");
+    }
+    };
+    
   return (
     <SafeAreaView
-      style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
+      style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
       <StatusBar
-        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
+        barStyle={theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
-        title={language?.Home}
-        leftIcon={IC_DRAWER}
-        rightIcon={IC_FILTER}
-        leftIconOnClick={()=>{
-          NavigationRef.current?.dispatch(DrawerActions.openDrawer)
-        }}
-        rightIconOnClick={()=>{
-          NavigationRef.current?.navigate('FilterScreen')
+        title={'Mang vui vẻ tới cho đời'}
+        leftIcon={IC_CLOSE}
+        leftIconOnClick={() => {
+          setOpen(false)
+          clearData()
         }}
         titleStyle={{
           color: colorPallet.color_text_blue_1
         }}
         containerStyle={{
-          borderBottomColor:colorPallet.color_divider_3
+          borderBottomColor: colorPallet.color_divider_3
         }}
       />
+      <ScrollView
+        style={{
+          paddingTop: unit12,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingHorizontal: unit20
+          }}>
+          <AppText
+            fontType="bold"
+            style={{
+              fontSize: unit14,
+              lineHeight: unit20
+            }}
+          >
+            {'Mô tả'}
+          </AppText>
+          <AppText
+            style={{
+              fontSize: unit14,
+              lineHeight: unit20
+            }}
+          >
+            {script.length}/320
+          </AppText>
+        </View>
+        <TextInput
+          multiline={true}
+          placeholder={'Nói gì đấy đi mai phen.'}
+          style={{
+            marginTop: unit8,
+            paddingBottom: unit12,
+            paddingHorizontal: unit20,
+            borderBottomWidth: unit1,
+            borderBottomColor: colorPallet.color_divider_2,
+            fontSize: unit16,
+            lineHeight: unit22,
+            color: colorPallet.color_text_gray_2,
+            height: script.length > 200 ? 'auto' : unit144,
+          }}
+          maxLength={320}
+          onChangeText={(text) => {
+            setScript(text)
+          }}
+          value={script}
+        />
+        <View
+          style={{
+            justifyContent: 'space-between',
+            paddingHorizontal: unit20,
+            marginVertical: unit8,
+            paddingBottom: unit12,
+          }}>
+          <AppText
+            fontType="bold"
+            style={{
+              color: colorPallet.color_text_blue_3,
+              fontSize: unit14,
+              lineHeight: unit20
+            }}>
+            {'Gắn thẻ'}
+          </AppText>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingStart: unit20,
+            flexWrap: 'wrap',
+          }}>
+          {
+            fakeTags.map((item, index) => {
+              return (
+                <TagItem tag={item} />
+              )
+            })
+          }
+        </View>
+        <View
+          style={{
+            marginTop: unit14,
+            paddingHorizontal: unit20
+          }}>
+          <AppText
+            fontType="bold"
+            style={{
 
+            }}
+          > {`Media`}
+          </AppText>
+
+          {
+            image.uri ?
+              <>
+
+                <FastImage
+                  style={{
+                    width: '100%',
+                    height: heightImgOrVid
+                  }}
+                  resizeMode={FastImage.resizeMode.contain}
+                  onLoad={(evt) => {
+                    const {  width,height } = evt.nativeEvent;
+                    
+                    const heightScaled = (height / width) * widthWD;
+                    setHeightImgOrVid(heightScaled);
+                  }}
+                  
+                  source={
+                    {
+                      uri: image.uri
+                    }
+                  }
+                />
+                <PressView
+                  onPress={() => setOpenModal(true)}
+                  style={{
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginVertical: unit8,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: fontSize12,
+                      color: AppColors.color_primary,
+                    }}>{`Bạn có thể tải lại phương tiện`}</Text>
+                </PressView>
+              </>
+              :
+              <PressView
+                style={{
+                  height: 300,
+                  marginTop: unit10,
+                  backgroundColor: '#C3C8D6',
+                  // alignItems:'center',
+                }}
+                onPress={() => {
+                  setOpenModal(true)
+                }}>
+                <Image
+                  resizeMode="contain"
+                  style={{
+                    width: dimension.width - unit40,
+                    height: 300,
+                  }}
+                  source={IMG_NO_PICTURE} />
+              </PressView>
+
+          }
+
+          <PressView
+          onPress={()=>{
+            takePicture()
+          }}
+            style={{
+              marginTop: unit20,
+              marginBottom:unit40,
+              borderRadius: unit8,
+              backgroundColor: AppColors.color_primary,
+              paddingVertical: unit12,
+              alignItems: 'center'
+            }}>
+            <AppText
+              fontType="bold"
+              style={{
+                color: colorPallet.color_background_1,
+                flexShrink: unit14,
+
+              }}>
+              {`Đăng luôn cho nóng`}
+            </AppText>
+          </PressView>
+
+        </View>
+
+
+
+        <ModalFileSelect
+          onChooseGallery={getImageFromLib}
+          onChooseTakePicture={takePicture}
+          isVisible={openModal}
+          setIsvisible={setOpenModal}
+        />
+      </ScrollView>
     </SafeAreaView>
   )
 };
