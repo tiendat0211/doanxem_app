@@ -9,7 +9,7 @@ import PressView from "../../components/PressView/PressView";
 import { useTheme } from "../../hooks/useTheme";
 
 interface ReactionProps {
-  total_reactions: number;
+  total_reactions?: number;
   post_uuid: number;
   userReaction?: any;
 }
@@ -57,8 +57,10 @@ const Reaction: React.FC<ReactionProps> = (props) => {
     setOpen(false);
     setUrl(images[i]);
     if (url.id === "none") {
+      // @ts-ignore
       setTotal_reactions(total_reaction + 1);
     } else {
+      // @ts-ignore
       setTotal_reactions(total_reaction <= 0 ? 0 : total_reaction);
     }
   };
@@ -72,12 +74,14 @@ const Reaction: React.FC<ReactionProps> = (props) => {
         // const old_reaction = url;
         // const old_total_reaction = total_reaction;
         setUrl({ id: "none", img: IC_REACTION });
+        // @ts-ignore
         setTotal_reactions(total_reaction <= 0 ? 0 : total_reaction - 1);
       }
     } else {
       // const old_reaction = url;
       // const old_total_reaction = total_reaction;
       setUrl(images[0]);
+      // @ts-ignore
       setTotal_reactions(total_reaction + 1);
     }
   };
@@ -108,6 +112,7 @@ const Reaction: React.FC<ReactionProps> = (props) => {
               style={{
                 fontFamily: AppFonts.semiBold,
                 fontSize: fontSize14,
+                color:colorPallet.color_text_blue_3
               }}>
               {total_reaction}
             </AppText>
@@ -152,7 +157,7 @@ const Reaction: React.FC<ReactionProps> = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flexDirection: "row", width: unit80 },
+  container: { flexDirection: "row",marginRight: unit24},
   pic: {
     resizeMode: "cover",
     height: unit28,

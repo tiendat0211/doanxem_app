@@ -28,6 +28,8 @@ import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 const ProfileScreen: React.FC = () => {
   const { colorPallet , theme} = useTheme()
   const { language } = useLanguage();
+  const {authData} = useAuth()
+  const user = authData.user
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
@@ -98,9 +100,11 @@ const ProfileScreen: React.FC = () => {
       >
 
         <UserProfileItem
-          img_src={IMG_LOGO}
-          name={"_Nghiencoliemsi_"}
-          email={"@ngoclongg2010"}
+          img_src={{
+            uri: user?.avatar
+          }}
+          name={user?.name}
+          email={user?.email}
           style={{
             marginVertical: unit24,
             shadowColor:AppColors.color_primary,

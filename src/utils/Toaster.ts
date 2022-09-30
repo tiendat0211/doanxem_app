@@ -11,8 +11,8 @@ export function showToastError(e: unknown, options?: Partial<SnackBarOptions>) {
   }
 }
 
-export function showToastErrorMessage(msg: string, options?: Partial<SnackBarOptions>) {
-  showToastMsg(msg, {
+export function showToastErrorMessage(msg?: string, options?: Partial<SnackBarOptions>) {
+  showToastMsg(msg || "Có lỗi xảy ra", {
     ...options,
   });
 }

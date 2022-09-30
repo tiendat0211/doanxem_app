@@ -68,6 +68,8 @@ interface BaseLanguage {
   viewMore: string;
   detailScreen:string;
   placeholder_input: string;
+  accountBlocked: string;
+
 }
 
 export default BaseLanguage;

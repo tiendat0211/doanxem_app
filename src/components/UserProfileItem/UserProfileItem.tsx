@@ -9,11 +9,12 @@ import PressView from "../PressView/PressView";
 import { IC_SEARCH2, IMG_LOGO } from "../../assets/path";
 import AppColors from "../../styles/AppColors";
 import AppText from "../AppText/AppText";
+import useAuth from "../../hooks/useAuth";
 
 interface UserProfileItem {
     img_src: ImageSourcePropType,
-    name: string,
-    email: string,
+    name?: string,
+    email?: string,
     style?: ViewStyle;
 }
 
@@ -37,7 +38,8 @@ const UserProfileItem: React.FC<UserProfileItem> = (props) => {
                     style={{
                         height: unit72,
                         width: unit72,
-                        marginRight: unit20
+                        marginRight: unit20,
+                      borderRadius: unit20
                     }}
                 />
                 <View

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Dimensions, Image, StyleProp, View, ViewStyle } from "react-native";
+import { Dimensions, Image, ImageProps, StyleProp, View, ViewStyle } from "react-native";
 import { unit1, unit100, unit12, unit16, unit18, unit20, unit24, unit300, unit40, unit8 } from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
 import { fontSize12, fontSize14, fontSize16 } from "../../styles/AppFonts";
@@ -12,17 +12,12 @@ import Reaction from "../../screens/Reaction/Reaction";
 import { NavigationRef } from "../../../App";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
 import AppStyles from "../../styles/AppStyles";
+import { PostModel } from "../../model/ApiModel/PostModel";
 
 
 
 interface StatusItemProps{
-  user_img: any,
-  user_name: string,
-  time: string,
-  status_content: string,
-  status_img: any,
-  comment_counts: number,
-  reaction_counts: number,
+  post?: PostModel,
   style?: StyleProp<ViewStyle>,
   onPressComment?: () => void
   onPressImage?: () => void
@@ -31,7 +26,7 @@ interface StatusItemProps{
 
 const StatusItem: React.FC<StatusItemProps> = (props) => {
 
-  const { user_img,user_name,time,style,onPressComment,onPressImage,status_content,status_img, comment_counts,reaction_counts, openBottomSheet} = props;
+  const { post, style,onPressComment,onPressImage,openBottomSheet} = props;
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
@@ -56,7 +51,9 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           }}
         >
           <Image
-            source={user_img}
+            source={{
+              uri: post?.user?.avatar
+            }}
             style={{
               width: unit40,
               height: unit40,
@@ -79,7 +76,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                 color: colorPallet.color_text_blue_3
               }}
             >
-              {user_name}
+              {post?.user?.name}
             </AppText>
             <AppText
               style={{
@@ -87,7 +84,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                 color: colorPallet.color_text_gray_2
               }}
             >
-              {time}
+              123
             </AppText>
           </View>
 
@@ -121,18 +118,18 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               color: colorPallet.color_text_gray_1,
               fontSize: fontSize16,
             }}>
-            {viewMore
-              ? `${status_content.slice(0, 71)}${status_content?.length! > 63 ? "..." : ""
-              } `
-              : `${status_content} `}
+            {viewMore ? `${post?.title.slice(0, 71)} ` : post?.title}
+            {post?.title?.length! >70 &&
               <AppText
                 onPress={() => setViewMore(prev => !prev)}
                 style={{
                   color: colorPallet.color_text_gray_3,
                   fontSize: fontSize16,
                 }}>
-                {viewMore ? `${language?.viewMore}` : ``}
+                {viewMore ? `...${language?.viewMore}` : ``}
               </AppText>
+            }
+
 
           </AppText>
 
@@ -143,9 +140,12 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           onPress={onPressImage}
         >
           <Image
-            source={status_img}
+            source={{
+              uri: post?.image
+            }}
             style={{
-              width: Dimensions.get('screen').width
+              width: Dimensions.get('screen').width,
+              height: Dimensions.get('screen').width
             }}
           />
         </PressView>
@@ -160,13 +160,13 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         >
 
           <Reaction
-            total_reactions={reaction_counts}
+            total_reactions={post?.total_reactions}
             post_uuid={1}
           />
 
           <FooterItem
             img={IC_COMMENT}
-            title={comment_counts.toString()}
+            title={post?.comments_count.toString()}
             style={{
               marginRight: unit24
             }}

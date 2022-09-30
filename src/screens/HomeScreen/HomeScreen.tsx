@@ -25,8 +25,6 @@ import HotTab from "./tabs/HotTab";
 import TopTab from "./tabs/TopTab";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import SelectItem from "../../components/SelectItem/SelectItem";
-
-
 const renderScene = SceneMap({
   new: NewTab,
   hot: HotTab,
@@ -39,13 +37,6 @@ const HomeScreen: React.FC = () => {
   const user = authData.user;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
-
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
-
-  function openBottomSheet() {
-    bottomSheetRef.current?.snapToIndex(0);
-  }
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -135,6 +126,7 @@ const HomeScreen: React.FC = () => {
           position:'absolute',
           bottom: unit32,
           right: unit32,
+          zIndex: 10,
         }}
         onPress={() => {
           NavigationRef.current?.navigate('CreatePostScreen');
@@ -150,122 +142,6 @@ const HomeScreen: React.FC = () => {
           }}
         />
       </PressView>
-
-      {/* BottomSheet */}
-      <BottomSheet
-        backgroundStyle={{
-          backgroundColor: colorPallet.color_background_3,
-        }}
-        handleIndicatorStyle={{
-          backgroundColor: colorPallet.color_background_3
-        }}
-        ref={bottomSheetRef}
-        backdropComponent={(props) =>
-          <BottomSheetBackdrop
-            {...props}
-            enableTouchThrough={false}
-            disappearsOnIndex={-1}
-            appearsOnIndex={0}
-            pressBehavior={"close"}
-          />
-        }
-        index={-1}
-        snapPoints={[unit400]}>
-        <View
-          style={{
-            backgroundColor: colorPallet.color_background_1,
-            borderRadius: unit10,
-            marginHorizontal: unit20,
-            marginBottom: unit12
-          }}
-        >
-          <SelectItem
-            title={'Lưu ảnh vào bộ nhớ'}
-            rightImageSource={IC_DOWNLOAD}
-
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16
-            }}
-          />
-        </View>
-
-        <View
-          style={{
-            backgroundColor: colorPallet.color_background_1,
-            borderRadius: unit10,
-            marginHorizontal: unit20,
-            marginBottom: unit12
-          }}
-        >
-          <SelectItem
-            title={'Lưu ảnh vào bộ nhớ'}
-            rightImageSource={IC_DOWNLOAD}
-
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16
-            }}
-          />
-        </View>
-
-        <View
-          style={{
-            backgroundColor: colorPallet.color_background_1,
-            borderRadius: unit10,
-            marginHorizontal: unit20,
-            marginBottom: unit12
-          }}
-        >
-          <SelectItem
-            title={'Lưu ảnh vào bộ nhớ'}
-            rightImageSource={IC_DOWNLOAD}
-
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16
-            }}
-          />
-        </View>
-
-        <View
-          style={{
-            backgroundColor: colorPallet.color_background_1,
-            borderRadius: unit10,
-            marginHorizontal: unit20,
-            marginBottom: unit12
-          }}
-        >
-          <SelectItem
-            title={'Lưu ảnh vào bộ nhớ'}
-            rightImageSource={IC_DOWNLOAD}
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16
-            }}
-          />
-        </View>
-
-        <View
-          style={{
-            backgroundColor: colorPallet.color_background_1,
-            borderRadius: unit10,
-            marginHorizontal: unit20,
-            marginBottom: unit12
-          }}
-        >
-          <SelectItem
-            title={'Lưu ảnh vào bộ nhớ'}
-            rightImageSource={IC_DOWNLOAD}
-
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16
-            }}
-          />
-        </View>
-
-      </BottomSheet>
     </SafeAreaView>
   )
 };
