@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ColorValue,
   Image,
@@ -16,6 +16,7 @@ import { unit10, unit100, unit12, unit14, unit155, unit16, unit18, unit20, unit2
 import PressView from "../PressView/PressView";
 import IThemeColors from "../../styles/theme/IThemeColors";
 import AppColors from "../../styles/AppColors";
+import AppText from "../AppText/AppText";
 
 interface ValidateEditTextProps extends Partial<TextInputProps> {
   checkValidFunctions: ((input: string) => [boolean, string?])[];
@@ -96,7 +97,7 @@ const ValidateEditText: React.FC<ValidateEditTextProps> = props => {
               height: unit24,
               marginStart: unit16,
               marginEnd: unit10,
-              tintColor: isBlur ? colorPallet.color_text_gray_3 : AppColors.color_primary,
+              tintColor: isBlur ? colorPallet.color_text_gray_3 : AppColors.color_primary ,
             }}
           />
         )}
@@ -115,11 +116,7 @@ const ValidateEditText: React.FC<ValidateEditTextProps> = props => {
           onChangeText={setValue}
           onBlur={() => {
             setBlur(true);
-            if (checkIsValid()) {
-              setBlur(true);
-            } else {
-              setBlur(false);
-            }
+
           }}
           onFocus={() => {
             setBlur(false);
@@ -145,15 +142,16 @@ const ValidateEditText: React.FC<ValidateEditTextProps> = props => {
       {
         (isBlur && textValue.length > 0 && handleErrorText().length > 0)
           ? (
-            <Text
+            <AppText
+              fontType={'semiBold'}
               style={{
-                color: "red",
+                color: AppColors.color_warning,
                 marginHorizontal: unit20,
                 marginTop: unit10,
                 fontSize: fontSize14,
               }}>
-              {"* " + handleErrorText()}
-            </Text>
+              {handleErrorText()}
+            </AppText>
           )
           : null
       }

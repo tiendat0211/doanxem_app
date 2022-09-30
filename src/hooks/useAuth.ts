@@ -1,7 +1,7 @@
 import { AuthState, signIn, signOut } from "../store/slice/authSlice";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { setAccessToken, setLocationHeader } from "../network/client";
-import UserModel from "../model/UserModel";
+import UserModel from "../model/ApiModel/UserModel";
 import { LangType, setLang } from "../store/slice/settingSlice";
 
 export default function useAuth() {

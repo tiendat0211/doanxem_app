@@ -1,44 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import BaseTab from "./BaseTab";
-import { StatusModel } from "../../../model/StatusModel";
-import { IMG_LOGO, IMG_ONBOARDING, IMG_POST } from "../../../assets/path";
-
-const FakeData : StatusModel[] = [
-  {
-    post_id: 1,
-    user_img: IMG_LOGO,
-    user_name: '_designtoichet_',
-    time: '4 giờ trước',
-    status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
-    status_img: IMG_POST,
-    comment_counts: 100,
-    reaction_counts: 100,
-  },
-
-  {
-    post_id: 1,
-    user_img: IMG_LOGO,
-    user_name: '_designtoichet_',
-    time: '4 giờ trước',
-    status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
-    status_img: IMG_ONBOARDING,
-    comment_counts: 100,
-    reaction_counts: 100,
-  }
-]
+import { PostModel } from "../../../model/ApiModel/PostModel";
+import { FIRST_PAGE, getNewPost } from "../../../network/AppAPI";
+import ApiHelper from "../../../utils/ApiHelper";
+import useScreenState from "../../../hooks/useScreenState";
 
 
 const NewTab: React.FC = () => {
   const { authData, signOut } = useAuth();
   const user = authData.user;
+  const [newPostData, setNewPostData] = useState<PostModel[]>([]);
+  const { isLoading, setLoading, error, setError, mounted } = useScreenState();
+
+  async function loadNewPost(page = FIRST_PAGE) {
+    try {
+      const res = await getNewPost(page);
+      if (ApiHelper.isResSuccess(res)) {
+        const posts = res?.data?.data;
+        if (page === FIRST_PAGE) {
+          setNewPostData(posts);
+        } else {
+          setNewPostData(prev => [...prev, ...posts]);
+        }
+      }
+      setError(undefined);
+    } catch (e) {
+      setError(e);
+    } finally {
+
+    }
+  }
+
+  useEffect(() => {
+    // init
+    loadNewPost().finally(() => {
+    });
+  }, []);
+
   return (
     <>
       <BaseTab
-        data={FakeData}
+        data={newPostData}
+        refreshData={loadNewPost}
+        loadMore={async (page) => {
+          await loadNewPost(page);
+        }}
       />
     </>
-  )
+  );
 };
 
 export default NewTab;

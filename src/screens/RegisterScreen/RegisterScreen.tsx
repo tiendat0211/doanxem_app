@@ -26,6 +26,8 @@ import { NavigationRef } from "../../../App";
 import AppText from "../../components/AppText/AppText";
 import { fontSize14 } from "../../styles/AppFonts";
 import PressView from "../../components/PressView/PressView";
+import { login, register } from "../../network/AppAPI";
+import { showToastMsg } from "../../utils/Toaster";
 
 const RegisterScreen: React.FC = () => {
 
@@ -41,6 +43,17 @@ const RegisterScreen: React.FC = () => {
   const {signIn} = useAuth()
   const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
+
+  async function loadRegister() {
+    try {
+      const res = await register(email, password, registerName,repeatPassword);
+      showToastMsg(res.data.message)
+    } catch (e) {
+
+    } finally {
+
+    }
+  }
 
 
   return <SafeAreaView
@@ -205,14 +218,8 @@ const RegisterScreen: React.FC = () => {
           <AppButton
             buttonTitle={language?.register}
             onPress={
-              () => {
-                signIn({
-                  user: {
-                    username: registerName
-                  }
-                })
-              }
-            }
+              loadRegister
+          }
           />
         </View>
 

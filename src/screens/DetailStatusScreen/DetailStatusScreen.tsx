@@ -11,7 +11,7 @@ import {
 import { useLanguage } from "../../hooks/useLanguage";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
-import { StatusModel } from "../../model/StatusModel";
+import { PostModel } from "../../model/ApiModel/PostModel";
 import StatusItem from "../../components/StatusItem/StatusItem";
 import AppText from "../../components/AppText/AppText";
 import { CommentModle } from "../../model/CommentModle";
@@ -19,7 +19,7 @@ import CommentItem from "../../components/CommentItem/CommentItem";
 import { unit1, unit14 } from "../../utils/appUnit";
 import AppInput from "../../components/AppInput/AppInput";
 
-const FakeData : StatusModel = {
+const FakeData : PostModel = {
     post_id: 1,
     user_img: IMG_LOGO,
     user_name: '_designtoichet_',

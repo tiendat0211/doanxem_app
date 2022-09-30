@@ -25,3 +25,8 @@ export const checkPhoneValidFn = (input: string): [boolean, string?] => {
 export const checkPhoneValidFirstNumberFn = (input: string): [boolean, string?] => {
   return [input.length > 0 && input[0] === '0', "Số đầu tiên phải là số 0"];
 };
+
+export const emailValidFn = (input: string): [boolean, string?] => {
+  let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return [input.length > 0 && reg.test(input), "Email không đúng định dạng"];
+};

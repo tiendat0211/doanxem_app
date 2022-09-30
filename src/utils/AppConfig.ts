@@ -1,5 +1,5 @@
 const AppConfig = {
-  baseURL: ""
+  baseURL: "https://doanxem.com/api/"
 }
 
 export default AppConfig

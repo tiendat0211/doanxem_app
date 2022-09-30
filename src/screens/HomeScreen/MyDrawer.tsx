@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, Dimensions, Image, View } from "react-native";
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import {NavigationContainerRef } from "@react-navigation/native";
+import { NavigationContainerRef, RouteProp, useRoute } from "@react-navigation/native";
 import HomeScreen from "./HomeScreen";
 import { useLanguage } from "../../hooks/useLanguage";
 import CustomDrawer from "../../components/CustomDrawer/CustomDrawer";
@@ -15,6 +15,7 @@ import RuleScreen from "../RuleScreen/RuleScreen";
 import ProfileScreen from "../ProfileScreen/ProfileSceen";
 import NotificationScreen from '../NotificationScreen/NotificationScreen';
 import RankScreen from "../RankScreen/RankScreen";
+import useAuth from "../../hooks/useAuth";
 
 
 export const Drawer = createDrawerNavigator();
