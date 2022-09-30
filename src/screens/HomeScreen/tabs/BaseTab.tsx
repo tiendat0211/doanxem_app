@@ -9,47 +9,13 @@ import { NavigationRef } from "../../../../App";
 import { IC_BLOCKUSER, IC_DOWNLOAD, IC_HIDE, IC_WARNING } from "../../../assets/path";
 import AppText from "../../../components/AppText/AppText";
 import { AppFonts, fontSize16 } from "../../../styles/AppFonts";
-import StatusItem from "../../../components/StatusItem/StatusItem";
-import { PostModel } from "../../../model/ApiModel/PostModel";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import SelectItem from "../../../components/SelectItem/SelectItem";
 import RNFetchBlob from "rn-fetch-blob";
 import useScreenState from "../../../hooks/useScreenState";
+import { PostModel } from "../../../model/ApiModel/PostModel";
+import StatusItem from "../../../components/StatusItem/StatusItem";
 
-
-<<<<<<< HEAD
-=======
-const FakeData : StatusModel[] = [
-  {
-    post_id: 1,
-    user :  {
-      id :102,
-      avatar: IMG_LOGO,
-      name: '_designtoichet_'
-    },
-    time: '4 giờ trước',
-    status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
-    status_img: IMG_POST,
-    comment_counts: '2,5k',
-    reaction_counts: '1,2k',
-  },
-
-  {
-    post_id: 1,
-    user :  {
-      id :102,
-      avatar: IMG_LOGO,
-      name: '_designtoichet_'
-    },
-    time: '4 giờ trước',
-    status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
-    status_img: IMG_ONBOARDING,
-    comment_counts: '2,5k',
-    reaction_counts: '1,2k',
-  }
-]
-
->>>>>>> _nam
 interface BaseTabProps {
   data: PostModel[],
   refreshData: () => void,
@@ -123,15 +89,11 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         style={{
           backgroundColor: colorPallet.color_background_3,
           flex: 1,
-<<<<<<< HEAD
           paddingBottom: unit20,
-=======
->>>>>>> _nam
         }}
       >
         <FlatList
           style={{
-<<<<<<< HEAD
             paddingTop: unit24,
           }}
           showsHorizontalScrollIndicator={false}
@@ -157,23 +119,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               }}
               openBottomSheet={openBottomSheet}
             />;
-=======
-            paddingTop:unit24
-          }}
-          showsVerticalScrollIndicator={false}
-          data={FakeData}
-          renderItem={({ item, index }) => {
-            return <StatusItem
-              key={item.post_id}
-              user_img={item.user.avatar}
-              user_name={item.user.name}
-              time={item.time}
-              status_content={item.status_content}
-              status_img={item.status_img}
-              comment_counts={item.comment_counts}
-              reaction_counts={item.reaction_counts}
-            />
->>>>>>> _nam
           }}
         />
       </View>

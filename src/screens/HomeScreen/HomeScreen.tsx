@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Dimensions, Image, Platform, SafeAreaView, StatusBar, Text, View } from "react-native";
-=======
-import React, { useState } from "react";
-import { Button, Dimensions, Image, Platform, SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
->>>>>>> _nam
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import AppColors from "../../styles/AppColors";
@@ -13,14 +8,8 @@ import {
   unit10,
   unit12,
   unit15,
-<<<<<<< HEAD
   unit16, unit20,
-  unit24, unit32, unit400, unit48, unit50, unit56,
-=======
-  unit16,
-  unit20,
-  unit24, unit32, unit48, unit50, unit56,
->>>>>>> _nam
+  unit24, unit32, unit400, unit48, unit50, unit56
 
 } from "../../utils/appUnit";
 import { IC_CREATE, IC_DOWNLOAD, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB } from "../../assets/path";
@@ -31,17 +20,10 @@ import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import PressView from "../../components/PressView/PressView";
-<<<<<<< HEAD
 import NewTab from "./tabs/NewTab";
 import HotTab from "./tabs/HotTab";
 import TopTab from "./tabs/TopTab";
-import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import SelectItem from "../../components/SelectItem/SelectItem";
-=======
-import CreatePostScreen from "../CreatePostScreen/CreatePostScreen";
 
-
->>>>>>> _nam
 const renderScene = SceneMap({
   new: NewTab,
   hot: HotTab,
@@ -65,21 +47,6 @@ const HomeScreen: React.FC = () => {
 
   return (
     <>
-      <CreatePostScreen
-        style={[
-          StyleSheet.absoluteFill,
-          {
-            marginTop: Platform.OS === "ios" ? StatusBar.currentHeight : 0,
-            zIndex: 2000,
-          },
-        ]}
-        open={openCreate}
-        setOpen={setOpenCreate}
-      />
-      {
-        openCreate ?
-          null
-          :
           <SafeAreaView
             style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
             <StatusBar
@@ -175,42 +142,9 @@ const HomeScreen: React.FC = () => {
                   borderRadius: unit56,
                 }}
               />
-<<<<<<< HEAD
-            }}
-          />
-        }}
-      />
-      <PressView
-        style={{
-          position:'absolute',
-          bottom: unit32,
-          right: unit32,
-          zIndex: 10,
-        }}
-        onPress={() => {
-          NavigationRef.current?.navigate('CreatePostScreen');
-          console.log('click');
-        }}
-      >
-        <Image
-          source={IC_CREATE}
-          style={{
-            width:unit48,
-            height: unit48,
-            borderRadius: unit56,
-          }}
-        />
-      </PressView>
-    </SafeAreaView>
-=======
             </PressView>
-
           </SafeAreaView>
-      }
-
-
-    </>
->>>>>>> _nam
+      </>
   )
 };
 
