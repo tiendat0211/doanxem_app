@@ -7,7 +7,6 @@ const HotTab: React.FC = () => {
   const user = authData.user;
   return (
     <>
-      <BaseTab type={'new'}/>
     </>
   )
 };

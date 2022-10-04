@@ -35,7 +35,6 @@ const SelectItem: React.FC<SelectItemProps> = (
     style={[AppStyles.alignRow, {
       padding: unit18,
     }]}>
-
     {
       leftImageSource && <Image
         style={[AppStyles.icon24, leftImageProps]}

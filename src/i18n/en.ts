@@ -68,6 +68,9 @@ const enLang: BaseLanguage = {
   likeTab:'Yêu thích',
   interestedTab:'Quan tâm',
   viewMore: 'xem thêm',
+  detailScreen:'Chi tiết bài viết',
+  placeholder_input: 'Chém gió gì đó nào',
+  accountBlocked:"Tài khoản của bạn đã bị khoá",
 };
 
 export default enLang;

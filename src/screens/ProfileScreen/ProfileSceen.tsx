@@ -28,12 +28,21 @@ import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 const ProfileScreen: React.FC = () => {
   const { colorPallet , theme} = useTheme()
   const { language } = useLanguage();
+  const {authData} = useAuth()
+  const user = authData.user
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
   const snapPointsVertical = useMemo(() => ['69%', '85%'], []);
   const renderCustomHandle = useCallback(
-    (props) => <CustomHandle title="Custom Handle Example" {...props} />,
+    (props) => <CustomHandle
+      {...props}
+      title="Custom Handle Example"
+      style={{
+        borderBottomColor: colorPallet.color_background_1,
+        backgroundColor: colorPallet.color_background_1,
+      }}
+    />,
     [],
   );
 
@@ -91,9 +100,11 @@ const ProfileScreen: React.FC = () => {
       >
 
         <UserProfileItem
-          img_src={IMG_LOGO}
-          name={"_Nghiencoliemsi_"}
-          email={"@ngoclongg2010"}
+          img_src={{
+            uri: user?.avatar
+          }}
+          name={user?.name}
+          email={user?.email}
           style={{
             marginVertical: unit24,
             shadowColor:AppColors.color_primary,

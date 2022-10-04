@@ -66,6 +66,10 @@ interface BaseLanguage {
   likeTab:string;
   interestedTab:string;
   viewMore: string;
+  detailScreen:string;
+  placeholder_input: string;
+  accountBlocked: string;
+
 }
 
 export default BaseLanguage;

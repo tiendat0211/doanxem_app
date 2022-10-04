@@ -20,10 +20,13 @@ import { unit10, unit100, unit12, unit20, unit28, unit35, unit40, unit48, unit5,
 import AppText from "../AppText/AppText";
 import { useTheme } from "../../hooks/useTheme";
 import { dimension, fontSize14, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
-import AppColors from "../../styles/AppColors";
+import useAuth from "../../hooks/useAuth";
 
 export default function CustomDrawer(props: any) {
   const { colorPallet ,theme} = useTheme()
+
+  const { authData } = useAuth()
+  const user = authData.user
 
   return (
     <>
@@ -97,11 +100,14 @@ export default function CustomDrawer(props: any) {
               }}
             >
               <Image
-                source={IMG_LOGO}
+                source={{
+                  uri: user?.avatar
+                }}
                 style={{
                   width: unit72,
                   height: unit72,
                   marginRight: unit20,
+                  borderRadius: unit20
                 }}
               />
               <View
@@ -118,7 +124,7 @@ export default function CustomDrawer(props: any) {
                     paddingBottom: unit6,
                   }}
                 >
-                  _Nghiencoliemsi_
+                  {user?.name}
                 </AppText>
                 <AppText
                   fontType={'regular'}
@@ -128,7 +134,7 @@ export default function CustomDrawer(props: any) {
                     paddingBottom: unit6,
                   }}
                 >
-                  @ngoclongg2010
+                  {user?.email}
                 </AppText>
               </View>
 

@@ -1,18 +1,24 @@
 import React from "react";
-import { StatusBar, StyleSheet, View } from "react-native";
-import { LOADING_ANIM } from "../../assets/path";
+import { StyleSheet, View, ViewProps } from "react-native";
 import LottieView from "lottie-react-native";
-import AppColors from "../../styles/AppColors";
+import { LOADING_ANIM } from "../../assets/path";
 import { unit100 } from "../../utils/appUnit";
+import { useTheme } from "../../hooks/useTheme";
 
-function AppLoading() {
+interface AppLoadingProps extends ViewProps {
+  isOverlay?: boolean;
+}
+
+function AppLoading(props: AppLoadingProps) {
+  const { colorPallet } = useTheme();
+  const { isOverlay } = props;
+  const overlayStyle = isOverlay ? StyleSheet.absoluteFill : undefined;
   return (
-    <View style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor={AppColors.color_transparent}
-        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
-      />
+    <View
+      {...props}
+      style={[styles.container, {
+        backgroundColor: isOverlay ? undefined : colorPallet.color_background_3,
+      }, overlayStyle]}>
       <LottieView
         style={styles.loadingView}
         source={LOADING_ANIM}

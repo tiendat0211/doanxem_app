@@ -64,6 +64,19 @@ export const IC_COMMENT= require('./icons/ic_comment.png');
 export const IC_REACTION= require('./icons/ic_reaction.png');
 export const IC_SHAREPOST= require('./icons/ic_sharePost.png');
 export const IC_SAVE= require('./icons/ic_save.png');
+export const IC_LIKE= require('./icons/like.png');
+export const IC_WOW= require('./icons/wow.png');
+export const IC_ANGRY= require('./icons/angry.png');
+export const IC_HAHA= require('./icons/haha.png');
+export const IC_SAD2= require('./icons/sad.png');
+export const IC_LOVE= require('./icons/love.png');
+export const IC_ARROWRIGHT= require('./icons/ic_arrowRight.png');
+export const IC_VIEWMORE= require('./icons/ic_viewMore.png');
+export const IC_MEDIA= require('./icons/ic_media.png');
+export const IC_SEND= require('./icons/ic_send.png');
+export const IC_DOWNLOAD= require('./icons/ic_download.png');
+export const IC_WARNING= require('./icons/ic_warning.png');
+export const IC_HIDE= require('./icons/ic_eyeClosed.png');
 
 // Files
 export const LOADING_ANIM = require('./loading-animation.json');

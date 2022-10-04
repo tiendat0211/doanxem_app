@@ -49,16 +49,20 @@ import AppButton from "../../components/AppButton/AppButton";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
 import { useAppSelector } from "../../store/store";
 import ChooseDateView from "./components/ChooseDateView";
+import useAuth from "../../hooks/useAuth";
 
 
 const DetailProfileScreen: React.FC = () => {
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
+  const { authData } = useAuth()
+  const user = authData.user
   const [startDateTime, setStartDateTime] = useState<Date>(new Date());
-  const [email,setEmail] = useState("nguyenvana@gmai.com");
-  const [phone,setPhone] = useState("0583978668");
-  const [name,setName] = useState("Doitraicolieu");
+  const [email,setEmail] = useState('');
+  const [phone,setPhone] = useState('');
+  const [name,setName] = useState('');
   const localeCode = useAppSelector(state => state.setting.lang);
+
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -124,7 +128,9 @@ const DetailProfileScreen: React.FC = () => {
                 }}
               >
                 <Image
-                  source={IMG_LOGO}
+                  source={{
+                    uri: user?.avatar
+                  }}
                   style={{
                     width: unit100,
                     height: unit100,
@@ -153,7 +159,7 @@ const DetailProfileScreen: React.FC = () => {
                     color:colorPallet.color_text_blue_3
                   }}
                 >
-                  @ngoclongg2010
+                  {user?.email}
                 </AppText>
               </View>
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleProp, View, ViewStyle } from "react-native";
+import { Image, PressableProps, StyleProp, View, ViewStyle } from "react-native";
 import { unit20, unit24, unit8 } from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
 import { fontSize14 } from "../../styles/AppFonts";
@@ -7,22 +7,21 @@ import { useTheme } from "../../hooks/useTheme";
 import PressView from "../PressView/PressView";
 
 
-interface FooterItemProps{
+interface FooterItemProps extends  PressableProps{
   img: any,
   title?: string,
   style?: StyleProp<ViewStyle>,
-  onPress?: () => {}
 }
 
 const FooterItem: React.FC<FooterItemProps> = (props) => {
 
-  const {img, title,style,onPress} = props
+  const {img, title,style} = props
   const {colorPallet} = useTheme()
 
   return (
     <>
       <PressView
-        onPress={onPress}
+        {...props}
         style={[{
           flexDirection: 'row',
           alignItems:'center',
