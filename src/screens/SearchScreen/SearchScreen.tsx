@@ -112,14 +112,8 @@ const SearchScreen: React.FC = () => {
             data={fakePost}
             renderItem={({ item, index }) => {
               return <StatusItem
-                key={item.post_id}
-                user_img={item.user.avatar}
-                user_name={item.user.name}
-                time={item.time}
-                status_content={item.status_content}
-                status_img={item.status_img}
-                comment_counts={item.comment_counts}
-                reaction_counts={item.reaction_counts}
+                // key={item.post_id}
+                // post={item}
               />
             }}
           />

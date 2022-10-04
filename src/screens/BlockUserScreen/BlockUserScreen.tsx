@@ -1,5 +1,5 @@
-import React from "react";
-import { FlatList, Image, SafeAreaView, StatusBar, Text, View, ViewStyle } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, Image, RefreshControl, SafeAreaView, StatusBar, Text, View, ViewStyle } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
@@ -11,6 +11,14 @@ import { fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
 import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
+import { blockUser, getBlockList, login, unBlockUser } from "../../network/AppAPI";
+import ApiHelper from "../../utils/ApiHelper";
+import { showToastError, showToastErrorMessage } from "../../utils/Toaster";
+import useScreenState from "../../hooks/useScreenState";
+import UserModel from "../../model/ApiModel/UserModel";
+import Snackbar from "react-native-snackbar";
+import PopUp from "../../components/PopUp/PopUp";
+import AppLoading from "../../components/Loading/AppLoading";
 
 
 const Fakedata: BlockItemProps[] = [
@@ -31,47 +39,128 @@ const Fakedata: BlockItemProps[] = [
 ]
 
 const BlockUserScreen: React.FC = () => {
-  const { colorPallet, theme} = useTheme()
+  const { colorPallet, theme} = useTheme();
   const { language } = useLanguage();
 
-    return (
-        <SafeAreaView
-            style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
-            <StatusBar
-              barStyle={ theme === 'light' ? "dark-content" : "light-content"}
-                backgroundColor={AppColors.color_transparent}
-            />
-            <AppBar
-                title={language?.blockUser}
-                leftIcon={IC_ARROWLEFT}
-                leftIconOnClick={() => {
-                    NavigationRef.current?.goBack()
-                }}
-                titleStyle={{
-                    color: colorPallet.color_text_blue_1
-                }}
-                containerStyle={{
-                    borderBottomColor: colorPallet.color_divider_3
-                }}
-                rightIcon={IC_TRASH}
-                rightIconStyle={{
-                    tintColor: colorPallet.color_text_blue_1,
-                }}
-            />
+  const { isLoading, setLoading, mounted, setError } = useScreenState();
 
-            <FlatList
-                showsHorizontalScrollIndicator={false}
-                data={Fakedata}
-                renderItem={({ item, index }) => {
-                    return <BlockItem
-                        img_src={item.img_src}
-                        name={item.name}
-                        onPress={item.onPress}
-                    />
+  const [listBlocks, setListBlocks] = useState<UserModel[]>([]);
+  const [isOpen, setOpen] = useState(false);
+  const [blockID, setBlockID] = useState(0)
+
+  async function loadBlockList() {
+    try {
+      setLoading(true)
+      const res = await getBlockList();
+      if (ApiHelper.isResSuccess(res)) {
+        const data = res.data.data;
+        setListBlocks(data)
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      showToastError(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(()=>{
+    loadBlockList().finally(()=>{})
+  },[])
+
+  async function unBlockUserByID( id: number) {
+    try {
+      const res = await unBlockUser(id);
+
+      if (ApiHelper.isResSuccess(res)) {
+        Snackbar.show({
+          text: `Mở khoá người dùng thành công`,
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
+
+    return (
+      <>
+        <SafeAreaView
+          style={[AppStyles.container, {
+            backgroundColor: colorPallet.color_background_1 ,
+          }]}>
+          <StatusBar
+            barStyle={ theme === 'light' ? "dark-content" : "light-content"}
+            backgroundColor={AppColors.color_transparent}
+          />
+
+          {
+            isLoading && <AppLoading isOverlay/>
+          }
+          <AppBar
+            title={language?.blockUser}
+            leftIcon={IC_ARROWLEFT}
+            leftIconOnClick={() => {
+              NavigationRef.current?.goBack()
+            }}
+            titleStyle={{
+              color: colorPallet.color_text_blue_1
+            }}
+            containerStyle={{
+              borderBottomColor: colorPallet.color_divider_3
+            }}
+            rightIcon={IC_TRASH}
+            rightIconStyle={{
+              tintColor: colorPallet.color_text_blue_1,
+            }}
+          />
+
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            data={listBlocks}
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={loadBlockList} />
+            }
+            renderItem={({ item, index }) => {
+              return <BlockItem
+                img_src={item.avatar}
+                name={item.name}
+                onPress={() =>{
+                  setOpen(true);
+                  setBlockID(item.id)
                 }}
-            />
+              />
+            }}
+          />
 
         </SafeAreaView>
+
+        {
+          isOpen ?
+            <PopUp
+              rightButtonPress={async ()=> {
+                await unBlockUserByID(blockID);
+                setOpen(false);
+                await loadBlockList();
+              }}
+              rightButtonTitle={'Đồng ý'}
+              mess={'Bạn muốn bỏ chặn người dùng này?'}
+              leftButtonTitle={'Từ chối'}
+              leftButtonPress={()=>{
+                setOpen(false);
+              }}
+            />
+            : null
+        }
+      </>
+
+
     )
 };
 
@@ -98,7 +187,9 @@ const BlockItem: React.FC<BlockItemProps> = (props) => {
                 onPress={onPress}
             >
                 <Image
-                    source={img_src}
+                    source={{
+                      uri: img_src
+                    }}
                     style={{
                         width: unit36,
                         height: unit36,

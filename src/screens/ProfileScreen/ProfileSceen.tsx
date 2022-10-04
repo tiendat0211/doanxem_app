@@ -18,9 +18,9 @@ import AppBar from "../../components/AppBar/AppBar";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
-import PostedTab from "./ProfileTabs/PostedTab";
-import WaitApprovalTab from "./ProfileTabs/WaitApprovalTab";
-import SaveTab from "./ProfileTabs/SaveTab";
+import ApprovedTab from "./ProfileTabs/ApprovedTab";
+import PendingTab from "./ProfileTabs/PendingTab";
+import SavedTab from "./ProfileTabs/SavedTab";
 import CustomHandle from "../../components/CustomHandle/CustomHandle";
 import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 
@@ -53,15 +53,15 @@ const ProfileScreen: React.FC = () => {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'posted', title: language?.postedTab },
-    { key: 'wait', title: language?.waitTab },
-    { key: 'save', title: language?.saveTab },
+    { key: 'approved', title: language?.postedTab },
+    { key: 'pending', title: language?.waitTab },
+    { key: 'saved', title: language?.saveTab },
   ]);
 
   const renderScene = SceneMap({
-    posted: PostedTab,
-    wait: WaitApprovalTab,
-    save: SaveTab
+    approved: ApprovedTab,
+    pending: PendingTab,
+    saved: SavedTab
   });
 
   return (

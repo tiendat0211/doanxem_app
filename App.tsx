@@ -47,7 +47,9 @@ export type RootStackParamList = {
   DetailProfileScreen: undefined,
   ChangPasswordScreen: undefined,
   CreatePostScreen: undefined,
-  DetailStatusScreen: undefined,
+  DetailStatusScreen: {
+    postID: string,
+  },
 };
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();

@@ -11,7 +11,7 @@ const lightColors: IThemeColors = {
   color_divider_3: "#F2F1F1",
 
   color_text_blue_1: "#0B2347",
-  color_text_blue_2: '#FF3333',
+  color_text_blue_2: '#133B76',
   color_text_blue_3: "#3D4953",
   color_text_gray_1: "#4A4A4A",
   color_text_gray_2: "#7B7B7B",

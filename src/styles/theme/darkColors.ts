@@ -8,7 +8,7 @@ const darkColors: IThemeColors = {
 
   color_divider_1: "#DEE9FA",
   color_divider_2: "#36354B",
-  color_divider_3: "#F2F1F1",
+  color_divider_3: "#36354B",
 
   color_text_blue_1: "#FFFFFF",
   color_text_blue_2: '#36354B',

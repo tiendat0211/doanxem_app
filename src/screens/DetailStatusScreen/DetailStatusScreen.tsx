@@ -1,34 +1,34 @@
-import React, { useState } from "react";
-import { SafeAreaView, ScrollView, StatusBar, TextInput, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, SafeAreaView, ScrollView, StatusBar, TextInput, View } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
-  IC_ARROWLEFT,
+  IC_ARROWLEFT, IC_BLOCKUSER, IC_DOWNLOAD, IC_HIDE, IC_WARNING,
   IMG_LOGO, IMG_POST,
 } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { NavigationRef } from "../../../App";
+import { NavigationRef, RootStackParamList } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import { PostModel } from "../../model/ApiModel/PostModel";
 import StatusItem from "../../components/StatusItem/StatusItem";
 import AppText from "../../components/AppText/AppText";
 import { CommentModle } from "../../model/CommentModle";
 import CommentItem from "../../components/CommentItem/CommentItem";
-import { unit1, unit14 } from "../../utils/appUnit";
+import { unit1, unit10, unit12, unit14, unit16, unit17, unit20, unit400 } from "../../utils/appUnit";
 import AppInput from "../../components/AppInput/AppInput";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import {getPostDetail } from "../../network/AppAPI";
+import ApiHelper from "../../utils/ApiHelper";
+import useScreenState from "../../hooks/useScreenState";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import SelectItem from "../../components/SelectItem/SelectItem";
+import { AppFonts, fontSize16 } from "../../styles/AppFonts";
+import PressView from "../../components/PressView/PressView";
+import RNFetchBlob from "rn-fetch-blob";
+import StatusItem2 from "../../components/StatusItem/StatusItem2";
 
-const FakeData : PostModel = {
-    post_id: 1,
-    user_img: IMG_LOGO,
-    user_name: '_designtoichet_',
-    time: '4 giờ trước',
-    status_content: '@conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so @conzoihuypham I thought, what can we do here that’ll make a impact, so',
-    status_img: IMG_POST,
-    comment_counts: 100,
-    reaction_counts: 100,
-  }
 const FakeComment: CommentModle[] = [
   {
     id: 1,
@@ -68,15 +68,83 @@ const FakeComment: CommentModle[] = [
 
 ]
 
+type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailStatusScreen">;
+
 const DetailStatusScreen: React.FC = () => {
-  const { authData, signOut } = useAuth();
-  const user = authData.user;
+  const { postID } = useRoute<DetailStatusScreenProps>().params;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
-
   const [listComment, seListComment] = useState<CommentModle[]>(FakeComment)
   const [viewMore, setViewMore] = useState(false)
   const [userComment, setUserComment] = useState('')
+  const { isLoading, setLoading, error, setError, mounted } = useScreenState();
+  const [postDetail, setPostDetail] = useState<PostModel>()
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  function openBottomSheet() {
+    bottomSheetRef.current?.snapToIndex(0);
+  }
+
+  function closeBottomSheet() {
+    bottomSheetRef.current?.close();
+  }
+
+  const getExtension = (filename: any) => {
+    // To get the file extension
+    return /[.]/.exec(filename) ?
+      /[^.]+$/.exec(filename) : undefined;
+  };
+
+  function downloadImage(img_link: string | undefined) {
+    let date = new Date();
+    let image_URL = img_link;
+    let ext: any = getExtension(image_URL);
+    ext = "." + ext[0];
+    const { config, fs } = RNFetchBlob;
+    let PictureDir = fs?.dirs?.PictureDir;
+    let options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        // Related to the Android only
+        useDownloadManager: true,
+        notification: true,
+        path:
+          PictureDir +
+          "/image_" +
+          Math.floor(date.getTime() + date.getSeconds() / 2) +
+          ext,
+        description: "Image",
+      },
+    };
+    config(options)
+      .fetch("GET", image_URL? image_URL : '' )
+      .then((res: any) => {
+        // Showing alert after successful downloading
+        console.log("res -> ", JSON.stringify(res));
+        Alert.alert('Thông báo', res? 'Lưu ảnh thành công' : 'Lưu ảnh thất bại',)
+      });
+  }
+
+  async function loadPostDetail(post_uuid = postID) {
+    try {
+      const res = await getPostDetail(post_uuid);
+      if (ApiHelper.isResSuccess(res)) {
+        setPostDetail(res?.data?.data);
+      }
+      setError(undefined);
+    } catch (e) {
+      setError(e);
+    } finally {
+
+    }
+  }
+
+  useEffect(()=>{
+    loadPostDetail().finally(()=>{
+
+    });
+  },[])
 
   return (
     <SafeAreaView
@@ -105,19 +173,9 @@ const DetailStatusScreen: React.FC = () => {
         }}
       >
         {/*Status*/}
-        <StatusItem
-          key={FakeData.post_id}
-          user_img={FakeData.user_img}
-          user_name={FakeData.user_name}
-          time={FakeData.time}
-          status_content={FakeData.status_content}
-          status_img={FakeData.status_img}
-          comment_counts={FakeData.comment_counts}
-          reaction_counts={FakeData.reaction_counts}
-          style={{
-            borderBottomColor: colorPallet.color_divider_3,
-            borderBottomWidth: unit1
-          }}
+        <StatusItem2
+          key={postDetail?.id}
+          post={postDetail}
         />
 
       {/*Comment*/}

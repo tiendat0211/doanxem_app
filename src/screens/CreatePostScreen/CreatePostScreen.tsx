@@ -33,14 +33,8 @@ const options = {
 const widthWD = Dimensions.get('window').width
 const heightWD = Dimensions.get('window').height
 
-interface CreatePostScreenProps extends ViewProps {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onApply?: () => void;
-}
 
-const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
-  const { setOpen, open, onApply } = props;
+const CreatePostScreen: React.FC = () => {
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [script, setScript] = useState('')
@@ -52,9 +46,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
     fileName: "",
   });
 
-  if (!open) {
-    return null;
-  }
   const clearData = () => {
     setScript(''),
       setImage({})
@@ -117,7 +108,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         console.log('Vui lòng cấp quyền để sử dụng tính năng này!');
         return;
       }
-    } 
+    }
     try {
       const option: CameraOptions = {
         mediaType: "photo",
@@ -127,11 +118,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         maxHeight:dimension.height
       }
       const res = await launchCamera(option, (cameraRes) => {
-      
+
       });
 
       if (res.assets) {
-        
+
         const img = res.assets[0];
         setHeightImgOrVid(img.height!)
         setImage({
@@ -147,7 +138,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
       showToastErrorMessage("Ảnh quá dung lượng");
     }
     };
-    
+
   return (
     <SafeAreaView
       style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
@@ -159,8 +150,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         title={'Mang vui vẻ tới cho đời'}
         leftIcon={IC_CLOSE}
         leftIconOnClick={() => {
-          setOpen(false)
-          clearData()
+          NavigationRef?.current?.goBack()
         }}
         titleStyle={{
           color: colorPallet.color_text_blue_1
@@ -200,7 +190,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         </View>
         <TextInput
           multiline={true}
-          placeholder={'Nói gì đấy đi mai phen.'}
+          placeholder={'Kể về niềm vui của bạn đi'}
           style={{
             marginTop: unit8,
             paddingBottom: unit12,
@@ -274,11 +264,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                   resizeMode={FastImage.resizeMode.contain}
                   onLoad={(evt) => {
                     const {  width,height } = evt.nativeEvent;
-                    
+
                     const heightScaled = (height / width) * widthWD;
                     setHeightImgOrVid(heightScaled);
                   }}
-                  
+
                   source={
                     {
                       uri: image.uri

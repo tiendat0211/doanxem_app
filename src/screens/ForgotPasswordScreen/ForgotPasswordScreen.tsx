@@ -12,8 +12,6 @@ import {
 import AppStyles from "../../styles/AppStyles";
 import AppBar from "../../components/AppBar/AppBar";
 import ValidateEditText from "../../components/ValidateEditText/ValidateEditText";
-import { nameLengthValidFn, nameValidFn } from "../../components/ValidateEditText/ValidateFunctions";
-import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 import AuthenScreenView from "../../components/AuthenScreenView/AuthenScreenView";
 import { unit12, unit18, unit2, unit20, unit22, unit24, unit28, unit32, unit40, unit68 } from "../../utils/appUnit";
@@ -26,13 +24,13 @@ import { NavigationRef } from "../../../App";
 import AppText from "../../components/AppText/AppText";
 import { fontSize14 } from "../../styles/AppFonts";
 import PressView from "../../components/PressView/PressView";
+import { emailValidFn } from "../../components/ValidateEditText/ValidateFunctions";
 
 const ForgotPasswordScreen: React.FC = () => {
 
   const [email, setEmail] = useState("");
 
   const [isValid, setValid] = useState(false);
-  const {signIn} = useAuth()
   const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
 
@@ -75,11 +73,12 @@ const ForgotPasswordScreen: React.FC = () => {
             }}
             placeholder={language?.email}
             checkValidFunctions={[
+              emailValidFn
             ]}
             leftIcon={IC_EMAIL}
             tintColorIcon={colorPallet.color_text_gray_3}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={isValid}
+            setValid={setValid}
           />
 
           <AppButton
@@ -87,6 +86,10 @@ const ForgotPasswordScreen: React.FC = () => {
             onPress={
               () => { NavigationRef.current?.navigate('VerifyOTPScreen')}
             }
+            style={{
+              backgroundColor: isValid? AppColors.color_primary : AppColors.color_opacity,
+            }}
+            disabled={!isValid}
           />
         </View>
 
