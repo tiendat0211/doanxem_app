@@ -47,6 +47,7 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -60,6 +61,7 @@
 		<string>Averta-Bold.otf</string>
 		<string>Averta-Regular.otf</string>
 		<string>Averta-Semibold.otf</string>
+		<string>MaterialIcons.ttf</string>
 	</array>
 </dict>
 </plist>
