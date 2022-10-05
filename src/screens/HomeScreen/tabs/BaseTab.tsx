@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, RefreshControl, View } from "react-native";
+import { Alert, FlatList, ListRenderItem, RefreshControl, View } from "react-native";
 import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
 import { useLanguage } from "../../../hooks/useLanguage";
@@ -15,22 +15,29 @@ import RNFetchBlob from "rn-fetch-blob";
 import useScreenState from "../../../hooks/useScreenState";
 import { PostModel } from "../../../model/ApiModel/PostModel";
 import StatusItem from "../../../components/StatusItem/StatusItem";
+import InfiniteFlatList from "../../../components/InfiniteFlatList/InfiniteFlatList";
+import { blockUser, FIRST_PAGE, getListPost, PostType } from "../../../network/AppAPI";
+import ApiHelper from "../../../utils/ApiHelper";
+import { useFocusEffect } from "@react-navigation/native";
+import AppLoading from "../../../components/Loading/AppLoading";
+import { showToastErrorMessage, showToastMsg } from "../../../utils/Toaster";
+import Snackbar from "react-native-snackbar";
+import PopUp from "../../../components/PopUp/PopUp";
 
 interface BaseTabProps {
-  data: PostModel[],
-  refreshData: () => void,
-  loadMore?: (page: number) => void,
+  type: PostType;
 }
 
 const BaseTab: React.FC<BaseTabProps> = (props) => {
   const { colorPallet, theme } = useTheme();
   const { language } = useLanguage();
-  const { data, refreshData, loadMore } = props;
+  const {type} = props;
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
-
   const [page, setPage] = useState(1);
   const [canLoadMore, setCanLoadMore] = useState(true);
-
+  const [imgSrc, setImgSrc] = useState('');
+  const [pots, setPost] = useState<PostModel[]>([])
+  const [blockID, setBlockID] = useState(0)
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -48,9 +55,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       /[^.]+$/.exec(filename) : undefined;
   };
 
-  function downloadImage() {
+  function downloadImage(img_link: string) {
     let date = new Date();
-    let image_URL = "https://d1hjkbq40fs2x4.cloudfront.net/2016-01-31/files/1045.jpg";
+    let image_URL = img_link;
     let ext: any = getExtension(image_URL);
     ext = "." + ext[0];
     const { config, fs } = RNFetchBlob;
@@ -74,14 +81,65 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       .then((res: any) => {
         // Showing alert after successful downloading
         console.log("res -> ", JSON.stringify(res));
+        Snackbar.show({
+          text: `Tải xuống thành công`,
+          duration: Snackbar.LENGTH_SHORT,
+        });
       });
   }
 
-  useEffect(() => {
-    if (loadMore) {
-      loadMore(page);
+  async function loadPosts(page = FIRST_PAGE) {
+    try {
+      setLoading(true);
+      const res = await getListPost(page,type);
+
+      if (ApiHelper.isResSuccess(res)) {
+        const posts = res?.data?.data;
+        if (page === FIRST_PAGE) {
+          setPost(posts);
+        } else {
+          setPost(prev => [...prev, ...posts]);
+        }
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+      setLoading(false);
     }
-  }, [page]);
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadPosts().finally(() => {
+      });
+    }, []),
+  );
+
+  async function blockUserByID( id: number) {
+    try {
+      const res = await blockUser(id);
+
+      if (ApiHelper.isResSuccess(res)) {
+        Snackbar.show({
+          text: `Chặn người dùng thành công`,
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
+
+  // useEffect(() => {
+  //   if (loadMore) {
+  //     loadMore(page);
+  //   }
+  // }, [page]);
 
   return (
     <>
@@ -92,16 +150,19 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           paddingBottom: unit20,
         }}
       >
+        {
+          isLoading && <AppLoading isOverlay/>
+        }
         <FlatList
           style={{
             paddingTop: unit24,
           }}
           showsHorizontalScrollIndicator={false}
-          data={data}
+          data={pots}
           refreshControl={
             <RefreshControl
               refreshing={isLoading}
-              onRefresh={refreshData} />
+              onRefresh={loadPosts} />
           }
           onEndReached={() => {
             setPage(prev => prev + 1);
@@ -112,15 +173,31 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               key={item.id}
               post={item}
               onPressComment={() => {
-                NavigationRef.current?.navigate("DetailStatusScreen");
+                NavigationRef.current?.navigate("DetailStatusScreen",{
+                  postID: item?.post_uuid
+                });
               }}
               onPressImage={() => {
-                NavigationRef.current?.navigate("DetailStatusScreen");
+                NavigationRef.current?.navigate("DetailStatusScreen",{
+                  postID: item?.post_uuid
+                });
               }}
-              openBottomSheet={openBottomSheet}
+              openBottomSheet={()=>{
+                openBottomSheet();
+                setImgSrc(item?.image)
+                setBlockID(item?.user?.id)
+              }
+              }
             />;
           }}
         />
+
+        {/*<InfiniteFlatList*/}
+        {/*  getLoadMore={loadMore}*/}
+        {/*  getRefresh={refreshData}*/}
+        {/*  renderItem={data}*/}
+        {/*/>*/}
+
       </View>
 
       {/* BottomSheet */}
@@ -158,7 +235,10 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               fontFamily: AppFonts.semiBold,
               fontSize: unit16,
             }}
-            onPress={downloadImage}
+            onPress={() => {
+              downloadImage(imgSrc);
+              closeBottomSheet()
+            }}
           />
         </View>
 
@@ -194,10 +274,14 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
             title={"Chặn người dùng này"}
             rightImageSource={IC_BLOCKUSER}
             rightImageProps={{ tintColor: colorPallet.color_text_blue_3 }}
-
             appTxtStyle={{
               fontFamily: AppFonts.semiBold,
               fontSize: unit16,
+            }}
+            onPress={async ()=>{
+              await blockUserByID(blockID);
+              closeBottomSheet();
+              await loadPosts();
             }}
           />
         </View>
@@ -244,7 +328,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
             Đóng
           </AppText>
         </PressView>
-
       </BottomSheet>
     </>
   );

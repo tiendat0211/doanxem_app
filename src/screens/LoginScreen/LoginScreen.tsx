@@ -13,7 +13,7 @@ import {
   ViewStyle,
 } from "react-native";
 import AppStyles from "../../styles/AppStyles";
-import { NavigationRef } from "../../../App";
+import { NavigationRef, RootStackParamList } from "../../../App";
 import useAuth from "../../hooks/useAuth";
 import { unit1, unit12, unit14, unit16, unit20, unit24, unit40, unit6, unit68 } from "../../utils/appUnit";
 import { IC_EMAIL, IC_EYE, IC_EYE_SLASH, IC_FACEBOOK, IC_GOOGLE, IC_LOCK } from "../../assets/path";
@@ -27,7 +27,12 @@ import AuthenScreenView from "../../components/AuthenScreenView/AuthenScreenView
 import PressView from "../../components/PressView/PressView";
 import AppButton from "../../components/AppButton/AppButton";
 import AuthenQuestionView from "../../components/AuthenQuestionView/AuthenQuestionView";
-import { emailValidFn, nameValidFn, passValidFn } from "../../components/ValidateEditText/ValidateFunctions";
+import {
+  emailValidFn,
+  nameValidFn,
+  passLengthValidFn,
+  passValidFn,
+} from "../../components/ValidateEditText/ValidateFunctions";
 import { login } from "../../network/AppAPI";
 import { showToastError, showToastErrorMessage } from "../../utils/Toaster";
 import ApiHelper from "../../utils/ApiHelper";
@@ -133,7 +138,7 @@ const LoginScreen: React.FC = () => {
             placeholder={language?.placeholder_password}
             checkValidFunctions={[
               passValidFn,
-              nameValidFn,
+              passLengthValidFn,
             ]}
             leftIcon={IC_LOCK}
             tintColorIcon={colorPallet.color_text_gray_3}
@@ -148,7 +153,7 @@ const LoginScreen: React.FC = () => {
 
           <PressView
             onPress={() => {
-              NavigationRef.current?.navigate("LoginScreen");
+              NavigationRef.current?.navigate("ForgotPasswordScreen");
             }}
             style={{
               alignItems: "flex-end",
@@ -162,10 +167,7 @@ const LoginScreen: React.FC = () => {
                 fontSize: fontSize14,
                 color: colorPallet.color_text_gray_1,
               }}
-              onPress={() => {
-                NavigationRef.current?.navigate("ForgotPasswordScreen");
-              }
-              }
+
             >
               {language?.forgot_password}
             </AppText>

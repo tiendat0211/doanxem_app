@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dimensions, Image,
@@ -12,7 +12,7 @@ import {
 import AppStyles from "../../styles/AppStyles";
 import AppBar from "../../components/AppBar/AppBar";
 import ValidateEditText from "../../components/ValidateEditText/ValidateEditText";
-import { nameLengthValidFn, nameValidFn } from "../../components/ValidateEditText/ValidateFunctions";
+import { emailValidFn, nameValidFn, passLengthValidFn } from "../../components/ValidateEditText/ValidateFunctions";
 import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 import AuthenScreenView from "../../components/AuthenScreenView/AuthenScreenView";
@@ -26,34 +26,65 @@ import { NavigationRef } from "../../../App";
 import AppText from "../../components/AppText/AppText";
 import { fontSize14 } from "../../styles/AppFonts";
 import PressView from "../../components/PressView/PressView";
-import { login, register } from "../../network/AppAPI";
-import { showToastMsg } from "../../utils/Toaster";
+import { FIRST_PAGE, login, register } from "../../network/AppAPI";
+import { showToastError, showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
+import AppLoading from "../../components/Loading/AppLoading";
+import useScreenState from "../../hooks/useScreenState";
+import ApiHelper from "../../utils/ApiHelper";
 
 const RegisterScreen: React.FC = () => {
 
   const [registerName, setRegisterName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [showPass, setShowPass] = useState(true);
   const [showRepeatPass, setShowRepeatPass] = useState(true);
   const [check, setCheck] = useState(false);
+  const [valid, setValid] = useState(false);
 
-  const [isValid, setValid] = useState(false);
+  const [nameValid, setNameValid] = useState(false)
+  const [emailValid, setEmailValid] = useState(false)
+  const [passValid, setPassValid] = useState(false)
+  const [confirmValid, setConfirmValid] = useState(false)
+
   const {signIn} = useAuth()
   const {colorPallet, theme} = useTheme()
   const { language } = useLanguage();
 
+  const { isLoading, setLoading, mounted } = useScreenState();
+
+  const confirmPassValidFn = (input: string): [boolean, string?] => {
+    return [input === password, "Mật khẩu không khớp"];
+  };
+
   async function loadRegister() {
     try {
-      const res = await register(email, password, registerName,repeatPassword);
-      showToastMsg(res.data.message)
+      const res = await register(email, password, registerName,confirm);
+      if (ApiHelper.isResSuccess(res)) {
+        const data = res.data.data;
+        signIn({
+          user: data,
+        });
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
     } catch (e) {
-
+      showToastError(e);
     } finally {
-
+      setLoading(false);
     }
   }
+
+  useEffect(() =>{
+    if ( !emailValid || !passValid || !nameValid || !confirmValid || !check){
+      setValid(false)
+    }else {
+      setValid(true)
+    }
+  },[emailValid ,passValid,nameValid ,confirmValid, check])
+
+
 
 
   return <SafeAreaView
@@ -63,12 +94,17 @@ const RegisterScreen: React.FC = () => {
       backgroundColor={AppColors.color_transparent}
     />
 
+    {
+      isLoading && <AppLoading isOverlay/>
+    }
+
     <KeyboardAvoidingView
       style={{
         justifyContent: "center",
         paddingHorizontal: unit20,
         flex:1,
         marginTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + unit32,
+        marginBottom: unit20
       }}
     >
       <ScrollView
@@ -76,6 +112,7 @@ const RegisterScreen: React.FC = () => {
           flexGrow : 1,
           justifyContent: "center",
         }}
+        showsVerticalScrollIndicator={false}
       >
         <View
           style={{
@@ -100,11 +137,12 @@ const RegisterScreen: React.FC = () => {
             }}
             placeholder={language?.placeholder_name}
             checkValidFunctions={[
+              nameValidFn,
             ]}
             leftIcon={IC_USER}
             tintColorIcon={colorPallet.color_text_gray_3}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={nameValid}
+            setValid={setNameValid}
           />
 
           <ValidateEditText
@@ -116,11 +154,12 @@ const RegisterScreen: React.FC = () => {
             }}
             placeholder={language?.placeholder_email}
             checkValidFunctions={[
+              emailValidFn,
             ]}
             leftIcon={IC_EMAIL}
             tintColorIcon={colorPallet.color_text_gray_3}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={emailValid}
+            setValid={setEmailValid}
           />
 
           <ValidateEditText
@@ -132,6 +171,7 @@ const RegisterScreen: React.FC = () => {
             }}
             placeholder={language?.placeholder_password}
             checkValidFunctions={[
+              passLengthValidFn,
             ]}
             leftIcon={IC_LOCK}
             tintColorIcon={colorPallet.color_text_gray_3}
@@ -140,19 +180,20 @@ const RegisterScreen: React.FC = () => {
               setShowPass(!showPass);
             }}
             secureTextEntry={showPass}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={passValid}
+            setValid={setPassValid}
           />
 
           <ValidateEditText
             colorPallet={colorPallet}
-            textValue={repeatPassword}
-            setValue={setRepeatPassword}
+            textValue={confirm}
+            setValue={setConfirm}
             contentStyle={{
               marginBottom: unit20,
             }}
             placeholder={language?.placeholder_repeatPass}
             checkValidFunctions={[
+              confirmPassValidFn
             ]}
             leftIcon={IC_LOCK}
             tintColorIcon={colorPallet.color_text_gray_3}
@@ -161,8 +202,8 @@ const RegisterScreen: React.FC = () => {
               setShowRepeatPass(!showRepeatPass);
             }}
             secureTextEntry={showRepeatPass}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={confirmValid}
+            setValid={setConfirmValid}
           />
 
           <View
@@ -217,9 +258,13 @@ const RegisterScreen: React.FC = () => {
 
           <AppButton
             buttonTitle={language?.register}
+            style={{
+              backgroundColor: valid? AppColors.color_primary : AppColors.color_opacity,
+            }}
             onPress={
               loadRegister
-          }
+           }
+            disabled={!valid}
           />
         </View>
 

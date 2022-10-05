@@ -230,7 +230,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         </View>
         <TextInput
           multiline={true}
-          placeholder={'Nói gì đấy đi mai phen.'}
+          placeholder={'Kể về niềm vui của bạn đi'}
           style={{
             marginTop: unit8,
             paddingBottom: unit12,

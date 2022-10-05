@@ -27,10 +27,48 @@ export function getProfile(){
   return apiClient.get<BaseResponse<UserModel>>("v1/profile");
 }
 
-export function getNewPost(page: number){
-  return apiClient.get<TypePostModel<PostModel[]>>("v1/new", {
+export type PostType =
+  | "hot"
+  | "new"
+  | "top";
+
+export function getListPost(page: number, status: PostType){
+  return apiClient.get<TypePostModel<PostModel[]>>("v1/" + status, {
     params: {
       page
     }
+  });
+}
+
+export function getPostDetail(post_uuid: string){
+  return apiClient.get<BaseResponse<PostModel>>("v1/post-detail", {
+    params: {
+      post_uuid
+    }
+  });
+}
+
+export type UserPostType =
+  | "approved"
+  | "pending"
+  | "saved";
+
+export function getUserPosts(status: UserPostType){
+  return apiClient.get<BaseResponse<PostModel[]>>("v1/user/" + status + "_posts");
+}
+
+export function getBlockList(){
+  return apiClient.get<BaseResponse<UserModel[]>>("v1/user/block-list");
+}
+
+export function blockUser( user_id: number){
+  return apiClient.post<BaseResponse<UserModel>>("v1/user/block-user",{
+    user_id
+  });
+}
+
+export function unBlockUser( user_id: number){
+  return apiClient.post<BaseResponse<UserModel>>("v1/user/unblock-user",{
+    user_id
   });
 }

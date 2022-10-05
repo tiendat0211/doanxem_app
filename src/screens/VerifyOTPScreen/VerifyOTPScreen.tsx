@@ -10,9 +10,7 @@ import {
   View,
 } from "react-native";
 import AppStyles from "../../styles/AppStyles";
-import AppBar from "../../components/AppBar/AppBar";
 import ValidateEditText from "../../components/ValidateEditText/ValidateEditText";
-import { nameLengthValidFn, nameValidFn } from "../../components/ValidateEditText/ValidateFunctions";
 import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 import AuthenScreenView from "../../components/AuthenScreenView/AuthenScreenView";
@@ -31,14 +29,7 @@ import {
 } from "../../utils/appUnit";
 import { useLanguage } from "../../hooks/useLanguage";
 import {
-  IC_CHECKED,
-  IC_EMAIL,
-  IC_EYE,
-  IC_EYE_SLASH,
-  IC_LOCK,
   IC_SECURITY,
-  IC_UNCHECK,
-  IC_USER,
 } from "../../assets/path";
 import AppColors from "../../styles/AppColors";
 import AppButton from "../../components/AppButton/AppButton";
@@ -47,10 +38,11 @@ import { NavigationRef } from "../../../App";
 import AppText from "../../components/AppText/AppText";
 import { fontSize14, fontSize16 } from "../../styles/AppFonts";
 import PressView from "../../components/PressView/PressView";
+import { OTPLengthValidFn, OTPValidFn } from "../../components/ValidateEditText/ValidateFunctions";
 
 const VerifyOTPScreen: React.FC = () => {
 
-  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
   const [isValid, setValid] = useState(false);
   const [timeFormat, setTimeLeft] = useState(60);
   const [disableClick, setDisableClick] = useState(false);
@@ -100,18 +92,20 @@ const VerifyOTPScreen: React.FC = () => {
 
           <ValidateEditText
             colorPallet={colorPallet}
-            textValue={email}
-            setValue={setEmail}
+            textValue={code}
+            setValue={setCode}
             contentStyle={{
               marginBottom: unit28,
             }}
             placeholder={language?.placeholder_OTP}
             checkValidFunctions={[
+              OTPValidFn,
+              OTPLengthValidFn
             ]}
             leftIcon={IC_SECURITY}
             tintColorIcon={colorPallet.color_text_gray_3}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={isValid}
+            setValid={setValid}
           />
 
           <AppButton
@@ -121,6 +115,10 @@ const VerifyOTPScreen: React.FC = () => {
                 NavigationRef.current?.navigate("RestPassWordScreen");
               }
             }
+            style={{
+              backgroundColor: isValid? AppColors.color_primary : AppColors.color_opacity,
+            }}
+            disabled={!isValid}
           />
         </View>
 

@@ -38,7 +38,6 @@ const HomeScreen: React.FC = () => {
   const { language } = useLanguage();
 
   const [index, setIndex] = React.useState(0);
-  const [openCreate, setOpenCreate] = useState(false)
   const [routes] = React.useState([
     { key: 'new', title: language?.newTab },
     { key: 'top', title: language?.topTab },
@@ -130,8 +129,7 @@ const HomeScreen: React.FC = () => {
                 // backgroundColor:'red',
               }}
               onPress={() => {
-                NavigationRef.current?.navigate('CreatePostScreen')
-                console.log('click');
+                NavigationRef?.current?.navigate('CreatePostScreen')
               }}
             >
               <Image

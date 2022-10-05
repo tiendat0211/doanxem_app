@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, PressableProps, StyleProp, TextStyle } from "react-native";
+import { Button, PressableProps, StyleProp, TextStyle, ViewStyle } from "react-native";
 import AppColors from "../../styles/AppColors";
 import { fontSize18 } from "../../styles/AppFonts";
 import AppText, { AppFontType } from "../AppText/AppText";
@@ -11,20 +11,21 @@ interface AppButtonProps extends PressableProps {
   fontType?: AppFontType,
   titleStyle?: StyleProp<TextStyle>,
   linearStyle?: StyleProp<TextStyle>
-  singleClick?:boolean;
+  singleClick?:boolean,
+  style?: StyleProp<ViewStyle>
 }
 
 const AppButton: React.FC<AppButtonProps> = (props) => {
-  const { buttonTitle,  fontType, titleStyle} = props;
+  const { buttonTitle,  fontType, titleStyle,style} = props;
 
   return (
     <PressView
       {...props}
-      style={{
+      style={[{
         backgroundColor: AppColors.color_primary,
         borderColor: AppColors.color_primary,
         borderRadius: unit5,
-      }}
+      }, style]}
     >
         <AppText
           fontType={fontType || "bold"}
