@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Dimensions, Image, ImageProps, StyleProp, View, ViewStyle } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Dimensions, Image, ImageProps, StyleProp, Text, View, ViewStyle } from "react-native";
 import { unit1, unit100, unit12, unit16, unit18, unit20, unit24, unit300, unit40, unit8 } from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
 import { fontSize12, fontSize14, fontSize16 } from "../../styles/AppFonts";
@@ -13,8 +13,6 @@ import { NavigationRef } from "../../../App";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
 import AppStyles from "../../styles/AppStyles";
 import { PostModel } from "../../model/ApiModel/PostModel";
-
-
 
 interface StatusItemProps{
   post?: PostModel,
@@ -30,6 +28,19 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
+  // const [imgWidth, setImgWidth] = useState(0)
+  // const [imgHeight, setImgHeight] = useState(0)
+  //
+  // function getSize(){
+  //   Image.getSize(post?.image || '',(width, height) => {
+  //     setImgWidth(width);
+  //     setImgHeight(height);
+  //   })
+  // }
+  //
+  // useEffect(()=>{
+  //   getSize();
+  // })
 
   return (
     <>
@@ -79,12 +90,14 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               {post?.user?.name}
             </AppText>
             <AppText
+              fontType={'regular'}
               style={{
                 fontSize:fontSize12,
-                color: colorPallet.color_text_gray_2
+                color: colorPallet.color_text_gray_2,
+                lineHeight: unit18
               }}
             >
-              123
+              {post?.time}
             </AppText>
           </View>
 
@@ -158,10 +171,10 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
             paddingHorizontal: unit20
           }}
         >
-
           <Reaction
             total_reactions={post?.total_reactions}
-            post_uuid={1}
+            post_uuid={post?.post_uuid}
+            userReaction={post?.user_action}
           />
 
           <FooterItem

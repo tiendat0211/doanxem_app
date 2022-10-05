@@ -83,7 +83,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                 color: colorPallet.color_text_gray_2
               }}
             >
-              123
+              {post?.time}
             </AppText>
           </View>
 
@@ -146,7 +146,8 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
           <Reaction
             total_reactions={post?.total_reactions}
-            post_uuid={1}
+            post_uuid={post?.post_uuid}
+            userReaction={post?.user_action}
           />
 
           <FooterItem

@@ -116,7 +116,6 @@ const ValidateEditText: React.FC<ValidateEditTextProps> = props => {
           onChangeText={setValue}
           onBlur={() => {
             setBlur(true);
-
           }}
           onFocus={() => {
             setBlur(false);

@@ -27,19 +27,18 @@ import {
   IC_VIEWMORE,
   IMG_LOGO,
 } from "../../assets/path";
+import { CommentModel } from "../../model/ApiModel/CommentModel";
 
-import { useLanguage } from "../../hooks/useLanguage";
 
-import { CommentModle } from "../../model/CommentModle";
-
-interface StatusItemProps extends  CommentModle{
-  styleUserImage?: StyleProp<Image>
-  onPressViewMore?: () => void
+interface StatusItemProps {
+  styleUserImage?: StyleProp<Image>;
+  onPressViewMore?: () => void;
+  comment: CommentModel
 }
 
 const CommentItem: React.FC<StatusItemProps> = (props) => {
 
-  const { user_img,id, comment_title,time, user_name,styleUserImage, onPressViewMore} = props;
+  const { comment,styleUserImage, onPressViewMore} = props;
   const {colorPallet} = useTheme();
 
   return (
@@ -52,7 +51,9 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
         }}
       >
         <Image
-          source={user_img}
+          source={{
+            uri: comment?.user?.avatar
+          }}
           style={[{
             width: unit43,
             height: unit43,
@@ -70,6 +71,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
           <View
             style={{
               flexDirection:'row',
+              marginBottom:unit4
           }}
           >
             <AppText
@@ -80,7 +82,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
                 marginRight: unit24
               }}
             >
-              {user_name}
+              {comment?.user?.name}
             </AppText>
 
             <AppText
@@ -89,7 +91,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
                 color: colorPallet.color_text_gray_3
               }}
             >
-              {time}
+              123
             </AppText>
 
           </View>
@@ -98,62 +100,63 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
             style={{
               fontSize: fontSize14,
               color: colorPallet.color_text_gray_1,
+              lineHeight: unit20
             }}
           >
-            {comment_title}
+            {comment?.content}
           </AppText>
 
-          <View
-            style={{
-              flexDirection:'row',
-              paddingTop:unit5,
-              alignItems: 'center'
-            }}
-          >
-            <Image
-              source={IC_ARROWRIGHT}
-              style={{
-                width: unit16,
-                height: unit16,
-              }}
-            />
-            <AppText
-              fontType={'regular'}
-              style={{
-                fontSize: unit12,
-                color: colorPallet.color_text_gray_3,
-                marginLeft: unit8,
-                paddingRight: unit12
-              }}
-            >
-              Trả lời
-            </AppText>
+          {/*<View*/}
+          {/*  style={{*/}
+          {/*    flexDirection:'row',*/}
+          {/*    paddingTop:unit5,*/}
+          {/*    alignItems: 'center'*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Image*/}
+          {/*    source={IC_ARROWRIGHT}*/}
+          {/*    style={{*/}
+          {/*      width: unit16,*/}
+          {/*      height: unit16,*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*  <AppText*/}
+          {/*    fontType={'regular'}*/}
+          {/*    style={{*/}
+          {/*      fontSize: unit12,*/}
+          {/*      color: colorPallet.color_text_gray_3,*/}
+          {/*      marginLeft: unit8,*/}
+          {/*      paddingRight: unit12*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    Trả lời*/}
+          {/*  </AppText>*/}
 
-            <Image
-              source={IC_VIEWMORE}
-              style={{
-                width: unit16,
-                height: unit16,
-              }}
-            />
+          {/*  <Image*/}
+          {/*    source={IC_VIEWMORE}*/}
+          {/*    style={{*/}
+          {/*      width: unit16,*/}
+          {/*      height: unit16,*/}
+          {/*    }}*/}
+          {/*  />*/}
 
-            <PressView
-              onPress={onPressViewMore}
-            >
-              <AppText
-                fontType={'regular'}
-                style={{
-                  fontSize: unit12,
-                  color: colorPallet.color_text_gray_3,
-                  marginLeft: unit4,
-                }}
-              >
-                Thêm
-              </AppText>
-            </PressView>
+          {/*  <PressView*/}
+          {/*    onPress={onPressViewMore}*/}
+          {/*  >*/}
+          {/*    <AppText*/}
+          {/*      fontType={'regular'}*/}
+          {/*      style={{*/}
+          {/*        fontSize: unit12,*/}
+          {/*        color: colorPallet.color_text_gray_3,*/}
+          {/*        marginLeft: unit4,*/}
+          {/*      }}*/}
+          {/*    >*/}
+          {/*      Thêm*/}
+          {/*    </AppText>*/}
+          {/*  </PressView>*/}
 
 
-          </View>
+          {/*</View>*/}
         </View>
       </View>
     </>

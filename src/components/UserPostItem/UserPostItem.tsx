@@ -4,12 +4,10 @@ import { AppFonts, dimension, fontSize14, fontSize16, fontSize18 } from "../../s
 import { useTheme } from "../../hooks/useTheme";
 
 import {
-
-  unit101,
   unit12,
   unit16,
   unit20,
-
+  unit95,
 } from "../../utils/appUnit";
 import PressView from "../PressView/PressView";
 
@@ -34,8 +32,8 @@ const UserProfileItem: React.FC<UserPostItem> = (props) => {
             uri: img_src
           }}
           style={{
-            height: unit101,
-            width: unit101,
+            height: unit95,
+            width: unit95,
             borderRadius: unit20
           }}
         />

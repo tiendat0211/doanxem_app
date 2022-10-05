@@ -22,6 +22,7 @@ apiClient.interceptors.response.use(
 );
 
 function setAccessToken(accessToken?: string) {
+  console.log({accessToken});
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken || ""}`;
 }
 

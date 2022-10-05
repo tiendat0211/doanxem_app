@@ -9,17 +9,37 @@ import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import { unit1, unit10, unit12, unit132, unit14, unit144, unit16, unit20, unit22, unit40, unit8 } from "../../utils/appUnit";
+import {
+  unit1,
+  unit10,
+  unit12,
+  unit132,
+  unit14,
+  unit144,
+  unit16,
+  unit20,
+  unit22,
+  unit25, unit30, unit4,
+  unit40,
+  unit8,
+} from "../../utils/appUnit";
 import AppText from "../../components/AppText/AppText";
 import { dimension, fontSize12 } from "../../styles/AppFonts";
 import { fakeTags } from "../../utils/fakeData";
 import TagItem from "./components/TagItem";
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { showToastErrorMessage } from "../../utils/Toaster";
+import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import ModalFileSelect from "./components/ModalFileSelect";
 import PressView from "../../components/PressView/PressView";
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import FastImage from "react-native-fast-image";
+import AppButton from "../../components/AppButton/AppButton";
+import AsteriskTitle from "../../components/AsteriskTitle/AsteriskTitle";
+import { createPost,  unBlockUser } from "../../network/AppAPI";
+import ApiHelper from "../../utils/ApiHelper";
+import Snackbar from "react-native-snackbar";
+import useScreenState from "../../hooks/useScreenState";
+import useAuth from "../../hooks/useAuth";
 
 const options = {
   mediaType : 'mixed',
@@ -37,14 +57,16 @@ const heightWD = Dimensions.get('window').height
 const CreatePostScreen: React.FC = () => {
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
-  const [script, setScript] = useState('')
-  const [openModal, setOpenModal] = useState(false)
-  const [heightImgOrVid, setHeightImgOrVid] = useState(300)
+  const [script, setScript] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const [heightImgOrVid, setHeightImgOrVid] = useState(300);
   const [image, setImage] = useState<Asset>({
     uri: undefined,
     type: "",
     fileName: "",
   });
+  const [isValid,setValid] = useState(false);
+  const { isLoading, setLoading, mounted, setError } = useScreenState();
 
   const clearData = () => {
     setScript(''),
@@ -73,6 +95,7 @@ const CreatePostScreen: React.FC = () => {
       showToastErrorMessage("Ảnh quá dung lượng");
     }
   };
+
   async function checkPerMissionCamera(): Promise<boolean> {
     try {
       const granted = await PermissionsAndroid.request(
@@ -98,8 +121,7 @@ const CreatePostScreen: React.FC = () => {
       console.warn(err);
       return false;
     }
-  };
-
+  }
 
   const takePicture = async () => {
     if (Platform.OS === 'android') {
@@ -139,9 +161,39 @@ const CreatePostScreen: React.FC = () => {
     }
     };
 
+  useEffect(()=>{
+    if (script.length>0 && script.trim() !== "" && image.uri?.length ){
+      setValid(true)
+    }else {
+      setValid(false)
+    }
+  })
+
+  const {authData} = useAuth()
+
+  const {token} = authData
+
+  async function createSinglePost( title: string, img: Asset ){
+    try {
+      const res = await createPost(token || "",title,img);
+      const resJson = await res.json();
+      if (resJson.status === 200) {
+        showToastMsg(resJson?.message)
+        NavigationRef?.current?.goBack();
+      } else {
+        showToastErrorMessage(resJson?.message);
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
+
   return (
     <SafeAreaView
-      style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
+      style={[AppStyles.container, {
+        backgroundColor: colorPallet.color_background_1,
+      }]}>
       <StatusBar
         barStyle={theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
@@ -162,23 +214,50 @@ const CreatePostScreen: React.FC = () => {
       <ScrollView
         style={{
           paddingTop: unit12,
+          paddingBottom: unit20,
+          flex: 1,
         }}
       >
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: unit20
+            paddingHorizontal: unit20,
           }}>
-          <AppText
-            fontType="bold"
+          <View
             style={{
-              fontSize: unit14,
-              lineHeight: unit20
+              flexGrow:1,
+              flexDirection: 'row',
             }}
           >
-            {'Mô tả'}
-          </AppText>
+            <AppText
+              fontType="bold"
+              style={{
+                fontSize: unit14,
+                lineHeight: unit20,
+                color: colorPallet.color_text_blue_3
+              }}
+            >
+              {'Mô tả'}
+            </AppText>
+
+            {
+              (script.length && script.trim() !== "")?
+                null
+                :
+                <AppText
+                  fontType="bold"
+                  style={{
+                    marginStart:unit4,color:AppColors.color_warning,
+                    fontSize:unit14,
+                    lineHeight:unit20,
+                  }}
+                >
+                  *
+                </AppText>
+            }
+
+          </View>
+
           <AppText
             style={{
               fontSize: unit14,
@@ -202,60 +281,89 @@ const CreatePostScreen: React.FC = () => {
             color: colorPallet.color_text_gray_2,
             height: script.length > 200 ? 'auto' : unit144,
           }}
+          placeholderTextColor={colorPallet.color_text_gray_2}
           maxLength={320}
           onChangeText={(text) => {
             setScript(text)
           }}
           value={script}
         />
-        <View
-          style={{
-            justifyContent: 'space-between',
-            paddingHorizontal: unit20,
-            marginVertical: unit8,
-            paddingBottom: unit12,
-          }}>
-          <AppText
-            fontType="bold"
-            style={{
-              color: colorPallet.color_text_blue_3,
-              fontSize: unit14,
-              lineHeight: unit20
-            }}>
-            {'Gắn thẻ'}
-          </AppText>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingStart: unit20,
-            flexWrap: 'wrap',
-          }}>
-          {
-            fakeTags.map((item, index) => {
-              return (
-                <TagItem tag={item} />
-              )
-            })
-          }
-        </View>
+        {/* Tag */}
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    justifyContent: 'space-between',*/}
+        {/*    paddingHorizontal: unit20,*/}
+        {/*    marginVertical: unit8,*/}
+        {/*    paddingBottom: unit12,*/}
+        {/*  }}>*/}
+        {/*  <AppText*/}
+        {/*    fontType="bold"*/}
+        {/*    style={{*/}
+        {/*      color: colorPallet.color_text_blue_3,*/}
+        {/*      fontSize: unit14,*/}
+        {/*      lineHeight: unit20*/}
+        {/*    }}>*/}
+        {/*    {'Gắn thẻ'}*/}
+        {/*  </AppText>*/}
+        {/*</View>*/}
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    flexDirection: 'row',*/}
+        {/*    paddingStart: unit20,*/}
+        {/*    flexWrap: 'wrap',*/}
+        {/*  }}>*/}
+        {/*  {*/}
+        {/*    fakeTags.map((item, index) => {*/}
+        {/*      return (*/}
+        {/*        <TagItem*/}
+        {/*          key={index}*/}
+        {/*          tag={item}*/}
+        {/*        />*/}
+        {/*      )*/}
+        {/*    })*/}
+        {/*  }*/}
+        {/*</View>*/}
         <View
           style={{
             marginTop: unit14,
-            paddingHorizontal: unit20
+            paddingHorizontal: unit20,
           }}>
-          <AppText
-            fontType="bold"
+          <View
             style={{
-
+              flexDirection:'row'
             }}
-          > {`Media`}
-          </AppText>
+          >
+            <AppText
+              fontType="bold"
+              style={{
+                fontSize: unit14,
+                lineHeight: unit20,
+                color: colorPallet.color_text_blue_3
+              }}
+            > {`Media`}
+            </AppText>
+
+            {
+              image.uri?
+                null
+                :
+                <AppText
+                  fontType="bold"
+                  style={{
+                    marginStart:unit4,color:AppColors.color_warning,
+                    fontSize:unit14,
+                    lineHeight:unit20,
+                  }}
+                >
+                  *
+                </AppText>
+            }
+
+          </View>
 
           {
             image.uri ?
               <>
-
                 <FastImage
                   style={{
                     width: '100%',
@@ -312,32 +420,20 @@ const CreatePostScreen: React.FC = () => {
 
           }
 
-          <PressView
-          onPress={()=>{
-            takePicture()
-          }}
+          <AppButton
+            buttonTitle={'Đăng luôn cho nóng'}
             style={{
-              marginTop: unit20,
-              marginBottom:unit40,
-              borderRadius: unit8,
-              backgroundColor: AppColors.color_primary,
-              paddingVertical: unit12,
-              alignItems: 'center'
-            }}>
-            <AppText
-              fontType="bold"
-              style={{
-                color: colorPallet.color_background_1,
-                flexShrink: unit14,
-
-              }}>
-              {`Đăng luôn cho nóng`}
-            </AppText>
-          </PressView>
+              marginTop: unit30,
+              marginBottom: unit25,
+              backgroundColor: isValid ? AppColors.color_primary : AppColors.color_opacity
+            }}
+            onPress={ async ()=>{
+               await createSinglePost(script,image);
+            }}
+            disabled={!isValid}
+          />
 
         </View>
-
-
 
         <ModalFileSelect
           onChooseGallery={getImageFromLib}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Image, Keyboard, Platform, PressableProps, StyleProp, TextInput, TextStyle, View } from "react-native";
 import AppColors from "../../styles/AppColors";
 import { AppFonts, dimension, fontSize16, fontSize18 } from "../../styles/AppFonts";
@@ -32,6 +32,7 @@ const AppInput: React.FC<AppInput> = (props) => {
   const { onPressSend,onPressMedia,  onChangeText, value} = props;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
+  const [isBlur,setBlur] = useState(true)
 
   return (
     <View
@@ -51,7 +52,9 @@ const AppInput: React.FC<AppInput> = (props) => {
           borderRadius: unit10,
           paddingHorizontal: unit16,
           flexDirection:'row',
-          alignItems:'center'
+          alignItems:'center',
+          borderWidth: unit1,
+          borderColor: isBlur? colorPallet.color_divider_2 : AppColors.color_primary
         }}
       >
         <TextInput
@@ -65,13 +68,18 @@ const AppInput: React.FC<AppInput> = (props) => {
           }}
           numberOfLines={2}
           placeholder={language?.placeholder_input}
-          placeholderTextColor={colorPallet.color_text_gray_1}
+          placeholderTextColor={colorPallet.color_text_gray_3}
           multiline={true}
           onChangeText={onChangeText}
-          onBlur={Keyboard.dismiss}
           onSubmitEditing={Keyboard.dismiss}
           maxLength={200}
           value={value}
+          onBlur={() => {
+            setBlur(true);
+          }}
+          onFocus={() => {
+            setBlur(false);
+          }}
         />
 
         <PressView
