@@ -130,7 +130,7 @@ const HomeScreen: React.FC = () => {
                 // backgroundColor:'red',
               }}
               onPress={() => {
-                setOpenCreate(true)
+                NavigationRef.current?.navigate('CreatePostScreen')
                 console.log('click');
               }}
             >

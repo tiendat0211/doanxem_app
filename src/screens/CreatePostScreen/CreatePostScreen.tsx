@@ -20,9 +20,10 @@ import ModalFileSelect from "./components/ModalFileSelect";
 import PressView from "../../components/PressView/PressView";
 import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import FastImage from "react-native-fast-image";
+import VideoPlayer from "react-native-video-player";
 
 const options = {
-  mediaType : 'mixed',
+  mediaType: 'mixed',
   quality: 0.3,
   storageOptions: {
     skipBackup: true,
@@ -34,13 +35,12 @@ const widthWD = Dimensions.get('window').width
 const heightWD = Dimensions.get('window').height
 
 interface CreatePostScreenProps extends ViewProps {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
   onApply?: () => void;
 }
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
-  const { setOpen, open, onApply } = props;
+  const { onApply } = props;
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [script, setScript] = useState('')
@@ -52,9 +52,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
     fileName: "",
   });
 
-  if (!open) {
-    return null;
-  }
   const clearData = () => {
     setScript(''),
       setImage({})
@@ -63,7 +60,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
   const getImageFromLib = async () => {
     try {
       const res = await launchImageLibrary({
-        mediaType: "photo",
+        mediaType: "mixed",
         quality: 0.5,
         maxHeight: 1024,
         maxWidth: 1024,
@@ -117,37 +114,70 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         console.log('Vui lòng cấp quyền để sử dụng tính năng này!');
         return;
       }
-    } 
+    }
     try {
       const option: CameraOptions = {
-        mediaType: "photo",
-        cameraType:'back',
-        presentationStyle:"currentContext",
-        maxWidth:dimension.width,
-        maxHeight:dimension.height
+        mediaType: "mixed",
+        cameraType: 'back',
+        presentationStyle: "currentContext",
+        maxWidth: dimension.width,
+        maxHeight: dimension.height,
       }
       const res = await launchCamera(option, (cameraRes) => {
-      
+
       });
 
       if (res.assets) {
-        
+
         const img = res.assets[0];
         setHeightImgOrVid(img.height!)
         setImage({
           uri: img.uri,
           type: img?.type,
           fileName: img?.fileName,
-          height:img.height,
-          width:img.width
+          height: img.height,
+          width: img.width
         });
       }
     } catch (e) {
       console.error(e);
       showToastErrorMessage("Ảnh quá dung lượng");
     }
-    };
-    
+  };
+
+  const renderLocalImage = () => {
+
+    if (image.uri!.endsWith('mp4')) {
+      return <VideoPlayer
+        video={{ uri: image.uri }}
+        videoWidth={1600}
+        videoHeight={900}
+        // thumbnail={{ uri: IC_CLOSE }}
+      />;
+    } else {
+      return (
+        <FastImage
+          style={{
+            width: '100%',
+            height: heightImgOrVid
+          }}
+          resizeMode={FastImage.resizeMode.contain}
+          onLoad={(evt) => {
+            const { width, height } = evt.nativeEvent;
+
+            const heightScaled = (height / width) * widthWD;
+            setHeightImgOrVid(heightScaled);
+          }}
+
+          source={
+            {
+              uri: image.uri
+            }
+          }
+        />
+      );
+    }
+  };
   return (
     <SafeAreaView
       style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
@@ -159,7 +189,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         title={'Mang vui vẻ tới cho đời'}
         leftIcon={IC_CLOSE}
         leftIconOnClick={() => {
-          setOpen(false)
+          NavigationRef.current?.goBack()
           clearData()
         }}
         titleStyle={{
@@ -265,26 +295,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           {
             image.uri ?
               <>
-
-                <FastImage
-                  style={{
-                    width: '100%',
-                    height: heightImgOrVid
-                  }}
-                  resizeMode={FastImage.resizeMode.contain}
-                  onLoad={(evt) => {
-                    const {  width,height } = evt.nativeEvent;
-                    
-                    const heightScaled = (height / width) * widthWD;
-                    setHeightImgOrVid(heightScaled);
-                  }}
-                  
-                  source={
-                    {
-                      uri: image.uri
-                    }
-                  }
-                />
+                {renderLocalImage()}
                 <PressView
                   onPress={() => setOpenModal(true)}
                   style={{
@@ -323,12 +334,12 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           }
 
           <PressView
-          onPress={()=>{
-            takePicture()
-          }}
+            onPress={() => {
+              takePicture()
+            }}
             style={{
               marginTop: unit20,
-              marginBottom:unit40,
+              marginBottom: unit40,
               borderRadius: unit8,
               backgroundColor: AppColors.color_primary,
               paddingVertical: unit12,
