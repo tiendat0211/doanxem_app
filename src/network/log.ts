@@ -18,7 +18,7 @@ export function requestError(error: AxiosError) {
 export function responseLog(response: AxiosResponse) {
   const config = response.config;
   console.log(`<<< ${response.status} ${config.method}: ${config.url}`);
-  // console.log(JSON.stringify(response.data, null, 2));
+  // console.log(JSON.stringify(response.data));
   return response;
 }
 

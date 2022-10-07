@@ -25,16 +25,11 @@ import {
 } from "../../utils/appUnit";
 import AppText from "../../components/AppText/AppText";
 import { dimension, fontSize12 } from "../../styles/AppFonts";
-import { fakeTags } from "../../utils/fakeData";
-import TagItem from "./components/TagItem";
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import ModalFileSelect from "./components/ModalFileSelect";
 import PressView from "../../components/PressView/PressView";
-import { WINDOW_WIDTH } from "@gorhom/bottom-sheet";
 import FastImage from "react-native-fast-image";
-import ApiHelper from "../../utils/ApiHelper";
-import Snackbar from "react-native-snackbar";
 import useScreenState from "../../hooks/useScreenState";
 import useAuth from "../../hooks/useAuth";
 import VideoPlayer from "react-native-video-player";
@@ -404,26 +399,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           {
             image.uri ?
               <>
-                <FastImage
-                  style={{
-                    width: '100%',
-                    height: heightImgOrVid
-                  }}
-                  resizeMode={FastImage.resizeMode.contain}
-                  onLoad={(evt) => {
-                    const {  width,height } = evt.nativeEvent;
-
-                    const heightScaled = (height / width) * widthWD;
-                    setHeightImgOrVid(heightScaled);
-                  }}
-
-                  source={
-                    {
-                      uri: image.uri
-                    }
-                  }
-                />
-
                 {renderLocalImage()}
                 <PressView
                   onPress={() => setOpenModal(true)}

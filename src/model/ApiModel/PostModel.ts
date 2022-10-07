@@ -1,6 +1,6 @@
 import UserModel from "./UserModel";
 import { PostReaction } from "./PostReaction";
-import { CommentModle } from "../CommentModle";
+import {CommentModel} from "./CommentModel";
 
 export interface PostModel {
   id: number;
@@ -26,7 +26,7 @@ export interface PostModel {
   total_interactive: number;
   user: UserModel;
   post_reactions: PostReaction[];
-  comments: CommentModle[]
+  comments: CommentModel[]
 }
 
 export interface MostReaction {

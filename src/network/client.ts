@@ -13,6 +13,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   config => LogInterceptor.requestLog(config),
+
   error => LogInterceptor.requestError(error),
 );
 
@@ -22,7 +23,7 @@ apiClient.interceptors.response.use(
 );
 
 function setAccessToken(accessToken?: string) {
-  console.log({accessToken});
+  // console.log({accessToken});
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken || ""}`;
 }
 

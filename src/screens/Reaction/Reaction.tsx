@@ -7,10 +7,15 @@ import { AppFonts, fontSize14 } from "../../styles/AppFonts";
 import AppText from "../../components/AppText/AppText";
 import PressView from "../../components/PressView/PressView";
 import { useTheme } from "../../hooks/useTheme";
+import { postReaction } from "../../network/AppAPI";
+import ApiHelper from "../../utils/ApiHelper";
+import Snackbar from "react-native-snackbar";
+import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
+import useScreenState from "../../hooks/useScreenState";
 
 interface ReactionProps {
   total_reactions?: number;
-  post_uuid: string | undefined;
+  post_uuid: string;
   userReaction?: string;
 }
 
@@ -50,41 +55,56 @@ const Reaction: React.FC<ReactionProps> = (props) => {
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState(filterReaction(userReaction));
   const [total_reaction, setTotal_reactions] = useState(total_reactions);
-  const [loadingReaction, setLoadingReaction] = useState(false);
-  const navigation = useNavigation();
+  const { isLoading, setLoading, mounted, error, setError } = useScreenState();
 
-  const change = (i: number) => {
+  async function reaction(post_uuid: string, reaction: string){
+    const old_reaction = url;
+    const old_total_reaction = total_reaction;
+    try {
+      const res = await postReaction(post_uuid,reaction)
+      if (ApiHelper.isResSuccess(res)) {
+        const data = res?.data
+        let totalReactions =
+          data?.data.heart +
+          data?.data.haha +
+          data?.data.sad +
+          data?.data.angry +
+          data?.data.wow +
+          data?.data.like;
+        setTotal_reactions(totalReactions <= 0 ? 0 : totalReactions);
+      } else {
+        setUrl(old_reaction);
+        setTotal_reactions(old_total_reaction);
+      }
+    }catch (e){
+      setError(e);
+      setUrl(old_reaction);
+      setTotal_reactions(old_total_reaction);
+    }finally {
+      setOpen(false);
+    }
+  }
+
+  async function change (i: number){
     setOpen(false);
     setUrl(images[i]);
-    if (url.id === "none") {
-      // @ts-ignore
-      setTotal_reactions(total_reaction + 1);
-    } else {
-      // @ts-ignore
-      setTotal_reactions(total_reaction <= 0 ? 0 : total_reaction);
-    }
-  };
+    await reaction(post_uuid,images[i].id);
+  }
 
   const openPress = async () => {
-    //console.log('url.id', url.id);
     if (url.id !== "none") {
       if (open) {
         setOpen(false);
       } else {
-        // const old_reaction = url;
-        // const old_total_reaction = total_reaction;
         setUrl({ id: "none", img: IC_REACTION });
-        // @ts-ignore
-        setTotal_reactions(total_reaction <= 0 ? 0 : total_reaction - 1);
+        await reaction(post_uuid,'none');
       }
     } else {
-      // const old_reaction = url;
-      // const old_total_reaction = total_reaction;
       setUrl(images[0]);
-      // @ts-ignore
-      setTotal_reactions(total_reaction + 1);
+      await reaction(post_uuid,images[0].id);
     }
   };
+
   const openLongPress = async () => {
     setOpen(!open);
     hide();
@@ -144,7 +164,6 @@ const Reaction: React.FC<ReactionProps> = (props) => {
             return <ReactionItem
               img={img.img}
               onPress={() => change(i)}
-              onPressOut={close}
               key={i.toString()}
             />;
           })

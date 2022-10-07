@@ -15,7 +15,6 @@ import RNFetchBlob from "rn-fetch-blob";
 import useScreenState from "../../../hooks/useScreenState";
 import { PostModel } from "../../../model/ApiModel/PostModel";
 import StatusItem from "../../../components/StatusItem/StatusItem";
-import InfiniteFlatList from "../../../components/InfiniteFlatList/InfiniteFlatList";
 import { FIRST_PAGE, getUserPosts, UserPostType } from "../../../network/AppAPI";
 import ApiHelper from "../../../utils/ApiHelper";
 import { useFocusEffect } from "@react-navigation/native";
