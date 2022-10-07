@@ -32,6 +32,7 @@ import { showToastErrorMessage, showToastMsg } from "../../../utils/Toaster";
 import Snackbar from "react-native-snackbar";
 import LottieView from "lottie-react-native";
 import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
+import PopUp from "../../../components/PopUp/PopUp";
 
 interface BaseTabProps {
   type: PostType;
@@ -49,6 +50,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [blockID, setBlockID] = useState(0)
   const [isHasMore, setHasMore] = useState(true);
   const [postID, setPostID] = useState(true);
+  const [isOpen, setOpen] = useState(false)
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -310,9 +312,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               fontSize: unit16,
             }}
             onPress={async ()=>{
-              await blockUserByID(blockID);
-              closeBottomSheet();
-              await loadPosts();
+             setOpen(true)
             }}
           />
         </View>
@@ -360,6 +360,25 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           </AppText>
         </PressView>
       </BottomSheet>
+
+      {
+        isOpen ?
+          <PopUp
+            rightButtonPress={async ()=> {
+              setOpen(false);
+              closeBottomSheet();
+              await blockUserByID(blockID);
+              await loadPosts();
+            }}
+            rightButtonTitle={'Đồng ý'}
+            mess={'Bạn muốn bỏ chặn người dùng này?'}
+            leftButtonTitle={'Từ chối'}
+            leftButtonPress={()=>{
+              setOpen(false);
+            }}
+          />
+          : null
+      }
 
       {/*{*/}
       {/*  isLoading && <AppLoading isOverlay/>*/}

@@ -89,6 +89,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           type: img?.type,
           fileName: img?.fileName,
         });
+        console.log(res.assets)
       }
     } catch (e) {
       console.error(e);
@@ -192,7 +193,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
   const renderLocalImage = () => {
 
-    if (image.uri!.endsWith('mp4')) {
+    if (image.uri!.endsWith('mp4') || image.type=='video/mp4') {
       return <VideoPlayer
         video={{ uri: image.uri }}
         videoWidth={1600}

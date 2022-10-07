@@ -15,6 +15,7 @@ import AppStyles from "../../styles/AppStyles";
 import { PostModel } from "../../model/ApiModel/PostModel";
 import VideoPlayer from "react-native-video-player";
 import FastImage from "react-native-fast-image";
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 
 
