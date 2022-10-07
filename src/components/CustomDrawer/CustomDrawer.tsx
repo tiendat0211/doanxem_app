@@ -16,7 +16,20 @@ import {
   IC_USER2,
   IMG_LOGO,
 } from "../../assets/path";
-import { unit10, unit100, unit12, unit20, unit28, unit35, unit40, unit48, unit5, unit6, unit72 } from "../../utils/appUnit";
+import {
+  unit10,
+  unit100,
+  unit12,
+  unit15,
+  unit20,
+  unit28,
+  unit35,
+  unit40,
+  unit48,
+  unit5,
+  unit6,
+  unit72,
+} from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
 import { useTheme } from "../../hooks/useTheme";
 import { dimension, fontSize14, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
@@ -33,20 +46,10 @@ export default function CustomDrawer(props: any) {
       <View
         style={{
           flex: 1,
-          flexDirection: 'row',
-          backgroundColor: theme === 'light' ? '#0B2347' : '#36354B',
+          paddingHorizontal: unit15,
+          marginTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0),
+          width: Dimensions.get('screen').width*0.9,
         }}>
-        <View
-          style={{
-            width:dimension.width *0.93,
-            backgroundColor: colorPallet.color_background_4,
-            borderBottomRightRadius: unit35,
-            borderTopRightRadius: unit35,
-            marginTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0),
-            paddingRight: unit20,
-            paddingLeft: unit20
-          }}
-        >
           <DrawerContentScrollView {...props}
           >
             <View
@@ -154,7 +157,6 @@ export default function CustomDrawer(props: any) {
           >
             Phiên bản 1,24 Beta
           </AppText>
-        </View>
 
       </View>
 

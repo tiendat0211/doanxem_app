@@ -10,8 +10,8 @@ import { useTheme } from "../../hooks/useTheme";
 
 interface ReactionProps {
   total_reactions?: number;
-  post_uuid: number;
-  userReaction?: any;
+  post_uuid: string | undefined;
+  userReaction?: string;
 }
 
 const images = [

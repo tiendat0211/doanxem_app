@@ -2,8 +2,9 @@ import React from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
 import LottieView from "lottie-react-native";
 import { LOADING_ANIM } from "../../assets/path";
-import { unit100 } from "../../utils/appUnit";
+import { unit10, unit100, unit150, unit200, unit50 } from "../../utils/appUnit";
 import { useTheme } from "../../hooks/useTheme";
+import AppColors from "../../styles/AppColors";
 
 interface AppLoadingProps extends ViewProps {
   isOverlay?: boolean;
@@ -17,7 +18,7 @@ function AppLoading(props: AppLoadingProps) {
     <View
       {...props}
       style={[styles.container, {
-        backgroundColor: isOverlay ? undefined : colorPallet.color_background_3,
+        backgroundColor: isOverlay ? AppColors.color_transparent_dark : colorPallet.color_background_1,
       }, overlayStyle]}>
       <LottieView
         style={styles.loadingView}
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   loadingView: {
-    width: unit100,
+    width: unit150,
   },
 });
 

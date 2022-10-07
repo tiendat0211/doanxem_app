@@ -1,8 +1,8 @@
 import React from "react";
 import { Image, View, ViewProps } from "react-native";
-import { IMG_EMPTY_VIEW } from "../../assets/path";
 import AppText from "../AppText/AppText";
 import { unit218, unit8 } from "../../utils/appUnit";
+import { IMG_LOGO } from "../../assets/path";
 
 interface EmptyViewProps extends ViewProps {
   refresh?: () => void;
@@ -25,7 +25,7 @@ const EmptyView: React.FC<EmptyViewProps> = (
           width: unit218,
           height: unit218,
         }}
-        source={IMG_EMPTY_VIEW}
+        source={IMG_LOGO}
       />
       <AppText
         style={{}}>

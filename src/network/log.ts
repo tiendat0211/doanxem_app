@@ -1,5 +1,6 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
+
 export const requestLog = (config: AxiosRequestConfig) => {
   console.log(`>>> ${config.method}: ${config.url}`);
   if (config.method?.toUpperCase() !== "GET") {

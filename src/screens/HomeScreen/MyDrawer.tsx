@@ -32,7 +32,10 @@ export default function MyDrawer() {
           screenOptions={{
             headerShown: false,
             drawerStyle:{
-              width: Dimensions.get("screen").width,
+              width: Dimensions.get("screen").width*0.9,
+              borderTopRightRadius: unit35,
+              borderBottomRightRadius: unit35,
+              backgroundColor: colorPallet.color_background_1
             },
             drawerActiveBackgroundColor: colorPallet.color_background_4,
             drawerActiveTintColor:AppColors.color_primary,

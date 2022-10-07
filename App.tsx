@@ -25,7 +25,7 @@ import DetailProfileScreen from "./src/screens/DetailProfileScreen/DetailProfile
 import ChangPasswordScreen from "./src/screens/ChangePasswordScreen/ChangePasswordScreen";
 import { useTheme } from "./src/hooks/useTheme";
 import CreatePostScreen from "./src/screens/CreatePostScreen/CreatePostScreen";
-import DetailStatusScreen from "./src/screens/DetailStatusScreen/DetailStatusScreen";
+import DetailStatusScreen from "./src/screens/DetailPostScreen/DetailStatusScreen";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -47,7 +47,7 @@ export type RootStackParamList = {
   DetailProfileScreen: undefined,
   ChangPasswordScreen: undefined,
   CreatePostScreen: undefined,
-  DetailStatusScreen: {
+  DetailPostScreen: {
     postID: string,
   },
 };
@@ -66,9 +66,7 @@ const App = () => {
     });
   }, []);
 
-  useEffect(() => {
-    setAccessToken(authData.token);
-  }, [authData]);
+  setAccessToken(authData.token);
 
   return <SafeAreaProvider
     initialMetrics={initialWindowMetrics}>
@@ -124,7 +122,7 @@ const App = () => {
                 name={"CreatePostScreen"}
                 component={CreatePostScreen} />
               <RootStack.Screen
-                name={"DetailStatusScreen"}
+                name={"DetailPostScreen"}
                 component={DetailStatusScreen} />
 
             </>

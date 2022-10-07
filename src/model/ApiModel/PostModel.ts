@@ -1,4 +1,6 @@
 import UserModel from "./UserModel";
+import { PostReaction } from "./PostReaction";
+import { CommentModle } from "../CommentModle";
 
 export interface PostModel {
   id: number;
@@ -7,7 +9,7 @@ export interface PostModel {
   share: number;
   user_id: number;
   post_uuid: string;
-  created_at: string;
+  created_at: Date;
   like: number;
   heart: number;
   wow: number;
@@ -19,8 +21,12 @@ export interface PostModel {
   most_reaction: MostReaction;
   comments_count: number;
   lastest_comment: any[];
+  time: string;
+  user_action: string;
   total_interactive: number;
   user: UserModel;
+  post_reactions: PostReaction[];
+  comments: CommentModle[]
 }
 
 export interface MostReaction {
@@ -29,8 +35,3 @@ export interface MostReaction {
   angry: number;
 }
 
-export interface UserPost {
-  id: number;
-  avatar: string;
-  name: string;
-}
