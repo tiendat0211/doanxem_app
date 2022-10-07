@@ -1,10 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Animated, FlatList, ListRenderItem, RefreshControl, Text, View, Image } from "react-native";
+import { Alert, Animated, ListRenderItem, RefreshControl, Text, View, Image } from "react-native";
 import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
 import { useLanguage } from "../../../hooks/useLanguage";
 import PressView from "../../../components/PressView/PressView";
-import { unit1, unit10, unit100, unit12, unit16, unit17, unit20, unit24, unit400 } from "../../../utils/appUnit";
+import {
+  unit1,
+  unit10,
+  unit100,
+  unit12,
+  unit16,
+  unit17,
+  unit20,
+  unit24,
+  unit400,
+  unit50, unit60,
+} from "../../../utils/appUnit";
 import { NavigationRef } from "../../../../App";
 import { IC_BLOCKUSER, IC_DOWNLOAD, IC_HIDE, IC_WARNING, LOADING_ANIM } from "../../../assets/path";
 import AppText from "../../../components/AppText/AppText";
@@ -15,20 +26,16 @@ import RNFetchBlob from "rn-fetch-blob";
 import useScreenState from "../../../hooks/useScreenState";
 import { PostModel } from "../../../model/ApiModel/PostModel";
 import StatusItem from "../../../components/StatusItem/StatusItem";
-import InfiniteFlatList from "../../../components/InfiniteFlatList/InfiniteFlatList";
 import { blockUser, FIRST_PAGE, getListPost, PostType } from "../../../network/AppAPI";
 import ApiHelper from "../../../utils/ApiHelper";
-import { useFocusEffect } from "@react-navigation/native";
-import AppLoading from "../../../components/Loading/AppLoading";
 import { showToastErrorMessage, showToastMsg } from "../../../utils/Toaster";
 import Snackbar from "react-native-snackbar";
-import PopUp from "../../../components/PopUp/PopUp";
 import LottieView from "lottie-react-native";
+import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
 
 interface BaseTabProps {
   type: PostType;
 }
-
 
 
 const BaseTab: React.FC<BaseTabProps> = (props) => {
@@ -40,8 +47,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [imgSrc, setImgSrc] = useState('');
   const [posts, setPosts] = useState<PostModel[]>([])
   const [blockID, setBlockID] = useState(0)
-  const [isLoadMore, setLoadMore] = useState(false);
   const [isHasMore, setHasMore] = useState(true);
+  const [postID, setPostID] = useState(true);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -96,8 +103,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     try {
       setLoading(true);
       setPage(FIRST_PAGE);
-      const res = await getListPost(page,type);
-
+      const res = await getListPost(FIRST_PAGE,type);
       if (ApiHelper.isResSuccess(res)) {
         const data = res?.data?.data;
         setPosts(data)
@@ -113,9 +119,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
 
   async function loadMore() {
     try {
-      setLoadMore(true);
       const res = await getListPost(page +1, type) || [];
-
       if (ApiHelper.isResSuccess(res)) {
         const moreData = res?.data?.data;
         if (!moreData) {
@@ -125,9 +129,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           setPosts((prevList) => {
             return [...prevList, ...moreData];
           });
-          setPage((prev) => {
-            return prev + 1;
-          });
+          setPage(page+1);
+          console.log(page)
         }
       } else {
         showToastErrorMessage(res.data.message);
@@ -135,7 +138,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     } catch (e) {
       setError(e);
     } finally {
-      setLoading(false);
     }
   }
 
@@ -166,13 +168,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       return <Text>Không còn dữ liệu</Text>;
     }
 
-    if (!isLoadMore) {
-      return null
-    }
-
     return <LottieView
       style={{
-        height: unit100,
+        height: unit60,
         alignSelf: "center",
       }}
       source={LOADING_ANIM}
@@ -181,11 +179,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     />;
   }
 
-  // useEffect(() => {
-  //   if (loadMore) {
-  //     loadMore(page);
-  //   }
-  // }, [page]);
 
   return (
     <>
@@ -195,20 +188,16 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           flex: 1,
         }}
       >
-        <FlatList
+        <BidirectionalFlatList
           style={{
             paddingTop: unit24,
           }}
-          maxToRenderPerBatch={15}
-          showsHorizontalScrollIndicator={false}
           data={posts}
-          ListFooterComponent={renderFooterView()}
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={loadPosts} />
-          }
-          onEndReached={loadMore}
+          keyExtractor={(item, index) => String(item.id + "index" + index)}
+          onEndReached={async () => {
+             await loadMore()
+          }}
+          FooterLoadingIndicator={renderFooterView}
           onEndReachedThreshold={0.5}
           renderItem={({ item, index }) => {
             return <StatusItem
@@ -231,13 +220,14 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               }}
             />;
           }}
-        />
-
-        {/*<InfiniteFlatList*/}
-        {/*  getLoadMore={loadMore}*/}
-        {/*  getRefresh={refreshData}*/}
-        {/*  renderItem={posts}*/}
-        {/*/>*/}
+          onStartReached={async ()=>{}}
+          refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={loadPosts}
+          />
+        }
+          />
 
       </View>
 
@@ -371,9 +361,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         </PressView>
       </BottomSheet>
 
-      {
-        isLoading && <AppLoading isOverlay/>
-      }
+      {/*{*/}
+      {/*  isLoading && <AppLoading isOverlay/>*/}
+      {/*}*/}
 
     </>
   );

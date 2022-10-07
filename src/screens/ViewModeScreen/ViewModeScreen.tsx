@@ -15,6 +15,7 @@ import { setTheme, ThemeType } from "../../store/slice/settingSlice";
 import useScreenState from "../../hooks/useScreenState";
 import { useAppDispatch } from "../../store/store";
 import SelectItem from "../../components/SelectItem/SelectItem";
+import AppLoading from "../../components/Loading/AppLoading";
 
 
 const ViewModeScreen: React.FC = () => {
@@ -43,6 +44,9 @@ const ViewModeScreen: React.FC = () => {
         barStyle={ theme === 'light' ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
+      {
+        isLoading && <AppLoading isOverlay/>
+      }
       <AppBar
         title={language?.viewMode}
         leftIcon={IC_ARROWLEFT}

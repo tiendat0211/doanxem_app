@@ -71,6 +71,7 @@ const HomeScreen: React.FC = () => {
             />
 
             <TabView
+              swipeEnabled={false}
               navigationState={{ index, routes }}
               renderScene={renderScene}
               onIndexChange={setIndex}

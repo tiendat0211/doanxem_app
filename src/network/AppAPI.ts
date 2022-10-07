@@ -8,6 +8,7 @@ import { Asset } from "react-native-image-picker";
 export const FIRST_PAGE = 1;
 import fs from "react-native-fs";
 import AppConfig from "../utils/AppConfig";
+import { CommentModel } from "../model/ApiModel/CommentModel";
 
 
 export function login(email: string, password: string) {
@@ -96,4 +97,18 @@ export function createPost(token: string, title: string, imageAssets: Asset, ) {
   };
 
   return fetch(AppConfig.baseURL + "v1/posts/store", requestOptions)
+}
+
+export function postReaction(post_uuid: string, reaction: string) {
+  return apiClient.post<BaseResponse<PostModel>>("v1/posts/reaction", {
+    post_uuid,
+    reaction,
+  });
+}
+
+export function postComment(post_uuid: string, content: string) {
+  return apiClient.post<BaseResponse<CommentModel>>("v1/comments/store", {
+    post_uuid,
+    content,
+  });
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, RefreshControl, SafeAreaView, ScrollView, StatusBar, TextInput, View } from "react-native";
+import { Alert, Keyboard, RefreshControl, SafeAreaView, ScrollView, StatusBar, TextInput, View } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import AppColors from "../../styles/AppColors";
@@ -15,7 +15,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import {getPostDetail } from "../../network/AppAPI";
+import { getPostDetail, postComment } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import StatusItem2 from "../../components/StatusItem/StatusItem2";
@@ -25,6 +25,7 @@ import EmptyView from "../../components/EmptyView/EmptyView";
 import EmptyViewForList from "../../components/EmptyViewForList/EmptyViewForList";
 import AppText from "../../components/AppText/AppText";
 import { fontSize18, fontSize20 } from "../../styles/AppFonts";
+import { showToastErrorMessage } from "../../utils/Toaster";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -60,6 +61,20 @@ const DetailPostScreen: React.FC = () => {
 
     });
   },[])
+
+  async function comment(post_uuid: string, content: string){
+    try {
+      const res = await postComment(post_uuid,content);
+      if (ApiHelper.isResSuccess(res)) {
+        await loadPostDetail(post_uuid)
+      }else {
+        showToastErrorMessage(res?.data.message)
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
 
   return (
     <>
@@ -130,14 +145,15 @@ const DetailPostScreen: React.FC = () => {
         </ScrollView>
 
         <AppInput
-          onPressSend={() => {}}
+          onPressSend={async () => {
+            await comment(postDetail?.post_uuid||'',userComment);
+            setUserComment('');
+            Keyboard.dismiss();
+          }}
           onChangeText={ (text) => setUserComment(text) }
           value={userComment}
         />
 
-        {
-          isLoading? <AppLoading isOverlay/> : null
-        }
 
       </SafeAreaView>
     </>

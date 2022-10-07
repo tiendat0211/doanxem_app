@@ -13,6 +13,8 @@ import { NavigationRef } from "../../../App";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
 import AppStyles from "../../styles/AppStyles";
 import { PostModel } from "../../model/ApiModel/PostModel";
+import VideoPlayer from "react-native-video-player";
+import FastImage from "react-native-fast-image";
 
 interface StatusItemProps{
   post?: PostModel,
@@ -32,10 +34,13 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   // const [imgHeight, setImgHeight] = useState(0)
   //
   // function getSize(){
-  //   Image.getSize(post?.image || '',(width, height) => {
-  //     setImgWidth(width);
-  //     setImgHeight(height);
-  //   })
+  //   if ( post?.image?.endsWith('mp4')){
+  //     Image.getSize(post?.image || '',(width, height) => {
+  //       setImgWidth(width);
+  //       setImgHeight(height);
+  //     })
+  //   }
+  //
   // }
   //
   // useEffect(()=>{
@@ -152,15 +157,27 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         <PressView
           onPress={onPressImage}
         >
-          <Image
-            source={{
-              uri: post?.image
-            }}
-            style={{
-              width: Dimensions.get('screen').width,
-              height: Dimensions.get('screen').width
-            }}
-          />
+          {
+            post?.image.endsWith('mp4')
+              ? <VideoPlayer
+                video={{ uri: post?.image}}
+                videoWidth={1600}
+                videoHeight={1600}
+                // thumbnail={{ uri: IC_CLOSE }}
+                showDuration={true}
+                defaultMuted={true}
+              />:
+              <FastImage
+                source={{
+                  uri: post?.image
+                }}
+                style={{
+                  width: Dimensions.get('screen').width,
+                  height: Dimensions.get('screen').width,
+                }}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+          }
         </PressView>
 
         {/* Footer */}
@@ -173,7 +190,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         >
           <Reaction
             total_reactions={post?.total_reactions}
-            post_uuid={post?.post_uuid}
+            post_uuid={post?.post_uuid || ''}
             userReaction={post?.user_action}
           />
 
