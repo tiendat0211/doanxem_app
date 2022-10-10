@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "731790390985",
+    "project_id": "doan-xem",
+    "storage_bucket": "doan-xem.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731790390985:android:356c135cfcc1e0e27b3f18",
+        "android_client_info": {
+          "package_name": "com.doanxem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "731790390985-qoipo931llgdhg9qmidchva93k083j0v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_sWHeWdbmeC4BtQxA-8OJjsPQr8ZMb2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "731790390985-qoipo931llgdhg9qmidchva93k083j0v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

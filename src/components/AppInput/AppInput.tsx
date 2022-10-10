@@ -26,10 +26,12 @@ interface AppInput {
   onPressMedia?: () => void,
   onChangeText: (value: string) => void,
   value: string,
+  isFocus?: boolean,
+  setFocus?:(isFocus: boolean)=>void,
 }
 
 const AppInput: React.FC<AppInput> = (props) => {
-  const { onPressSend,onPressMedia,  onChangeText, value} = props;
+  const { onPressSend,onPressMedia,  onChangeText, value,isFocus,setFocus} = props;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [isBlur,setBlur] = useState(true)
@@ -76,10 +78,14 @@ const AppInput: React.FC<AppInput> = (props) => {
           value={value}
           onBlur={() => {
             setBlur(true);
+            if (setFocus) {
+              setFocus(false);
+            }
           }}
           onFocus={() => {
             setBlur(false);
           }}
+          autoFocus={isFocus}
         />
 
         <PressView

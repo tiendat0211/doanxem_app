@@ -18,7 +18,7 @@ function AppLoading(props: AppLoadingProps) {
     <View
       {...props}
       style={[styles.container, {
-        backgroundColor: isOverlay ? AppColors.color_transparent_dark : colorPallet.color_background_1,
+        backgroundColor: isOverlay ? colorPallet.color_background_1 : colorPallet.color_background_1,
       }, overlayStyle]}>
       <LottieView
         style={styles.loadingView}

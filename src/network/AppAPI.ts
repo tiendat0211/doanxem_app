@@ -112,3 +112,10 @@ export function postComment(post_uuid: string, content: string) {
     content,
   });
 }
+
+export function savePost(post_id: number, action: string) {
+  return apiClient.post<BaseResponse<CommentModel>>("v1/posts/save-post", {
+    post_id,
+    action,
+  });
+}

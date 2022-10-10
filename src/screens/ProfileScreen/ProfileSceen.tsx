@@ -5,8 +5,20 @@ import useAuth from "../../hooks/useAuth";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { unit12, unit16, unit2, unit20, unit24, unit32, unit4, unit6, unit68, unit72 } from "../../utils/appUnit";
-import { IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_LOGO, IC_NEWTAB, IC_TOPTAB, IMG_LOGO } from "../../assets/path";
+import {
+  unit12,
+  unit16,
+  unit2,
+  unit20,
+  unit24,
+  unit32,
+  unit4,
+  unit48, unit56,
+  unit6,
+  unit68,
+  unit72,
+} from "../../utils/appUnit";
+import { IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_LOGO, IC_NEWTAB, IC_TOPTAB, IMG_LOGO } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
 import { fontSize14, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
@@ -155,6 +167,27 @@ const ProfileScreen: React.FC = () => {
           }}
         />
       </BottomSheet>
+
+      <PressView
+        style={{
+          position: 'absolute',
+          bottom: unit32,
+          right: unit20,
+          // backgroundColor:'red',
+        }}
+        onPress={() => {
+          NavigationRef?.current?.navigate('CreatePostScreen')
+        }}
+      >
+        <Image
+          source={IC_CREATE}
+          style={{
+            width: unit48,
+            height: unit48,
+            borderRadius: unit56,
+          }}
+        />
+      </PressView>
 
 
     </SafeAreaView>

@@ -11,7 +11,7 @@ import AppBar from "../../components/AppBar/AppBar";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import {
   unit1,
-  unit10,
+  unit10, unit100,
   unit12,
   unit132,
   unit14,
@@ -35,6 +35,7 @@ import useAuth from "../../hooks/useAuth";
 import VideoPlayer from "react-native-video-player";
 import { createPost } from "../../network/AppAPI";
 import AppButton from "../../components/AppButton/AppButton";
+import Snackbar from "react-native-snackbar";
 
 const options = {
   mediaType: 'mixed',
@@ -185,7 +186,10 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         showToastErrorMessage(resJson?.message);
       }
     } catch (e) {
-      setError(e);
+      Snackbar.show({
+        text: `Server Error!`,
+        duration: Snackbar.LENGTH_SHORT,
+      });
     } finally {
     }
   }
@@ -198,6 +202,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         video={{ uri: image.uri }}
         videoWidth={1600}
         videoHeight={900}
+        style={{
+          marginTop: unit12
+        }}
         // thumbnail={{ uri: IC_CLOSE }}
       />;
     } else {
