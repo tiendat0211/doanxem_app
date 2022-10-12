@@ -19,7 +19,7 @@ export const checkEqualPwd = (input: string, compareText: string): [boolean, str
 };
 
 export const checkPhoneValidFn = (input: string): [boolean, string?] => {
-  return [input.length >= 8, "Số điện thoại chưa đúng format (<8 char)"];
+  return [input.length >= 10, "Số điện thoại phải có 10 số"];
 };
 
 export const checkPhoneValidFirstNumberFn = (input: string): [boolean, string?] => {

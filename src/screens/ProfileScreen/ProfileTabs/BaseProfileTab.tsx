@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, FlatList, ListRenderItem, RefreshControl, View } from "react-native";
 import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
@@ -9,7 +9,11 @@ import { NavigationRef } from "../../../../App";
 import { IC_BLOCKUSER, IC_DOWNLOAD, IC_HIDE, IC_WARNING, IMG_LOGO, IMG_POST } from "../../../assets/path";
 import AppText from "../../../components/AppText/AppText";
 import { AppFonts, fontSize16 } from "../../../styles/AppFonts";
-import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetFlatList,
+  BottomSheetVirtualizedList,
+} from "@gorhom/bottom-sheet";
 import SelectItem from "../../../components/SelectItem/SelectItem";
 import RNFetchBlob from "rn-fetch-blob";
 import useScreenState from "../../../hooks/useScreenState";
@@ -52,6 +56,24 @@ const BaseProfileTab: React.FC<BaseProfileTabProps> = (props) => {
       });
     }, []),
   );
+  // render
+  const renderItem = useCallback(
+    ({ item, index }) => (
+      <View
+        style={{
+          flexDirection:'row'
+        }}
+      >
+        <UserPostItem
+          key={item.id}
+          post={item}
+        />
+      </View>
+
+    ),
+    []
+  );
+
 
   return (
     <>
@@ -63,19 +85,18 @@ const BaseProfileTab: React.FC<BaseProfileTabProps> = (props) => {
           paddingHorizontal: unit20
         }}
       >
-
-        <FlatList
+        <BottomSheetFlatList
           refreshControl={
             <RefreshControl
               refreshing={isLoading}
               onRefresh={loadUserPosts} />
           }
           data={userPosts}
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           renderItem={({item, index}) =>{
             return <UserPostItem
               key={item.id}
-              img_src={item.image}
+              post={item}
             />
           }}
           numColumns={3}

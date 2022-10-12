@@ -34,7 +34,8 @@ export function getProfile() {
 export type PostType =
   | "hot"
   | "new"
-  | "top";
+  | "top"
+  | "posts";
 
 export function getListPost(page: number, status: PostType) {
   return apiClient.get<TypePostModel<PostModel[]>>("v1/" + status, {
@@ -114,8 +115,24 @@ export function postComment(post_uuid: string, content: string) {
 }
 
 export function savePost(post_id: number, action: string) {
-  return apiClient.post<BaseResponse<CommentModel>>("v1/posts/save-post", {
+  return apiClient.post<BaseResponse<any>>("v1/posts/save-post", {
     post_id,
     action,
+  });
+}
+
+export function getUserProfile(uuid: string) {
+  return apiClient.get<BaseResponse<UserModel>>("v1/user", {
+    params:{
+      uuid,
+    }
+  });
+}
+
+export function changePassword(password: string, newpassword: string, confirm: string) {
+  return apiClient.post<BaseResponse<UserModel>>("v1/reset-password", {
+    password: password,
+    new_password: newpassword,
+    confirm_password: confirm,
   });
 }

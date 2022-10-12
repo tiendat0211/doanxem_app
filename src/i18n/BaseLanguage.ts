@@ -69,7 +69,7 @@ interface BaseLanguage {
   detailScreen:string;
   placeholder_input: string;
   accountBlocked: string;
-
+  placeholder_phone: string;
 }
 
 export default BaseLanguage;

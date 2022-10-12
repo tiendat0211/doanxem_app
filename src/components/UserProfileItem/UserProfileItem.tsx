@@ -12,7 +12,7 @@ import AppText from "../AppText/AppText";
 import useAuth from "../../hooks/useAuth";
 
 interface UserProfileItem {
-    img_src: ImageSourcePropType,
+    img_src: string | undefined,
     name?: string,
     email?: string,
     style?: ViewStyle;
@@ -34,7 +34,9 @@ const UserProfileItem: React.FC<UserProfileItem> = (props) => {
                 }]}
             >
                 <Image
-                    source={img_src}
+                    source={{
+                      uri: img_src
+                    }}
                     style={{
                         height: unit72,
                         width: unit72,

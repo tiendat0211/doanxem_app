@@ -77,6 +77,7 @@ export const IC_SEND= require('./icons/ic_send.png');
 export const IC_DOWNLOAD= require('./icons/ic_download.png');
 export const IC_WARNING= require('./icons/ic_warning.png');
 export const IC_HIDE= require('./icons/ic_eyeClosed.png');
+export const IC_SAVED= require('./icons/ic_saved.png');
 
 // Files
 export const LOADING_ANIM = require('./loading-animation.json');

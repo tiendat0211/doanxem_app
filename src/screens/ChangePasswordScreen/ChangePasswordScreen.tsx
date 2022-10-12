@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
  KeyboardAvoidingView,
   Platform,
@@ -32,18 +32,61 @@ import AppButton from "../../components/AppButton/AppButton";
 import PressView from "../../components/PressView/PressView";
 import AppText from "../../components/AppText/AppText";
 import { fontSize18 } from "../../styles/AppFonts";
+import { passLengthValidFn } from "../../components/ValidateEditText/ValidateFunctions";
+import { changePassword, register } from "../../network/AppAPI";
+import ApiHelper from "../../utils/ApiHelper";
+import { showToastError, showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
+import useScreenState from "../../hooks/useScreenState";
+import AppLoading from "../../components/Loading/AppLoading";
 
 const ChangPasswordScreen: React.FC = () => {
 
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
-  const [newPassAgain, setNewPassAgain] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [showOldPass, setShowOldPass] = useState(true);
   const [showNewPass, setShowNewPass] = useState(true);
-  const [showNewPassAgain, setShowNewPassAgain] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(true);
+  const [oldValid, setOldValid] = useState(false);
+  const [newValid, setNewValid] = useState(false);
+  const [confirmValid, setConfirmValid] = useState(false);
+  const [isValid, setValid] = useState(false);
 
   const { language } = useLanguage();
-  const {colorPallet, theme} = useTheme()
+  const {colorPallet, theme} = useTheme();
+
+  const confirmPassValidFn = (input: string): [boolean, string?] => {
+    return [input === newPass, "Mật khẩu không khớp"];
+  };
+
+  const confirmNewPassValidFn = (input: string): [boolean, string?] => {
+    return [input !== oldPass, "Mật khẩu không được trùng với mật khẩu cũ"];
+  };
+
+  const { isLoading, setLoading, mounted } = useScreenState();
+
+  async function changePass() {
+    try {
+      const res = await changePassword(oldPass,newPass,confirm);
+      if (ApiHelper.isResSuccess(res)) {
+       showToastMsg(res?.data?.message)
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      showToastError(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() =>{
+    if ( !newValid || !oldValid ||  !confirmValid){
+      setValid(false)
+    }else {
+      setValid(true)
+    }
+  },[newValid ,oldValid,confirmValid])
 
 
   return <SafeAreaView
@@ -89,6 +132,7 @@ const ChangPasswordScreen: React.FC = () => {
             }}
             placeholder={language?.oldPass}
             checkValidFunctions={[
+              passLengthValidFn
             ]}
             leftIcon={IC_OLDPASS}
             tintColorIcon={colorPallet.color_text_gray_3}
@@ -97,8 +141,8 @@ const ChangPasswordScreen: React.FC = () => {
               setShowOldPass(!showOldPass);
             }}
             secureTextEntry={showOldPass}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={oldValid}
+            setValid={setOldValid}
           />
 
           <ValidateEditText
@@ -110,6 +154,8 @@ const ChangPasswordScreen: React.FC = () => {
             }}
             placeholder={language?.newPass}
             checkValidFunctions={[
+              passLengthValidFn,
+              confirmNewPassValidFn,
             ]}
             leftIcon={IC_LOCK}
             tintColorIcon={colorPallet.color_text_gray_3}
@@ -118,54 +164,53 @@ const ChangPasswordScreen: React.FC = () => {
               setShowNewPass(!showNewPass);
             }}
             secureTextEntry={showNewPass}
-            // isValid={phoneValid}
-            // setValid={setPhoneValid}
+            isValid={newValid}
+            setValid={setNewValid}
           />
 
         <ValidateEditText
           colorPallet={colorPallet}
-          textValue={newPassAgain}
-          setValue={setNewPassAgain}
+          textValue={confirm}
+          setValue={setConfirm}
           contentStyle={{
             marginBottom: unit40,
           }}
           placeholder={language?.newPassAgain}
           checkValidFunctions={[
+            confirmPassValidFn,
+            passLengthValidFn,
+            confirmNewPassValidFn
           ]}
           leftIcon={IC_LOCK}
           tintColorIcon={colorPallet.color_text_gray_3}
-          rightIcon={!showNewPassAgain ? IC_EYE_SLASH : IC_EYE}
+          rightIcon={!showConfirm ? IC_EYE_SLASH : IC_EYE}
           onPress={() => {
-            setShowNewPassAgain(!showNewPassAgain);
+            setShowConfirm(!showConfirm);
           }}
-          secureTextEntry={showNewPassAgain}
-          // isValid={phoneValid}
-          // setValid={setPhoneValid}
+          secureTextEntry={showConfirm}
+          isValid={confirmValid}
+          setValid={setConfirmValid}
         />
 
-        <PressView
+
+        <AppButton
+          buttonTitle={language?.register}
           style={{
-            backgroundColor: AppColors.color_primary,
-            borderColor: AppColors.color_primary,
-            borderRadius: unit5,
-            opacity: 0.3,
+            backgroundColor: isValid? AppColors.color_primary : AppColors.color_opacity,
           }}
-        >
-          <AppText
-            fontType={"bold"}
-            style={{
-              color: AppColors.color_white,
-              textAlign: "center",
-              fontSize: fontSize18,
-              paddingVertical: unit16
-            }}>
-            {language?.save}
-          </AppText>
-        </PressView>
+          onPress={
+            changePass
+          }
+          disabled={!isValid}
+        />
 
       </ScrollView>
 
     </KeyboardAvoidingView>
+
+    {
+      isLoading? <AppLoading isOverlay/> : null
+    }
   </SafeAreaView>;
 };
 

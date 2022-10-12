@@ -26,7 +26,8 @@ export interface PostModel {
   total_interactive: number;
   user: UserModel;
   post_reactions: PostReaction[];
-  comments: CommentModel[]
+  comments: CommentModel[];
+  isSaved: boolean;
 }
 
 export interface MostReaction {

@@ -28,7 +28,7 @@ const SearchComponent: React.FC<SearchComponentProps> = (
                 paddingHorizontal: unit16,
                 paddingVertical: unit6,
                 marginHorizontal: unit8,
-                backgroundColor : selectedType === item.type ? 'blue' : undefined
+                backgroundColor : selectedType === item.type ? AppColors.color_primary : undefined
             }}
             onPress={ () => setSelectedType(item.type)}
         >

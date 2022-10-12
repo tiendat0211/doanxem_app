@@ -55,13 +55,13 @@ const HomeScreen: React.FC = () => {
             <AppBar
               title={language?.Home}
               leftIcon={IC_DRAWER}
-              rightIcon={IC_FILTER}
+              // rightIcon={IC_FILTER}
               leftIconOnClick={() => {
                 NavigationRef.current?.dispatch(DrawerActions.openDrawer)
               }}
-              rightIconOnClick={() => {
-                NavigationRef.current?.navigate('FilterScreen')
-              }}
+              // rightIconOnClick={() => {
+              //   NavigationRef.current?.navigate('FilterScreen')
+              // }}
               titleStyle={{
                 color: colorPallet.color_text_blue_1
               }}

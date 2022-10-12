@@ -17,7 +17,16 @@ import AppText from "../AppText/AppText";
 import { fontSize12, fontSize14, fontSize16 } from "../../styles/AppFonts";
 import { useTheme } from "../../hooks/useTheme";
 import PressView from "../PressView/PressView";
-import { IC_COMMENT, IC_OPTION, IC_REACTION, IC_SAVE, IC_SHAREPOST, IMG_LOGO, IMG_NO_PICTURE } from "../../assets/path";
+import {
+  IC_COMMENT,
+  IC_OPTION,
+  IC_REACTION,
+  IC_SAVE,
+  IC_SAVED,
+  IC_SHAREPOST,
+  IMG_LOGO,
+  IMG_NO_PICTURE,
+} from "../../assets/path";
 import FooterItem from "../FooterItem/FooterItem";
 import { useLanguage } from "../../hooks/useLanguage";
 import Reaction from "../../screens/Reaction/Reaction";
@@ -72,7 +81,13 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         },style]}
       >
         {/* User of Status */}
-        <View
+        <PressView
+          onPress={() => {
+            NavigationRef?.current?.navigate("AnotherUserScreen",{
+              user_uuid: post?.user?.user_uuid || ""
+              }
+            )
+          }}
           style={{
             flexDirection: 'row',
             alignItems:'center',
@@ -134,7 +149,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
             />
           </PressView>
 
-        </View>
+        </PressView>
 
         {/* Content */}
         <PressView
@@ -238,7 +253,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           />
 
           <FooterItem
-            img={IC_SAVE}
+            img={ post?.isSaved?  IC_SAVED : IC_SAVE}
             onPress={onPressSave}
           />
 

@@ -53,27 +53,27 @@ const data: SettingItemProps[] = [
       NavigationRef.current?.navigate("ViewModeScreen");
     },
   },
-  {
-    iconLeft: IC_BELL,
-    title: 'Trung tâm thông báo',
-    onPress: () => {
-      NavigationRef.current?.navigate('NotiSettingScreen');
-    },
-  },
-  {
-    iconLeft: IC_SHARE,
-    title: 'Chia sẻ ứng dụng',
-    onPress: () => {
-
-    },
-  },
-  {
-    iconLeft: IC_STAR,
-    title: 'Đánh giá ứng dụng',
-    onPress: () => {
-
-    },
-  },
+  // {
+  //   iconLeft: IC_BELL,
+  //   title: 'Trung tâm thông báo',
+  //   onPress: () => {
+  //     NavigationRef.current?.navigate('NotiSettingScreen');
+  //   },
+  // },
+  // {
+  //   iconLeft: IC_SHARE,
+  //   title: 'Chia sẻ ứng dụng',
+  //   onPress: () => {
+  //
+  //   },
+  // },
+  // {
+  //   iconLeft: IC_STAR,
+  //   title: 'Đánh giá ứng dụng',
+  //   onPress: () => {
+  //
+  //   },
+  // },
 ]
 
 
@@ -81,6 +81,7 @@ const SettingScreen: React.FC = () => {
   const { colorPallet , theme } = useTheme()
   const { language } = useLanguage();
   const { authData, signOut } = useAuth();
+  const user = authData?.user
 
   return (
     <SafeAreaView
@@ -107,9 +108,9 @@ const SettingScreen: React.FC = () => {
         style={{flex: 1}}
       >
         <UserProfileItem
-          img_src={IMG_LOGO}
-          name={"_Nghiencoliemsi_"}
-          email={"@ngoclongg2010"}
+          img_src={user?.avatar}
+          name={user?.name}
+          email={user?.email}
           style={{
             marginTop: unit14,
           }}
