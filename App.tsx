@@ -30,6 +30,7 @@ import DetailImage from "./src/screens/DetailImage/DetailImage";
 import { PostModel } from "./src/model/ApiModel/PostModel";
 import AnotherUserScreen from "./src/screens/AnotherUserScreen/AnotherUserScreen";
 
+
 export type RootStackParamList = {
   SplashScreen: undefined,
   LoginScreen: undefined,
