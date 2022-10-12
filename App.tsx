@@ -25,7 +25,9 @@ import DetailProfileScreen from "./src/screens/DetailProfileScreen/DetailProfile
 import ChangPasswordScreen from "./src/screens/ChangePasswordScreen/ChangePasswordScreen";
 import { useTheme } from "./src/hooks/useTheme";
 import CreatePostScreen from "./src/screens/CreatePostScreen/CreatePostScreen";
-import DetailStatusScreen from "./src/screens/DetailPostScreen/DetailStatusScreen";
+import DetailStatusScreen from "./src/screens/DetailPostScreen/DetailPostScreen";
+import DetailImage from "./src/screens/DetailImage/DetailImage";
+import { PostModel } from "./src/model/ApiModel/PostModel";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -49,6 +51,9 @@ export type RootStackParamList = {
   CreatePostScreen: undefined,
   DetailPostScreen: {
     postID: string,
+  },
+  DetailImage: {
+    img_url:string,
   },
 };
 
@@ -124,6 +129,9 @@ const App = () => {
               <RootStack.Screen
                 name={"DetailPostScreen"}
                 component={DetailStatusScreen} />
+              <RootStack.Screen
+                name={"DetailImage"}
+                component={DetailImage} />
 
             </>
             :

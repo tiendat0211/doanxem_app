@@ -1,11 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, Image, ImageProps, StyleProp, Text, View, ViewStyle } from "react-native";
-import { unit1, unit100, unit12, unit16, unit18, unit20, unit24, unit300, unit40, unit8 } from "../../utils/appUnit";
+import {
+  unit1,
+  unit100,
+  unit12,
+  unit150,
+  unit16,
+  unit18,
+  unit20,
+  unit24,
+  unit300,
+  unit40, unit5,
+  unit8,
+} from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
 import { fontSize12, fontSize14, fontSize16 } from "../../styles/AppFonts";
 import { useTheme } from "../../hooks/useTheme";
 import PressView from "../PressView/PressView";
-import { IC_COMMENT, IC_OPTION, IC_REACTION, IC_SAVE, IC_SHAREPOST, IMG_LOGO } from "../../assets/path";
+import { IC_COMMENT, IC_OPTION, IC_REACTION, IC_SAVE, IC_SHAREPOST, IMG_LOGO, IMG_NO_PICTURE } from "../../assets/path";
 import FooterItem from "../FooterItem/FooterItem";
 import { useLanguage } from "../../hooks/useLanguage";
 import Reaction from "../../screens/Reaction/Reaction";
@@ -15,6 +27,8 @@ import AppStyles from "../../styles/AppStyles";
 import { PostModel } from "../../model/ApiModel/PostModel";
 import VideoPlayer from "react-native-video-player";
 import FastImage from "react-native-fast-image";
+import PopUp from "../PopUp/PopUp";
+import AppColors from "../../styles/AppColors";
 
 interface StatusItemProps{
   post?: PostModel,
@@ -22,11 +36,12 @@ interface StatusItemProps{
   onPressComment?: () => void
   onPressImage?: () => void
   openBottomSheet?: () => void
+  onPressSave?: () => void
 }
 
 const StatusItem: React.FC<StatusItemProps> = (props) => {
 
-  const { post, style,onPressComment,onPressImage,openBottomSheet} = props;
+  const { post, style,onPressComment,onPressImage,openBottomSheet,onPressSave} = props;
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
@@ -34,7 +49,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   // const [imgHeight, setImgHeight] = useState(0)
   //
   // function getSize(){
-  //   if ( post?.image?.endsWith('mp4')){
+  //   if ( !post?.image?.endsWith('mp4')){
   //     Image.getSize(post?.image || '',(width, height) => {
   //       setImgWidth(width);
   //       setImgHeight(height);
@@ -159,14 +174,24 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         >
           {
             post?.image.endsWith('mp4')
-              ? <VideoPlayer
+              ?
+              <VideoPlayer
                 video={{ uri: post?.image}}
                 videoWidth={1600}
                 videoHeight={1600}
-                // thumbnail={{ uri: IC_CLOSE }}
                 showDuration={true}
                 defaultMuted={true}
-              />:
+                thumbnail={{uri: post?.image}}
+                style={{
+                  backgroundColor: AppColors.color_transparent_dark
+                }}
+                customStyles={{
+                  playArrow: {
+                    color: AppColors.color_white,
+                  }
+                }}
+              />
+            :
               <FastImage
                 source={{
                   uri: post?.image
@@ -214,6 +239,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
           <FooterItem
             img={IC_SAVE}
+            onPress={onPressSave}
           />
 
         </View>

@@ -15,6 +15,7 @@ import AppStyles from "../../styles/AppStyles";
 import { PostModel } from "../../model/ApiModel/PostModel";
 import VideoPlayer from "react-native-video-player";
 import FastImage from "react-native-fast-image";
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 
 
@@ -23,11 +24,12 @@ interface StatusItemProps{
   style?: StyleProp<ViewStyle>,
   onPressComment?: () => void
   onPressImage?: () => void
+  onPressSave?: () => void
 }
 
-const StatusItem: React.FC<StatusItemProps> = (props) => {
+const StatusItem2: React.FC<StatusItemProps> = (props) => {
 
-  const { post, style,onPressComment,onPressImage} = props;
+  const { post, style,onPressComment,onPressImage,onPressSave} = props;
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
@@ -133,7 +135,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                 videoWidth={1600}
                 videoHeight={1600}
                 defaultMuted={true}
-                showDuration={false}
+                showDuration={true}
               />:
               <FastImage
                 source={{
@@ -183,6 +185,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
           <FooterItem
             img={IC_SAVE}
+            onPress={onPressSave}
           />
 
         </View>
@@ -192,4 +195,4 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   )
 };
 
-export default StatusItem;
+export default StatusItem2;

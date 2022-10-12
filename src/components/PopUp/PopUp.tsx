@@ -29,7 +29,7 @@ const PopUp: React.FC<UserPostItem> = (props) => {
         backgroundColor: AppColors.color_transparent_dark,
         width: Dimensions.get("screen").width,
         height: Dimensions.get("screen").height,
-      }]}>
+      }, style]}>
       <View
         style={[{
           backgroundColor: colorPallet.color_background_1,
@@ -37,7 +37,7 @@ const PopUp: React.FC<UserPostItem> = (props) => {
           justifyContent: "center",
           width: Dimensions.get("screen").width-40,
           paddingVertical: unit16
-        }, style]}
+        }]}
       >
         <AppText
           fontType={"bold"}

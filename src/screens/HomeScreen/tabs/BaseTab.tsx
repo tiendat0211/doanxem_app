@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Animated, ListRenderItem, RefreshControl, Text, View, Image } from "react-native";
+import {
+  Alert,
+  Animated,
+  ListRenderItem,
+  RefreshControl,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Platform,
+  StatusBar,
+} from "react-native";
 import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
 import { useLanguage } from "../../../hooks/useLanguage";
@@ -8,11 +19,11 @@ import {
   unit1,
   unit10,
   unit100,
-  unit12,
+  unit12, unit15, unit150,
   unit16,
   unit17,
   unit20,
-  unit24,
+  unit24, unit250,
   unit400,
   unit50, unit60,
 } from "../../../utils/appUnit";
@@ -26,12 +37,13 @@ import RNFetchBlob from "rn-fetch-blob";
 import useScreenState from "../../../hooks/useScreenState";
 import { PostModel } from "../../../model/ApiModel/PostModel";
 import StatusItem from "../../../components/StatusItem/StatusItem";
-import { blockUser, FIRST_PAGE, getListPost, PostType } from "../../../network/AppAPI";
+import { blockUser, FIRST_PAGE, getListPost, PostType, savePost } from "../../../network/AppAPI";
 import ApiHelper from "../../../utils/ApiHelper";
 import { showToastErrorMessage, showToastMsg } from "../../../utils/Toaster";
 import Snackbar from "react-native-snackbar";
 import LottieView from "lottie-react-native";
 import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
+import PopUp from "../../../components/PopUp/PopUp";
 
 interface BaseTabProps {
   type: PostType;
@@ -48,7 +60,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [posts, setPosts] = useState<PostModel[]>([])
   const [blockID, setBlockID] = useState(0)
   const [isHasMore, setHasMore] = useState(true);
-  const [postID, setPostID] = useState(true);
+  const [postID, setPostID] = useState(0);
+  const [isOpen, setOpen] = useState(false);
+  const [isSaveButton, setSaveButton] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -154,6 +168,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           text: `Chặn người dùng thành công`,
           duration: Snackbar.LENGTH_SHORT,
         });
+        await loadPosts();
       } else {
         showToastErrorMessage(res.data.message);
       }
@@ -177,6 +192,24 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       autoPlay
       loop
     />;
+  }
+
+  async function save(post_id: number, action: string){
+    try {
+      const res = await savePost(post_id,action);
+      if (ApiHelper.isResSuccess(res)) {
+        Snackbar.show({
+          text: `Lưu bài viết thành công`,
+          duration: Snackbar.LENGTH_SHORT,
+        });
+        await loadPosts();
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
   }
 
 
@@ -217,6 +250,11 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
                 openBottomSheet();
                 setImgSrc(item?.image)
                 setBlockID(item?.user?.id)
+              }}
+              onPressSave={()=>{
+                setOpen(true);
+                setSaveButton(true);
+                setPostID(item?.id)
               }}
             />;
           }}
@@ -310,9 +348,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               fontSize: unit16,
             }}
             onPress={async ()=>{
-              await blockUserByID(blockID);
-              closeBottomSheet();
-              await loadPosts();
+             setOpen(true);
+             setSaveButton(false);
             }}
           />
         </View>
@@ -360,6 +397,33 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           </AppText>
         </PressView>
       </BottomSheet>
+
+      {
+        isOpen ?
+          <PopUp
+            style={{
+              height: Dimensions.get("screen").height - unit150 ,
+            }}
+            mess={isSaveButton? 'Bạn có muốn lưu bài viết này?' :'Bạn muốn chặn người dùng này?'}
+            rightButtonTitle={'Đồng ý'}
+            rightButtonPress={async ()=> {
+              if (isSaveButton){
+                setOpen(false);
+                await save(postID,'save');
+              }else {
+                setOpen(false);
+                closeBottomSheet();
+                await blockUserByID(blockID);
+              }
+
+            }}
+            leftButtonTitle={'Từ chối'}
+            leftButtonPress={()=>{
+              setOpen(false);
+            }}
+          />
+          : null
+      }
 
       {/*{*/}
       {/*  isLoading && <AppLoading isOverlay/>*/}

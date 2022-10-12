@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Keyboard, RefreshControl, SafeAreaView, ScrollView, StatusBar, TextInput, View } from "react-native";
+import {
+  Alert, Dimensions,
+  Keyboard,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  ScrollViewProps,
+  StatusBar,
+  TextInput,
+  View,
+} from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import AppColors from "../../styles/AppColors";
@@ -15,7 +25,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { getPostDetail, postComment } from "../../network/AppAPI";
+import { getPostDetail, postComment, savePost } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import StatusItem2 from "../../components/StatusItem/StatusItem2";
@@ -26,6 +36,9 @@ import EmptyViewForList from "../../components/EmptyViewForList/EmptyViewForList
 import AppText from "../../components/AppText/AppText";
 import { fontSize18, fontSize20 } from "../../styles/AppFonts";
 import { showToastErrorMessage } from "../../utils/Toaster";
+import PopUp from "../../components/PopUp/PopUp";
+import { unit150 } from "../../utils/appUnit";
+import Snackbar from "react-native-snackbar";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -34,10 +47,12 @@ const DetailPostScreen: React.FC = () => {
   const { postID } = useRoute<DetailStatusScreenProps>().params;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
-  const [listComment, seListComment] = useState<CommentModel[]>([])
-  const [userComment, setUserComment] = useState('')
+  const [listComment, seListComment] = useState<CommentModel[]>([]);
+  const [userComment, setUserComment] = useState('');
   const { isLoading, setLoading, error, setError, mounted } = useScreenState();
-  const [postDetail, setPostDetail] = useState<PostModel>()
+  const [postDetail, setPostDetail] = useState<PostModel>();
+  const scrollViewRef = useRef<ScrollView>(null);
+  const [isOpen, setOpen]= useState(false)
 
 
   async function loadPostDetail(post_uuid = postID) {
@@ -76,6 +91,24 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
+  async function save(post_id: number, action: string){
+    try {
+      const res = await savePost(post_id,action);
+      if (ApiHelper.isResSuccess(res)) {
+        Snackbar.show({
+          text: `Lưu bài viết thành công`,
+          duration: Snackbar.LENGTH_SHORT,
+        });
+        await loadPostDetail();
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
+
   return (
     <>
       <SafeAreaView
@@ -107,11 +140,21 @@ const DetailPostScreen: React.FC = () => {
           style={{
             flex:1,
           }}
+          ref={scrollViewRef}
         >
           {/*Status*/}
           <StatusItem2
             key={postDetail?.id}
             post={postDetail}
+            onPressImage={()=>{
+              NavigationRef.current?.navigate("DetailImage",{
+                img_url: postDetail?.image || ''
+              })
+            }}
+            onPressComment={()=>{
+              scrollViewRef.current?.scrollToEnd();
+            }}
+            onPressSave={ () => {setOpen(true)}}
           />
 
           {/*Comment*/}
@@ -146,6 +189,7 @@ const DetailPostScreen: React.FC = () => {
 
         <AppInput
           onPressSend={async () => {
+            scrollViewRef.current?.scrollToEnd();
             await comment(postDetail?.post_uuid||'',userComment);
             setUserComment('');
             Keyboard.dismiss();
@@ -153,9 +197,28 @@ const DetailPostScreen: React.FC = () => {
           onChangeText={ (text) => setUserComment(text) }
           value={userComment}
         />
-
-
       </SafeAreaView>
+      {
+        isLoading? <AppLoading isOverlay/> : null
+      }
+
+      {
+        isOpen ?
+          <PopUp
+            mess={'Bạn có muốn lưu bài viết này?'}
+            rightButtonTitle={'Đồng ý'}
+            rightButtonPress={async ()=> {
+                setOpen(false);
+                await save(postDetail?.id || 0,'save');
+            }}
+            leftButtonTitle={'Từ chối'}
+            leftButtonPress={()=>{
+              setOpen(false);
+            }}
+          />
+          : null
+      }
+
     </>
   )
 };
