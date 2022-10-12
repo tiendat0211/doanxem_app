@@ -5,7 +5,16 @@ import AppText from "../AppText/AppText";
 import { fontSize12, fontSize14, fontSize16 } from "../../styles/AppFonts";
 import { useTheme } from "../../hooks/useTheme";
 import PressView from "../PressView/PressView";
-import { IC_CLOSE, IC_COMMENT, IC_OPTION, IC_REACTION, IC_SAVE, IC_SHAREPOST, IMG_LOGO } from "../../assets/path";
+import {
+  IC_CLOSE,
+  IC_COMMENT,
+  IC_OPTION,
+  IC_REACTION,
+  IC_SAVE,
+  IC_SAVED,
+  IC_SHAREPOST,
+  IMG_LOGO,
+} from "../../assets/path";
 import FooterItem from "../FooterItem/FooterItem";
 import { useLanguage } from "../../hooks/useLanguage";
 import Reaction from "../../screens/Reaction/Reaction";
@@ -184,7 +193,7 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
           />
 
           <FooterItem
-            img={IC_SAVE}
+            img={post?.isSaved? IC_SAVED : IC_SAVE}
             onPress={onPressSave}
           />
 

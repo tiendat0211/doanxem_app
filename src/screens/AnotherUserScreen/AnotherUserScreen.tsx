@@ -1,52 +1,56 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { Button, Dimensions, Image, Platform, SafeAreaView, StatusBar, Text, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Button,
+  Dimensions,
+  FlatList,
+  Image,
+  Platform,
+  RefreshControl,
+  SafeAreaView,
+  StatusBar,
+  Text,
+  View,
+} from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
-  unit100,
   unit12,
   unit16,
-  unit2,
-  unit20, unit200,
-  unit24, unit245, unit250, unit300,
+  unit20,
+  unit24,
   unit32,
-  unit4,
   unit48, unit56,
-  unit6,
-  unit68,
-  unit72,
 } from "../../utils/appUnit";
-import { IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_LOGO, IC_NEWTAB, IC_TOPTAB, IMG_LOGO } from "../../assets/path";
-import AppText from "../../components/AppText/AppText";
+import { IC_ARROWLEFT, IC_CREATE, IC_DRAWER } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { fontSize14, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { DrawerActions, NavigationContainer } from "@react-navigation/native";
+import { DrawerActions, NavigationContainer, RouteProp, useRoute } from "@react-navigation/native";
 import PressView from "../../components/PressView/PressView";
-import { NavigationRef } from "../../../App";
+import { NavigationRef, RootStackParamList } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
-import ApprovedTab from "./ProfileTabs/ApprovedTab";
-import PendingTab from "./ProfileTabs/PendingTab";
-import SavedTab from "./ProfileTabs/SavedTab";
+import BottomSheet from "@gorhom/bottom-sheet";
 import CustomHandle from "../../components/CustomHandle/CustomHandle";
 import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
+import UserPostItem from "../../components/UserPostItem/UserPostItem";
+import useScreenState from "../../hooks/useScreenState";
+import {getUserProfile } from "../../network/AppAPI";
+import ApiHelper from "../../utils/ApiHelper";
+import UserModel from "../../model/ApiModel/UserModel";
 
+type AnotherUserScreenProps = RouteProp<RootStackParamList, "AnotherUserScreen">;
 
-const ProfileScreen: React.FC = () => {
+const AnotherUserScreen: React.FC = () => {
+  const { user_uuid } = useRoute<AnotherUserScreenProps>().params;
   const { colorPallet , theme} = useTheme()
   const { language } = useLanguage();
-  const {authData} = useAuth()
-  const user = authData.user
-
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
   const snapPointsVertical = useMemo(() => [ Platform.OS === 'android' ? '69%' : '60%', '87%'], []);
+  const { isLoading, setLoading, mounted, error, setError } = useScreenState();
+  const [user,setUser] = useState<UserModel>();
+
   const renderCustomHandle = useCallback(
     (props) => <CustomHandle
       {...props}
@@ -64,18 +68,24 @@ const ProfileScreen: React.FC = () => {
     console.log('handleSheetChange', index);
   }, []);
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'approved', title: language?.postedTab },
-    { key: 'pending', title: language?.waitTab },
-    { key: 'saved', title: language?.saveTab },
-  ]);
+  async function loadProfileUser() {
+    try {
+      const res = await getUserProfile(user_uuid);
+      if (ApiHelper.isResSuccess(res)) {
+        const user = res?.data?.data;
+        setUser(user)
+      }
+      setError(undefined);
+    } catch (e) {
+      setError(e);
+    } finally {
 
-  const renderScene = SceneMap({
-    approved: ApprovedTab,
-    pending: PendingTab,
-    saved: SavedTab
-  });
+    }
+  }
+
+  useEffect(()=>{
+    loadProfileUser().finally(()=>{});
+  },[])
 
   return (
     <SafeAreaView
@@ -85,10 +95,10 @@ const ProfileScreen: React.FC = () => {
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
-        title={language?.User_profile}
-        leftIcon={IC_DRAWER}
+        title={user?.email||''}
+        leftIcon={IC_ARROWLEFT}
         leftIconOnClick={() => {
-          NavigationRef.current?.dispatch(DrawerActions.openDrawer)
+          NavigationRef.current?.goBack();
         }}
         titleStyle={{
           color: colorPallet.color_text_blue_1
@@ -142,57 +152,38 @@ const ProfileScreen: React.FC = () => {
           backgroundColor: colorPallet.color_background_1,
         }}
         onChange={handleSheetChange}>
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={(props) => {
-            return <TabBar
-              {...props}
-              tabStyle={{ flexDirection: 'row' }}
-              activeColor={AppColors.color_primary}
-              inactiveColor={colorPallet.color_text_gray_3}
-              indicatorStyle={{ backgroundColor: colorPallet.color_background_1 }}
-              style={{
-                backgroundColor: colorPallet.color_background_1,
-              }}
-              labelStyle={{
-                fontSize: fontSize16,
-                fontWeight: '700',
-                textTransform: 'none',
-                paddingVertical: unit4
-              }}
-            />
-          }}
-        />
-      </BottomSheet>
-
-      <PressView
-        style={{
-          position: 'absolute',
-          bottom: unit32,
-          right: unit20,
-          // backgroundColor:'red',
-        }}
-        onPress={() => {
-          NavigationRef?.current?.navigate('CreatePostScreen')
-        }}
-      >
-        <Image
-          source={IC_CREATE}
+        <View
           style={{
-            width: unit48,
-            height: unit48,
-            borderRadius: unit56,
+            backgroundColor: colorPallet.color_background_1,
+            flex: 1,
+            paddingTop: unit20,
+            paddingHorizontal: unit20
           }}
-        />
-      </PressView>
+        >
+          <FlatList
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={loadProfileUser} />
+            }
+            data={user?.posts}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item, index}) =>{
+              return <UserPostItem
+                key={item.id}
+                img_src={item.image}
+              />
+            }}
+            numColumns={3}
+          />
 
+        </View>
+      </BottomSheet>
 
     </SafeAreaView>
   )
 };
 
-export default ProfileScreen;
+export default AnotherUserScreen;
 
 

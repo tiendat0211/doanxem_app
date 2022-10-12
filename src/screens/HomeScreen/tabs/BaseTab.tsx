@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -63,6 +63,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [postID, setPostID] = useState(0);
   const [isOpen, setOpen] = useState(false);
   const [isSaveButton, setSaveButton] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -198,10 +199,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     try {
       const res = await savePost(post_id,action);
       if (ApiHelper.isResSuccess(res)) {
-        Snackbar.show({
-          text: `Lưu bài viết thành công`,
-          duration: Snackbar.LENGTH_SHORT,
-        });
+        showToastMsg(res?.data?.message)
         await loadPosts();
       } else {
         showToastErrorMessage(res.data.message);
@@ -211,6 +209,18 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     } finally {
     }
   }
+
+  // renders
+  const renderBackdrop = useCallback(
+    props => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+      />
+    ),
+    []
+  );
 
 
   return (
@@ -254,7 +264,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               onPressSave={()=>{
                 setOpen(true);
                 setSaveButton(true);
-                setPostID(item?.id)
+                setPostID(item?.id);
+                setIsSaved(item?.isSaved);
               }}
             />;
           }}
@@ -278,15 +289,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           backgroundColor: colorPallet.color_background_3,
         }}
         ref={bottomSheetRef}
-        backdropComponent={(props) =>
-          <BottomSheetBackdrop
-            {...props}
-            enableTouchThrough={false}
-            disappearsOnIndex={-1}
-            appearsOnIndex={0}
-            pressBehavior={"close"}
-          />
-        }
+        backdropComponent={renderBackdrop}
         index={-1}
         snapPoints={[unit400]}>
         <View
@@ -404,12 +407,22 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
             style={{
               height: Dimensions.get("screen").height - unit150 ,
             }}
-            mess={isSaveButton? 'Bạn có muốn lưu bài viết này?' :'Bạn muốn chặn người dùng này?'}
+            mess={
+              isSaveButton ?
+                  isSaved? 'Bạn có muốn bỏ lưu bài viết này?'
+                    : 'Bạn có muốn lưu bài viết này?'
+                : 'Bạn muốn chặn người dùng này?'
+            }
             rightButtonTitle={'Đồng ý'}
             rightButtonPress={async ()=> {
               if (isSaveButton){
-                setOpen(false);
-                await save(postID,'save');
+                if (isSaved){
+                  setOpen(false);
+                  await save(postID,'unsave');
+                }else {
+                  setOpen(false);
+                  await save(postID,'save');
+                }
               }else {
                 setOpen(false);
                 closeBottomSheet();

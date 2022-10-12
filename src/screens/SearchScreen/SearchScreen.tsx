@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Button, FlatList, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, View } from "react-native";
+import {
+  Button,
+  FlatList,
+  Image,
+  Platform,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+} from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import useAuth from "../../hooks/useAuth";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -18,7 +29,7 @@ import {
   unit60,
   unit75, unit8,
 } from "../../utils/appUnit";
-import { IC_DRAWER, IC_FILTER, IMG_LOGO, IMG_ONBOARDING, IMG_POST } from "../../assets/path";
+import { IC_DRAWER, IC_FILTER, IMG_LOGO, IMG_ONBOARDING, IMG_POST, LOADING_ANIM } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
 import { fontSize14, fontSize16, fontSize20 } from "../../styles/AppFonts";
@@ -33,7 +44,7 @@ import { StatusModel } from "../../model/StatusModel";
 import StatusItem from "../../components/StatusItem/StatusItem";
 import { fakePost, FakeTabs, fakeUserLists } from "../../utils/fakeData";
 import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
-
+import BaseTab from "../HomeScreen/tabs/BaseTab";
 
 
 const SearchScreen: React.FC = () => {
@@ -41,6 +52,7 @@ const SearchScreen: React.FC = () => {
   const { language } = useLanguage();
   const [searchWord, setSearchWord] = useState("");
   const [typeSearch, setTypeSearch] = useState(FakeTabs[0].type)
+
 
   return (
     <SafeAreaView
@@ -63,14 +75,7 @@ const SearchScreen: React.FC = () => {
         }}
       />
       <View style={{
-        shadowColor: AppColors.color_primary,
-        shadowOffset: {
-          width: 0,
-          height: unit12,
-        },
-        shadowOpacity: 0.58,
-        shadowRadius: unit16,
-        elevation: unit24,
+        backgroundColor: colorPallet.color_background_1,
       }}>
         <SearchBar
           onSearchPress={() => {
@@ -86,7 +91,6 @@ const SearchScreen: React.FC = () => {
           paddingVertical: unit20,
           flexGrow: 0,
           paddingLeft: unit12,
-
         }}
         showsHorizontalScrollIndicator={false}
         data={FakeTabs}
@@ -106,39 +110,35 @@ const SearchScreen: React.FC = () => {
         }}
       >
         {
-          typeSearch === 'post' &&
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={fakePost}
-            renderItem={({ item, index }) => {
-              return <StatusItem
-                // key={item.post_id}
-                // post={item}
+          typeSearch === 'post' ?
+              <BaseTab
+                type={'posts'}
               />
-            }}
-          />
+           : null
         }
-        {
-          typeSearch === 'user' &&
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={fakeUserLists}
-            renderItem={({ item, index }) => {
-              return (
-                <UserProfileItem
-                  key={item.id}
-                  img_src={item.avatar}
-                  name={item.name}
-                  email={item.user_name}
-                  style={{
-                    marginBottom: unit12,
-                  }}
-                />
-              )
-            }}
-          />
-        }
+        {/*{*/}
+        {/*  typeSearch === 'user' &&*/}
+        {/*  <FlatList*/}
+        {/*    showsVerticalScrollIndicator={false}*/}
+        {/*    data={fakeUserLists}*/}
+        {/*    renderItem={({ item, index }) => {*/}
+        {/*      return (*/}
+        {/*        <UserProfileItem*/}
+        {/*          key={item.id}*/}
+        {/*          img_src={item.avatar}*/}
+        {/*          name={item.name}*/}
+        {/*          email={item.user_name}*/}
+        {/*          style={{*/}
+        {/*            marginBottom: unit12,*/}
+        {/*          }}*/}
+        {/*        />*/}
+        {/*      )*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*}*/}
       </View>
+
+
 
 
     </SafeAreaView>

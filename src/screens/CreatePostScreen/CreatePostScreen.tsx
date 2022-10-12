@@ -26,7 +26,7 @@ import {
 import AppText from "../../components/AppText/AppText";
 import { dimension, fontSize12 } from "../../styles/AppFonts";
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
+import { showToastError, showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import ModalFileSelect from "./components/ModalFileSelect";
 import PressView from "../../components/PressView/PressView";
 import FastImage from "react-native-fast-image";
@@ -61,7 +61,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
   const [script, setScript] = useState('');
   const [openModal, setOpenModal] = useState(false);
   const [heightImgOrVid, setHeightImgOrVid] = useState(300);
-  const [image, setImage] = useState<Asset>({
+  const [asset, setAsset] = useState<Asset>({
     uri: undefined,
     type: "",
     fileName: "",
@@ -71,7 +71,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
   const clearData = () => {
     setScript(''),
-      setImage({})
+      setAsset({})
   }
 
   const getImageFromLib = async () => {
@@ -85,10 +85,10 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
       if (res.assets) {
         const img = res.assets[0];
-        setImage({
+        setAsset({
           uri: img.uri,
           type: img?.type,
-          fileName: img?.fileName,
+          fileName: img?.type === 'video/mp4'? img?.fileName + '.mp4' : img?.fileName,
         });
         console.log(res.assets)
       }
@@ -146,10 +146,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
       });
 
       if (res.assets) {
-
         const img = res.assets[0];
         setHeightImgOrVid(img.height!)
-        setImage({
+        setAsset({
           uri: img.uri,
           type: img?.type,
           fileName: img?.fileName,
@@ -164,7 +163,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
   };
 
   useEffect(()=>{
-    if (script.length>0 && script.trim() !== "" && image.uri?.length ){
+    if (script.length>0 && script.trim() !== "" && asset.uri?.length ){
       setValid(true)
     }else {
       setValid(false)
@@ -178,7 +177,10 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
   async function createSinglePost( title: string, img: Asset ){
     try {
       const res = await createPost(token || "",title,img);
+      console.log({res});
+      // console.log(await res.text());
       const resJson = await res.json();
+      // console.log("OK", {resJson});
       if (resJson.status === 200) {
         showToastMsg(resJson?.message)
         NavigationRef?.current?.goBack();
@@ -186,10 +188,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         showToastErrorMessage(resJson?.message);
       }
     } catch (e) {
-      Snackbar.show({
-        text: `Server Error!`,
-        duration: Snackbar.LENGTH_SHORT,
-      });
+      console.error(e);
+     setError(e);
+      showToastError(e);
     } finally {
     }
   }
@@ -197,14 +198,17 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
   const renderLocalImage = () => {
 
-    if (image.uri!.endsWith('mp4') || image.type=='video/mp4') {
+    if (asset.uri!.endsWith('mp4') || asset.type=='video/mp4') {
       return <VideoPlayer
-        video={{ uri: image.uri }}
+        video={{ uri: asset.uri }}
         videoWidth={1600}
         videoHeight={900}
         style={{
-          marginTop: unit12
+          marginTop: unit12,
+          backgroundColor: AppColors.color_transparent_dark,
         }}
+        showDuration={true}
+        defaultMuted={true}
         // thumbnail={{ uri: IC_CLOSE }}
       />;
     } else {
@@ -224,7 +228,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
           source={
             {
-              uri: image.uri
+              uri: asset.uri
             }
           }
         />
@@ -331,41 +335,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           }}
           value={script}
         />
-        {/* Tag */}
-        {/*<View*/}
-        {/*  style={{*/}
-        {/*    justifyContent: 'space-between',*/}
-        {/*    paddingHorizontal: unit20,*/}
-        {/*    marginVertical: unit8,*/}
-        {/*    paddingBottom: unit12,*/}
-        {/*  }}>*/}
-        {/*  <AppText*/}
-        {/*    fontType="bold"*/}
-        {/*    style={{*/}
-        {/*      color: colorPallet.color_text_blue_3,*/}
-        {/*      fontSize: unit14,*/}
-        {/*      lineHeight: unit20*/}
-        {/*    }}>*/}
-        {/*    {'Gắn thẻ'}*/}
-        {/*  </AppText>*/}
-        {/*</View>*/}
-        {/*<View*/}
-        {/*  style={{*/}
-        {/*    flexDirection: 'row',*/}
-        {/*    paddingStart: unit20,*/}
-        {/*    flexWrap: 'wrap',*/}
-        {/*  }}>*/}
-        {/*  {*/}
-        {/*    fakeTags.map((item, index) => {*/}
-        {/*      return (*/}
-        {/*        <TagItem*/}
-        {/*          key={index}*/}
-        {/*          tag={item}*/}
-        {/*        />*/}
-        {/*      )*/}
-        {/*    })*/}
-        {/*  }*/}
-        {/*</View>*/}
+
         <View
           style={{
             marginTop: unit14,
@@ -387,7 +357,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
             </AppText>
 
             {
-              image.uri?
+              asset.uri?
                 null
                 :
                 <AppText
@@ -405,7 +375,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           </View>
 
           {
-            image.uri ?
+            asset.uri ?
               <>
                 {renderLocalImage()}
                 <PressView
@@ -429,7 +399,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                   height: 300,
                   marginTop: unit10,
                   backgroundColor: '#C3C8D6',
-                  // alignItems:'center',
+                  alignItems:'center',
+                  justifyContent:'center'
                 }}
                 onPress={() => {
                   setOpenModal(true)
@@ -437,8 +408,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                 <Image
                   resizeMode="contain"
                   style={{
-                    width: dimension.width - unit40,
-                    height: 300,
+                    width: unit100,
+                    height: unit100,
                   }}
                   source={IMG_NO_PICTURE} />
               </PressView>
@@ -451,9 +422,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
               backgroundColor: isValid ? AppColors.color_primary : AppColors.color_opacity
             }}
             onPress={ async ()=>{
-               await createSinglePost(script,image);
+               await createSinglePost(script,asset);
             }}
-            disabled={!isValid}
           />
 
         </View>

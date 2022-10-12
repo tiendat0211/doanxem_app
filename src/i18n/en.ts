@@ -71,6 +71,7 @@ const enLang: BaseLanguage = {
   detailScreen:'Chi tiết bài viết',
   placeholder_input: 'Chém gió gì đó nào',
   accountBlocked:"Tài khoản của bạn đã bị khoá",
+  placeholder_phone: 'Nhập số điện thoại',
 };
 
 export default enLang;

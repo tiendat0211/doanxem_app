@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert, Dimensions,
-  Keyboard,
+  Alert, Dimensions, FlatList,
+  Keyboard, KeyboardAvoidingView, Platform,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -35,10 +35,10 @@ import EmptyView from "../../components/EmptyView/EmptyView";
 import EmptyViewForList from "../../components/EmptyViewForList/EmptyViewForList";
 import AppText from "../../components/AppText/AppText";
 import { fontSize18, fontSize20 } from "../../styles/AppFonts";
-import { showToastErrorMessage } from "../../utils/Toaster";
+import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import PopUp from "../../components/PopUp/PopUp";
-import { unit150 } from "../../utils/appUnit";
 import Snackbar from "react-native-snackbar";
+import { unit20 } from "../../utils/appUnit";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -52,7 +52,8 @@ const DetailPostScreen: React.FC = () => {
   const { isLoading, setLoading, error, setError, mounted } = useScreenState();
   const [postDetail, setPostDetail] = useState<PostModel>();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [isOpen, setOpen]= useState(false)
+  const [isOpen, setOpen]= useState(false);
+  const [isSaved, setSaved] = useState(false);
 
 
   async function loadPostDetail(post_uuid = postID) {
@@ -71,6 +72,20 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
+  async function loadPostDetail2(post_uuid = postID) {
+    try {
+      const res = await getPostDetail(post_uuid);
+      if (ApiHelper.isResSuccess(res)) {
+        setPostDetail(res?.data?.data);
+        seListComment(res?.data?.data?.comments)
+      }
+      setError(undefined);
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
+
   useEffect(()=>{
     loadPostDetail().finally(()=>{
 
@@ -81,7 +96,7 @@ const DetailPostScreen: React.FC = () => {
     try {
       const res = await postComment(post_uuid,content);
       if (ApiHelper.isResSuccess(res)) {
-        await loadPostDetail(post_uuid)
+        await loadPostDetail2(post_uuid)
       }else {
         showToastErrorMessage(res?.data.message)
       }
@@ -95,11 +110,8 @@ const DetailPostScreen: React.FC = () => {
     try {
       const res = await savePost(post_id,action);
       if (ApiHelper.isResSuccess(res)) {
-        Snackbar.show({
-          text: `Lưu bài viết thành công`,
-          duration: Snackbar.LENGTH_SHORT,
-        });
-        await loadPostDetail();
+        showToastMsg(res?.data?.message)
+        await loadPostDetail2();
       } else {
         showToastErrorMessage(res.data.message);
       }
@@ -131,6 +143,15 @@ const DetailPostScreen: React.FC = () => {
           }}
         />
 
+        <KeyboardAvoidingView
+          style={{
+            justifyContent: "center",
+            flex: 1,
+          }}
+          //behavior={Platform.OS == "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={150}
+        >
+
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -154,7 +175,10 @@ const DetailPostScreen: React.FC = () => {
             onPressComment={()=>{
               scrollViewRef.current?.scrollToEnd();
             }}
-            onPressSave={ () => {setOpen(true)}}
+            onPressSave={ () => {
+              setOpen(true);
+              setSaved(postDetail?.isSaved||false);
+            }}
           />
 
           {/*Comment*/}
@@ -186,17 +210,19 @@ const DetailPostScreen: React.FC = () => {
 
           }
         </ScrollView>
+        </KeyboardAvoidingView>
 
         <AppInput
           onPressSend={async () => {
-            scrollViewRef.current?.scrollToEnd();
-            await comment(postDetail?.post_uuid||'',userComment);
             setUserComment('');
+            await comment(postDetail?.post_uuid||'',userComment);
+            scrollViewRef.current?.scrollToEnd();
             Keyboard.dismiss();
           }}
           onChangeText={ (text) => setUserComment(text) }
           value={userComment}
         />
+
       </SafeAreaView>
       {
         isLoading? <AppLoading isOverlay/> : null
@@ -205,11 +231,17 @@ const DetailPostScreen: React.FC = () => {
       {
         isOpen ?
           <PopUp
-            mess={'Bạn có muốn lưu bài viết này?'}
+            mess={isSaved? 'Bạn có muốn bỏ lưu bài viết này?' : 'Bạn có muốn lưu bài viết này?'}
             rightButtonTitle={'Đồng ý'}
             rightButtonPress={async ()=> {
+              if (isSaved){
+                setOpen(false);
+                await save(postDetail?.id || 0,'unsave');
+              }else {
                 setOpen(false);
                 await save(postDetail?.id || 0,'save');
+              }
+
             }}
             leftButtonTitle={'Từ chối'}
             leftButtonPress={()=>{

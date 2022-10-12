@@ -193,7 +193,8 @@ const RegisterScreen: React.FC = () => {
             }}
             placeholder={language?.placeholder_repeatPass}
             checkValidFunctions={[
-              confirmPassValidFn
+              confirmPassValidFn,
+              passLengthValidFn,
             ]}
             leftIcon={IC_LOCK}
             tintColorIcon={colorPallet.color_text_gray_3}

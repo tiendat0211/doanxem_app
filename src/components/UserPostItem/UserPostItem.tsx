@@ -1,5 +1,5 @@
 import { Dimensions, Image, ImageSourcePropType, Platform, Text, TextInput, View, ViewStyle } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AppFonts, dimension, fontSize14, fontSize16, fontSize18 } from "../../styles/AppFonts";
 import { useTheme } from "../../hooks/useTheme";
 
@@ -11,15 +11,33 @@ import {
 } from "../../utils/appUnit";
 import PressView from "../PressView/PressView";
 import FastImage from "react-native-fast-image";
-
+import { PostModel } from "../../model/ApiModel/PostModel";
+import getVideoDurationInSeconds from "get-video-duration";
 
 interface UserPostItem {
-  img_src: string,
+  post: PostModel,
 }
 
+
 const UserProfileItem: React.FC<UserPostItem> = (props) => {
-  let { img_src} = props;
+  let { post} = props;
   const { colorPallet, theme } = useTheme()
+  const [duration, setDuration] = useState(0);
+
+  function getDuration(){
+    if (post?.image?.endsWith('mp4')){
+      getVideoDurationInSeconds(
+        post?.image
+      ).then((duration: any) => {
+        console.log(duration)
+      })
+    }
+  }
+
+  useEffect(()=>{
+    getDuration()
+  })
+
   return (
     <>
       <PressView
@@ -30,7 +48,7 @@ const UserProfileItem: React.FC<UserPostItem> = (props) => {
       >
         <FastImage
           source={{
-            uri: img_src
+            uri: post?.image
           }}
           style={{
             height: (Dimensions.get('screen').width - unit40 - unit32)/3,

@@ -148,15 +148,15 @@ export default function CustomDrawer(props: any) {
             />
 
           </DrawerContentScrollView>
-          <AppText
-            style={{
-              fontSize: fontSize16,
-              color: colorPallet.color_text_gray_3,
-              marginBottom: unit20
-            }}
-          >
-            Phiên bản 1,24 Beta
-          </AppText>
+          {/*<AppText*/}
+          {/*  style={{*/}
+          {/*    fontSize: fontSize16,*/}
+          {/*    color: colorPallet.color_text_gray_3,*/}
+          {/*    marginBottom: unit20*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  Phiên bản 1,24 Beta*/}
+          {/*</AppText>*/}
 
       </View>
 

@@ -78,21 +78,21 @@ export default function MyDrawer() {
               />
           }}
         />
-        <Drawer.Screen
-          name={language?.Notification}
-          component={NotificationScreen}
-          options={{
-            drawerIcon: ({focused}) =>
-              <Image
-                source={IC_NOTI}
-                style={{
-                  width:unit28,
-                  height: unit28,
-                  tintColor: focused ? AppColors.color_primary : colorPallet.color_text_blue_3
-                }}
-              />
-          }}
-        />
+        {/*<Drawer.Screen*/}
+        {/*  name={language?.Notification}*/}
+        {/*  component={NotificationScreen}*/}
+        {/*  options={{*/}
+        {/*    drawerIcon: ({focused}) =>*/}
+        {/*      <Image*/}
+        {/*        source={IC_NOTI}*/}
+        {/*        style={{*/}
+        {/*          width:unit28,*/}
+        {/*          height: unit28,*/}
+        {/*          tintColor: focused ? AppColors.color_primary : colorPallet.color_text_blue_3*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*  }}*/}
+        {/*/>*/}
         <Drawer.Screen
           name={language?.User_profile}
           component={ProfileScreen}
@@ -108,21 +108,21 @@ export default function MyDrawer() {
               />
           }}
         />
-         <Drawer.Screen
-          name={language?.rankScreen}
-          component={RankScreen}
-          options={{
-            drawerIcon: ({focused}) =>
-              <Image
-                source={IC_RANK}
-                style={{
-                  width:unit28,
-                  height: unit28,
-                  tintColor: focused ? AppColors.color_primary : colorPallet.color_text_blue_3
-                }}
-              />
-          }}
-        />
+        {/* <Drawer.Screen*/}
+        {/*  name={language?.rankScreen}*/}
+        {/*  component={RankScreen}*/}
+        {/*  options={{*/}
+        {/*    drawerIcon: ({focused}) =>*/}
+        {/*      <Image*/}
+        {/*        source={IC_RANK}*/}
+        {/*        style={{*/}
+        {/*          width:unit28,*/}
+        {/*          height: unit28,*/}
+        {/*          tintColor: focused ? AppColors.color_primary : colorPallet.color_text_blue_3*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*  }}*/}
+        {/*/>*/}
         <Drawer.Screen
           name={language?.Rule}
           component={RuleScreen}

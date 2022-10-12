@@ -60,19 +60,19 @@ const LanguageScreen: React.FC = () => {
         />
 
         <ScrollView>
-          <SelectItem
-            onPress={() => {
-              changeLanguage("en");
-            }}
-            leftImageSource={IC_ENGLISH}
-            leftImageProps={{
-              height: unit24,
-              width: unit32
-            }}
-            title={language?.langEN}
-            rightImageSource={ lang === "en" ? IC_CHECK2 : undefined}
-            rightImageProps = {{ tintColor: AppColors.color_primary}}
-          />
+          {/*<SelectItem*/}
+          {/*  onPress={() => {*/}
+          {/*    changeLanguage("en");*/}
+          {/*  }}*/}
+          {/*  leftImageSource={IC_ENGLISH}*/}
+          {/*  leftImageProps={{*/}
+          {/*    height: unit24,*/}
+          {/*    width: unit32*/}
+          {/*  }}*/}
+          {/*  title={language?.langEN}*/}
+          {/*  rightImageSource={ lang === "en" ? IC_CHECK2 : undefined}*/}
+          {/*  rightImageProps = {{ tintColor: AppColors.color_primary}}*/}
+          {/*/>*/}
 
           <SelectItem
             onPress={() => {

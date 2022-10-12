@@ -28,6 +28,7 @@ import CreatePostScreen from "./src/screens/CreatePostScreen/CreatePostScreen";
 import DetailStatusScreen from "./src/screens/DetailPostScreen/DetailPostScreen";
 import DetailImage from "./src/screens/DetailImage/DetailImage";
 import { PostModel } from "./src/model/ApiModel/PostModel";
+import AnotherUserScreen from "./src/screens/AnotherUserScreen/AnotherUserScreen";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -55,6 +56,9 @@ export type RootStackParamList = {
   DetailImage: {
     img_url:string,
   },
+  AnotherUserScreen: {
+    user_uuid: string,
+  }
 };
 
 export const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -132,6 +136,9 @@ const App = () => {
               <RootStack.Screen
                 name={"DetailImage"}
                 component={DetailImage} />
+              <RootStack.Screen
+                name={"AnotherUserScreen"}
+                component={AnotherUserScreen} />
 
             </>
             :

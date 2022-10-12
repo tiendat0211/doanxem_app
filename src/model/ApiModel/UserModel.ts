@@ -1,3 +1,5 @@
+import { PostModel } from "./PostModel";
+
 export default interface UserModel {
   id: number;
   name: string;
@@ -12,4 +14,5 @@ export default interface UserModel {
   status: string;
   role: string;
   status_description: string;
+  posts: PostModel[];
 }
