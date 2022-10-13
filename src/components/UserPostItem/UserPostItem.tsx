@@ -15,14 +15,13 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 
 interface UserPostItem {
   post: PostModel,
+  onPress:()=>void,
 }
 
 
 const UserProfileItem: React.FC<UserPostItem> = (props) => {
-  let { post} = props;
+  let { post,onPress} = props;
   const { colorPallet, theme } = useTheme()
-
-
 
   return (
     <>
@@ -31,6 +30,7 @@ const UserProfileItem: React.FC<UserPostItem> = (props) => {
           marginRight: unit16,
           marginBottom: unit12
         }}
+        onPress={onPress}
       >
         <FastImage
           source={{

@@ -33,7 +33,8 @@ import { CommentModel } from "../../model/ApiModel/CommentModel";
 interface StatusItemProps {
   styleUserImage?: StyleProp<Image>;
   onPressViewMore?: () => void;
-  comment: CommentModel
+  comment: CommentModel;
+  onImagePress?:()=>void;
 }
 
 const CommentItem: React.FC<StatusItemProps> = (props) => {
@@ -50,25 +51,26 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
           paddingVertical: unit6,
         }}
       >
-        <Image
-          source={{
-            uri: comment?.user?.avatar
-          }}
-          style={[{
-            width: unit43,
-            height: unit43,
-            marginRight: unit16,
-            borderRadius: unit100,
-          }]}
-        />
-
+        <PressView>
+          <Image
+            source={{
+              uri: comment?.user?.avatar
+            }}
+            style={[{
+              width: unit43,
+              height: unit43,
+              marginRight: unit16,
+              borderRadius: unit100,
+            }]}
+          />
+        </PressView>
         <View
           style={{
             flexDirection:'column',
             marginRight: unit80
           }}
         >
-          <View
+          <PressView
             style={{
               flexDirection:'row',
               marginBottom:unit4
@@ -94,7 +96,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
               123
             </AppText>
 
-          </View>
+          </PressView>
 
           <AppText
             style={{
