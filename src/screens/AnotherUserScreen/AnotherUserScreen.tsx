@@ -30,7 +30,7 @@ import { DrawerActions, NavigationContainer, RouteProp, useRoute } from "@react-
 import PressView from "../../components/PressView/PressView";
 import { NavigationRef, RootStackParamList } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import CustomHandle from "../../components/CustomHandle/CustomHandle";
 import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 import UserPostItem from "../../components/UserPostItem/UserPostItem";
@@ -160,18 +160,23 @@ const AnotherUserScreen: React.FC = () => {
             paddingHorizontal: unit20
           }}
         >
-          <FlatList
+          <BottomSheetFlatList
             refreshControl={
               <RefreshControl
                 refreshing={isLoading}
                 onRefresh={loadProfileUser} />
             }
             data={user?.posts}
-            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
             renderItem={({item, index}) =>{
               return <UserPostItem
                 key={item.id}
-                img_src={item.image}
+                post={item}
+                onPress={()=>{
+                  NavigationRef?.current?.navigate("DetailPostScreen",{
+                    postID: item?.post_uuid
+                  })
+                }}
               />
             }}
             numColumns={3}

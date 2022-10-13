@@ -18,10 +18,12 @@ import { IMG_NO_PICTURE } from "../../assets/path";
 
 interface UserPostItem {
   post: PostModel,
+  onPress:()=>void,
 }
 
 
 const UserProfileItem: React.FC<UserPostItem> = (props) => {
+<<<<<<< HEAD
   let { post } = props;
   const { colorPallet, theme } = useTheme()
 
@@ -63,6 +65,11 @@ const UserProfileItem: React.FC<UserPostItem> = (props) => {
     }
   }
 
+=======
+  let { post,onPress} = props;
+  const { colorPallet, theme } = useTheme()
+
+>>>>>>> #dat
   return (
     <>
       <PressView
@@ -73,6 +80,7 @@ const UserProfileItem: React.FC<UserPostItem> = (props) => {
           marginRight: unit16,
           marginBottom: unit12
         }}
+        onPress={onPress}
       >
         {/* {renderVideoOrImg(post)} */}
         <FastImage
