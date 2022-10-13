@@ -12,7 +12,6 @@ import {
 import PressView from "../PressView/PressView";
 import FastImage from "react-native-fast-image";
 import { PostModel } from "../../model/ApiModel/PostModel";
-import getVideoDurationInSeconds from "get-video-duration";
 
 interface UserPostItem {
   post: PostModel,
@@ -22,21 +21,8 @@ interface UserPostItem {
 const UserProfileItem: React.FC<UserPostItem> = (props) => {
   let { post} = props;
   const { colorPallet, theme } = useTheme()
-  const [duration, setDuration] = useState(0);
 
-  function getDuration(){
-    if (post?.image?.endsWith('mp4')){
-      getVideoDurationInSeconds(
-        post?.image
-      ).then((duration: any) => {
-        console.log(duration)
-      })
-    }
-  }
 
-  useEffect(()=>{
-    getDuration()
-  })
 
   return (
     <>
