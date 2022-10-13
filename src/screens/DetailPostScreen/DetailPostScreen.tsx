@@ -45,14 +45,14 @@ type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">
 
 const DetailPostScreen: React.FC = () => {
   const { postID } = useRoute<DetailStatusScreenProps>().params;
-  const {colorPallet, theme } = useTheme()
+  const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [listComment, seListComment] = useState<CommentModel[]>([]);
   const [userComment, setUserComment] = useState('');
   const { isLoading, setLoading, error, setError, mounted } = useScreenState();
   const [postDetail, setPostDetail] = useState<PostModel>();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [isOpen, setOpen]= useState(false);
+  const [isOpen, setOpen] = useState(false);
   const [isSaved, setSaved] = useState(false);
 
 
@@ -86,18 +86,18 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
-  useEffect(()=>{
-    loadPostDetail().finally(()=>{
+  useEffect(() => {
+    loadPostDetail().finally(() => {
 
     });
-  },[])
+  }, [])
 
-  async function comment(post_uuid: string, content: string){
+  async function comment(post_uuid: string, content: string) {
     try {
-      const res = await postComment(post_uuid,content);
+      const res = await postComment(post_uuid, content);
       if (ApiHelper.isResSuccess(res)) {
         await loadPostDetail2(post_uuid)
-      }else {
+      } else {
         showToastErrorMessage(res?.data.message)
       }
     } catch (e) {
@@ -106,9 +106,9 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
-  async function save(post_id: number, action: string){
+  async function save(post_id: number, action: string) {
     try {
-      const res = await savePost(post_id,action);
+      const res = await savePost(post_id, action);
       if (ApiHelper.isResSuccess(res)) {
         showToastMsg(res?.data?.message)
         await loadPostDetail2();
@@ -123,133 +123,137 @@ const DetailPostScreen: React.FC = () => {
 
   return (
     <>
-      <SafeAreaView
-        style={[AppStyles.container,{backgroundColor: colorPallet.color_background_1}]}>
-        <StatusBar
-          barStyle={ theme === 'light' ? "dark-content" : "light-content"}
-          backgroundColor={AppColors.color_transparent}
-        />
-        <AppBar
-          title={language?.detailScreen}
-          leftIcon={IC_ARROWLEFT}
-          leftIconOnClick={()=>{
-            NavigationRef.current?.goBack()
-          }}
-          titleStyle={{
-            color: colorPallet.color_text_blue_1
-          }}
-          containerStyle={{
-            borderBottomColor:colorPallet.color_divider_3
-          }}
-        />
+      <KeyboardAvoidingView
+        style={{
+          justifyContent: "center",
+          flex: 1,
+        }}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
 
-        <KeyboardAvoidingView
-          style={{
-            justifyContent: "center",
-            flex: 1,
-          }}
-          //behavior={Platform.OS == "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={150}
-        >
-
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={loadPostDetail} />
-          }
-          style={{
-            flex:1,
-          }}
-          ref={scrollViewRef}
-        >
-          {/*Status*/}
-          <StatusItem2
-            key={postDetail?.id}
-            post={postDetail}
-            onPressImage={()=>{
-              NavigationRef.current?.navigate("DetailImage",{
-                img_url: postDetail?.image || ''
-              })
+      >
+        <SafeAreaView
+          style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
+          <StatusBar
+            barStyle={theme === 'light' ? "dark-content" : "light-content"}
+            backgroundColor={AppColors.color_transparent}
+          />
+          <AppBar
+            title={language?.detailScreen}
+            leftIcon={IC_ARROWLEFT}
+            leftIconOnClick={() => {
+              NavigationRef.current?.goBack()
             }}
-            onPressComment={()=>{
-              scrollViewRef.current?.scrollToEnd();
+            titleStyle={{
+              color: colorPallet.color_text_blue_1
             }}
-            onPressSave={ () => {
-              setOpen(true);
-              setSaved(postDetail?.isSaved||false);
+            containerStyle={{
+              borderBottomColor: colorPallet.color_divider_3
             }}
           />
 
-          {/*Comment*/}
-          {
-            listComment.length
-              ? listComment.map((comment) => {
-              return <CommentItem
-                key={comment.id}
-                comment={comment}
-              />
-            })
-              :
-              <View
-                style={{
-                  alignItems:'center',
-                  justifyContent:'center'
-                }}
-              >
-                <AppText
-                  fontType={'semiBold'}
+
+
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={loadPostDetail} />
+            }
+            style={{
+              flex: 1,
+            }}
+            ref={scrollViewRef}
+          >
+            {/*Status*/}
+            <StatusItem2
+              key={postDetail?.id}
+              post={postDetail}
+              onPressImage={() => {
+                NavigationRef.current?.navigate("DetailImage", {
+                  img_url: postDetail?.image || ''
+                })
+              }}
+              onPressComment={() => {
+                scrollViewRef.current?.scrollToEnd();
+              }}
+              onPressSave={() => {
+                setOpen(true);
+                setSaved(postDetail?.isSaved || false);
+              }}
+            />
+
+            {/*Comment*/}
+            {
+              listComment.length
+                ? listComment.map((comment) => {
+                  return <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                  />
+                })
+                :
+                <View
                   style={{
-                    fontSize: fontSize18,
-                    color: colorPallet.color_text_gray_3
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
                 >
-                  Chưa có bình luận nào
-                </AppText>
-              </View>
+                  <AppText
+                    fontType={'semiBold'}
+                    style={{
+                      fontSize: fontSize18,
+                      color: colorPallet.color_text_gray_3
+                    }}
+                  >
+                    Chưa có bình luận nào
+                  </AppText>
+                </View>
 
-          }
-        </ScrollView>
-        </KeyboardAvoidingView>
+            }
 
-        <AppInput
-          onPressSend={async () => {
-            setUserComment('');
-            await comment(postDetail?.post_uuid||'',userComment);
-            scrollViewRef.current?.scrollToEnd();
-            Keyboard.dismiss();
-          }}
-          onChangeText={ (text) => setUserComment(text) }
-          value={userComment}
-        />
-
-      </SafeAreaView>
-      {
-        isLoading? <AppLoading isOverlay/> : null
-      }
-
-      {
-        isOpen ?
-          <PopUp
-            mess={isSaved? 'Bạn có muốn bỏ lưu bài viết này?' : 'Bạn có muốn lưu bài viết này?'}
-            rightButtonTitle={'Đồng ý'}
-            rightButtonPress={async ()=> {
-              if (isSaved){
-                setOpen(false);
-                await save(postDetail?.id || 0,'unsave');
-              }else {
-                setOpen(false);
-                await save(postDetail?.id || 0,'save');
-              }
-
+          </ScrollView>
+          <AppInput
+            onPressSend={async () => {
+              setUserComment('');
+              await comment(postDetail?.post_uuid || '', userComment);
+              scrollViewRef.current?.scrollToEnd();
+              Keyboard.dismiss();
             }}
-            leftButtonTitle={'Từ chối'}
-            leftButtonPress={()=>{
-              setOpen(false);
-            }}
+            onChangeText={(text) => setUserComment(text)}
+            value={userComment}
           />
-          : null
-      }
+
+
+
+        </SafeAreaView>
+        {
+          isLoading ? <AppLoading isOverlay /> : null
+        }
+
+        {
+          isOpen ?
+            <PopUp
+              mess={isSaved ? 'Bạn có muốn bỏ lưu bài viết này?' : 'Bạn có muốn lưu bài viết này?'}
+              rightButtonTitle={'Đồng ý'}
+              rightButtonPress={async () => {
+                if (isSaved) {
+                  setOpen(false);
+                  await save(postDetail?.id || 0, 'unsave');
+                } else {
+                  setOpen(false);
+                  await save(postDetail?.id || 0, 'save');
+                }
+
+              }}
+              leftButtonTitle={'Từ chối'}
+              leftButtonPress={() => {
+                setOpen(false);
+              }}
+            />
+            : null
+        }
+      </KeyboardAvoidingView>
 
     </>
   )

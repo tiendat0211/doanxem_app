@@ -106,6 +106,8 @@ const RegisterScreen: React.FC = () => {
         marginTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + unit32,
         marginBottom: unit20
       }}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
     >
       <ScrollView
         contentContainerStyle={{

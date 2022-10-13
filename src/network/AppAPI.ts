@@ -89,6 +89,7 @@ export function createPost(token: string, title: string, imageAssets: Asset, ) {
     name: imageAssets.fileName
   });
   data.append("title", title);
+  console.log('data',data);
 
   const requestOptions = {
     method: 'POST',

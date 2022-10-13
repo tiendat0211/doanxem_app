@@ -26,7 +26,6 @@
     "axios": "^0.26.1",
     "dayjs": "^1.11.5",
     "fs": "^0.0.1-security",
-    "get-video-duration": "^4.1.0",
     "lodash": "^4.17.21",
     "lottie-ios": "3.2.3",
     "lottie-react-native": "^5.0.1",

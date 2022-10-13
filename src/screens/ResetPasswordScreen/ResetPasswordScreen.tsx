@@ -12,7 +12,7 @@ import {
 import AppStyles from "../../styles/AppStyles";
 import AppBar from "../../components/AppBar/AppBar";
 import ValidateEditText from "../../components/ValidateEditText/ValidateEditText";
-import { nameLengthValidFn, nameValidFn } from "../../components/ValidateEditText/ValidateFunctions";
+import { nameValidFn } from "../../components/ValidateEditText/ValidateFunctions";
 import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 import AuthenScreenView from "../../components/AuthenScreenView/AuthenScreenView";
@@ -73,6 +73,8 @@ const ResetPasswordScreen: React.FC = () => {
         flex:1,
         marginTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + unit32,
       }}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
     >
       <ScrollView>
         <View
@@ -131,7 +133,7 @@ const ResetPasswordScreen: React.FC = () => {
             // setValid={setPhoneValid}
           />
 
-          <AppButton
+          {/* <AppButton
             buttonTitle={language?.toHome}
             onPress={
               () => {
@@ -142,7 +144,7 @@ const ResetPasswordScreen: React.FC = () => {
                 })
               }
             }
-          />
+          /> */}
         </View>
 
       </ScrollView>

@@ -84,13 +84,13 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
       });
 
       if (res.assets) {
+        console.log('response',res.assets);
         const img = res.assets[0];
         setAsset({
           uri: img.uri,
           type: img?.type,
-          fileName: img?.type === 'video/mp4'? img?.fileName + '.mp4' : img?.fileName,
+          fileName: img?.type === 'video/mp4' && img.fileName?.endsWith('mp4')? img?.fileName :  img?.type === 'video/mp4'? img?.fileName + '.mp4' : img?.fileName,
         });
-        console.log(res.assets)
       }
     } catch (e) {
       console.error(e);
@@ -175,12 +175,13 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
   const {token} = authData
 
   async function createSinglePost( title: string, img: Asset ){
+    
     try {
       const res = await createPost(token || "",title,img);
-      console.log({res});
-      // console.log(await res.text());
-      const resJson = await res.json();
-      // console.log("OK", {resJson});
+      console.log('ress',res);
+      
+      const resJson = await res.json()
+      console.log("OK", resJson.image);
       if (resJson.status === 200) {
         showToastMsg(resJson?.message)
         NavigationRef?.current?.goBack();
@@ -198,7 +199,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
   const renderLocalImage = () => {
 
-    if (asset.uri!.endsWith('mp4') || asset.type=='video/mp4') {
+    if ( asset.type?.slice(0,5) === 'video' ) {
       return <VideoPlayer
         video={{ uri: asset.uri }}
         videoWidth={1600}
@@ -209,7 +210,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         }}
         showDuration={true}
         defaultMuted={true}
-        // thumbnail={{ uri: IC_CLOSE }}
+        
+        thumbnail={{ uri: 'https://www.techsmith.com/blog/wp-content/uploads/2019/06/YouTube-Thumbnail-Sizes.png' }}
       />;
     } else {
       return (

@@ -12,6 +12,7 @@ import ApiHelper from "../../utils/ApiHelper";
 import Snackbar from "react-native-snackbar";
 import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import useScreenState from "../../hooks/useScreenState";
+import AppColors from "../../styles/AppColors";
 
 interface ReactionProps {
   total_reactions?: number;
@@ -148,6 +149,7 @@ const Reaction: React.FC<ReactionProps> = (props) => {
             paddingHorizontal: unit12,
             paddingVertical: 6,
             transform: [{ translateX: 0 }, { translateY: -60 }],
+            borderColor: colorPallet.color_background_1
           },
             {
               shadowColor: "#000000",
@@ -182,9 +184,10 @@ const styles = StyleSheet.create({
     height: unit28,
     width: unit28,
     borderRadius: unit19,
-    borderWidth: unit1,
+    borderWidth: 0,
     alignItems: "center",
     justifyContent: "center",
+    borderColor: AppColors.color_white
   },
   imageEmoji: {
     height: unit24,

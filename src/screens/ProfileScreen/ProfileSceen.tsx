@@ -46,7 +46,7 @@ const ProfileScreen: React.FC = () => {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
-  const snapPointsVertical = useMemo(() => [ Platform.OS === 'android' ? '69%' : '60%', '87%'], []);
+  const snapPointsVertical = useMemo(() => [ Platform.OS === 'android' ? '69%' : Platform.OS === 'ios' ? '66%' : '100%', '87%'], []);
   const renderCustomHandle = useCallback(
     (props) => <CustomHandle
       {...props}

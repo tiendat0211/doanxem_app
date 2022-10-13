@@ -92,7 +92,7 @@ const LoginScreen: React.FC = () => {
         flex: 1,
       }}
       behavior={Platform.OS == "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={150}
+      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
     >
       <ScrollView
         contentContainerStyle={{

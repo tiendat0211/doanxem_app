@@ -115,7 +115,8 @@ const ChangPasswordScreen: React.FC = () => {
         paddingHorizontal: unit20,
         flex:1,
       }}
-      keyboardVerticalOffset={150}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
     >
       <ScrollView
         contentContainerStyle={{

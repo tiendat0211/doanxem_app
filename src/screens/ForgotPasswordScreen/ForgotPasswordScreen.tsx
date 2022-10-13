@@ -48,6 +48,8 @@ const ForgotPasswordScreen: React.FC = () => {
         flex:1,
         marginTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + unit32,
       }}
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
     >
       <ScrollView>
         <View
