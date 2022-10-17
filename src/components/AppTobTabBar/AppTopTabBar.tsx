@@ -10,7 +10,7 @@ import AppText from "../AppText/AppText";
 import {fontSize12, fontSize18, fontSize8} from "../../styles/AppFonts";
 import AppColors from "../../styles/AppColors";
 import {
-  unit10, unit15,
+  unit10, unit12, unit15,
   unit2,
   unit24,
   unit4,
@@ -73,7 +73,7 @@ const AppTopTabBar: React.FC<AppTopTabBarProps> = (props) => {
               key={item.name}
               onPress={onPress}
               style={[styles.tabItem,{
-                paddingVertical: unit15,
+                paddingVertical: unit12,
                 borderBottomWidth: unit2,
                 borderBottomColor: focus ? AppColors.color_primary : colorPallet.color_background_1,
               }]}
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   bottomTabBar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
   tabItem: {
     flex: 1,
@@ -126,18 +126,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "100%",
     flexDirection: "row"
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  indicator: {
-    backgroundColor: 'rgb(0, 132, 255)',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    margin: 6,
   },
 });
 
