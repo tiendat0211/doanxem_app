@@ -23,26 +23,71 @@ import PressView from "../../components/PressView/PressView";
 import NewTab from "./tabs/NewTab";
 import HotTab from "./tabs/HotTab";
 import TopTab from "./tabs/TopTab";
+import {createMaterialTopTabNavigator} from "@react-navigation/material-top-tabs";
+import AppTopTabBar, {TopTabBarItemType} from "../../components/AppTobTabBar/AppTopTabBar";
 
-const renderScene = SceneMap({
-  new: NewTab,
-  hot: HotTab,
-  top: TopTab
-});
+export type HomeScreenParamList = {
+  HotTab: undefined;
+  NewTab: undefined;
+  TopTab: undefined;
+};
 
+const Tab = createMaterialTopTabNavigator<HomeScreenParamList>();
 
 const HomeScreen: React.FC = () => {
-  const { authData, signOut } = useAuth();
+  const { authData } = useAuth();
   const user = authData.user;
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'new', title: language?.newTab },
-    { key: 'top', title: language?.topTab },
-    { key: 'hot', title: language?.hotTab },
-  ]);
+  function getTabBarData(): TopTabBarItemType[] {
+    return [
+      {
+        name: language?.newTab,
+        routeName: "NewTab",
+        tabBarIcon: (focused) => {
+          return <Image
+            source={IC_NEWTAB}
+            style={{
+              width: unit24,
+              height: unit24,
+              tintColor: focused ? AppColors.color_primary : colorPallet.color_text_blue_3,
+            }}
+          />
+        }
+      },
+      {
+        name: language?.topTab,
+        routeName: "TopTab",
+        tabBarIcon: (focused) => {
+          return <Image
+            source={IC_TOPTAB}
+            style={{
+              width: unit24,
+              height: unit24,
+              tintColor: focused ? AppColors.color_primary : colorPallet.color_text_blue_3,
+            }}
+          />
+        }
+      },
+      {
+        name: language?.hotTab,
+        routeName: "hotTab",
+        tabBarIcon: (focused) => {
+          return <Image
+            source={IC_HOTTAB}
+            style={{
+              width: unit24,
+              height: unit24,
+              tintColor: focused ? AppColors.color_primary : colorPallet.color_text_blue_3
+            }}
+          />
+        }
+      },
+    ];
+  }
+
+  const tabData = getTabBarData();
 
   return (
     <>
@@ -70,58 +115,27 @@ const HomeScreen: React.FC = () => {
               }}
             />
 
-            <TabView
-              swipeEnabled={false}
-              navigationState={{ index, routes }}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              renderTabBar={(props) => {
-                return <TabBar
-                  {...props}
-                  tabStyle={{
-                    flexDirection: 'row',
-                    paddingVertical: unit15,
-                  }}
-                  activeColor={AppColors.color_primary}
-                  inactiveColor={theme === 'light' ? colorPallet.color_text_blue_3 : AppColors.color_text4}
-                  indicatorStyle={{ backgroundColor: AppColors.color_primary }}
-                  style={{
-                    backgroundColor: colorPallet.color_background_1,
-                    shadowColor: AppColors.color_primary,
-                    // shadowOffset: {
-                    //   width: 0,
-                    //   height: unit12,
-                    // },
-                    shadowOpacity: 0.58,
-                    shadowRadius: unit16,
-                    elevation: unit24,
-                  }}
-                  labelStyle={{
-                    fontSize: fontSize18,
-                    fontFamily: AppFonts.bold,
-                    textTransform: 'none',
-                  }}
-                  renderIcon={({ route, focused }) => {
-                    return <Image
-                      source={
-                        route.key === 'new'
-                          ? IC_NEWTAB
-                          : route.key === 'top'
-                            ? IC_TOPTAB :
-                            IC_HOTTAB
-                      }
-                      style={{
-                        height: unit24,
-                        width: unit24,
-                        tintColor: focused
-                          ? AppColors.color_primary
-                          : theme === 'light' ? colorPallet.color_text_blue_3 : AppColors.color_text4
-                      }}
-                    />
-                  }}
-                />
+            <Tab.Navigator
+              tabBar={(props) => <AppTopTabBar tabBarData={tabData} {...props} />}
+              screenOptions={{
+                swipeEnabled: false
               }}
-            />
+            >
+              <Tab.Screen
+                name="NewTab"
+                component={NewTab}
+              />
+              <Tab.Screen
+                name="TopTab"
+                component={TopTab}
+              />
+              <Tab.Screen
+                name="HotTab"
+                component={HotTab}
+              />
+            </Tab.Navigator>
+
+
             <PressView
               style={{
                 position: 'absolute',

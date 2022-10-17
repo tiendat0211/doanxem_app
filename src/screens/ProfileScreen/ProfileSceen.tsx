@@ -6,36 +6,34 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
-  unit100,
   unit12,
   unit16,
-  unit2,
-  unit20, unit200,
-  unit24, unit245, unit250, unit300,
+  unit20,
+  unit24,
   unit32,
-  unit4,
   unit48, unit56,
-  unit6,
-  unit68,
-  unit72,
 } from "../../utils/appUnit";
-import { IC_CREATE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_LOGO, IC_NEWTAB, IC_TOPTAB, IMG_LOGO } from "../../assets/path";
-import AppText from "../../components/AppText/AppText";
+import {IC_CREATE, IC_DRAWER,} from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { fontSize14, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from "@gorhom/bottom-sheet";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import BottomSheet from "@gorhom/bottom-sheet";
 import ApprovedTab from "./ProfileTabs/ApprovedTab";
 import PendingTab from "./ProfileTabs/PendingTab";
 import SavedTab from "./ProfileTabs/SavedTab";
 import CustomHandle from "../../components/CustomHandle/CustomHandle";
 import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
+import ProfileTopTabBar from "./components/ProfileTopTabBar";
+
+export type ProfileParamList = {
+  ApprovedTab: undefined;
+  PendingTab: undefined;
+  SavedTab: undefined;
+};
+
+const Tab = createMaterialTopTabNavigator<ProfileParamList>();
 
 
 const ProfileScreen: React.FC = () => {
@@ -64,18 +62,7 @@ const ProfileScreen: React.FC = () => {
     console.log('handleSheetChange', index);
   }, []);
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'approved', title: language?.postedTab },
-    { key: 'pending', title: language?.waitTab },
-    { key: 'saved', title: language?.saveTab },
-  ]);
 
-  const renderScene = SceneMap({
-    approved: ApprovedTab,
-    pending: PendingTab,
-    saved: SavedTab
-  });
 
   return (
     <SafeAreaView
@@ -142,29 +129,25 @@ const ProfileScreen: React.FC = () => {
           backgroundColor: colorPallet.color_background_1,
         }}
         onChange={handleSheetChange}>
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={(props) => {
-            return <TabBar
-              {...props}
-              tabStyle={{ flexDirection: 'row' }}
-              activeColor={AppColors.color_primary}
-              inactiveColor={colorPallet.color_text_gray_3}
-              indicatorStyle={{ backgroundColor: colorPallet.color_background_1 }}
-              style={{
-                backgroundColor: colorPallet.color_background_1,
-              }}
-              labelStyle={{
-                fontSize: fontSize16,
-                fontWeight: '700',
-                textTransform: 'none',
-                paddingVertical: unit4
-              }}
-            />
+        <Tab.Navigator
+          tabBar={(props) => <ProfileTopTabBar {...props} />}
+          screenOptions={{
+            swipeEnabled: true
           }}
-        />
+        >
+          <Tab.Screen
+            name="ApprovedTab"
+            component={ApprovedTab}
+          />
+          <Tab.Screen
+            name="PendingTab"
+            component={PendingTab}
+          />
+          <Tab.Screen
+            name="SavedTab"
+            component={SavedTab}
+          />
+        </Tab.Navigator>
       </BottomSheet>
 
       <PressView

@@ -44,6 +44,7 @@ import Snackbar from "react-native-snackbar";
 import LottieView from "lottie-react-native";
 import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
 import PopUp from "../../../components/PopUp/PopUp";
+import {fakePost} from "../../../utils/fakeData";
 
 interface BaseTabProps {
   type: PostType;

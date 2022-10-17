@@ -19,7 +19,7 @@ const EntryPoint: React.FC = () => {
     <Provider store={store}>
       <PersistGate
         onBeforeLift={async () => {
-          await sleep(500);
+          await sleep(100);
         }}
         persistor={persistor}
         loading={
