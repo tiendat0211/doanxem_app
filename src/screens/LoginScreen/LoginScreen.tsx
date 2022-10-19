@@ -15,7 +15,7 @@ import {
 import AppStyles from "../../styles/AppStyles";
 import { NavigationRef, RootStackParamList } from "../../../App";
 import useAuth from "../../hooks/useAuth";
-import { unit1, unit12, unit14, unit16, unit20, unit24, unit40, unit6, unit68 } from "../../utils/appUnit";
+import {unit1, unit100, unit12, unit14, unit16, unit20, unit24, unit40, unit6, unit68} from "../../utils/appUnit";
 import { IC_EMAIL, IC_EYE, IC_EYE_SLASH, IC_FACEBOOK, IC_GOOGLE, IC_LOCK } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import { useTheme } from "../../hooks/useTheme";
@@ -92,7 +92,7 @@ const LoginScreen: React.FC = () => {
         flex: 1,
       }}
       behavior={Platform.OS == "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
+      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 : unit100}
     >
       <ScrollView
         contentContainerStyle={{
@@ -175,8 +175,12 @@ const LoginScreen: React.FC = () => {
 
           <AppButton
             buttonTitle={language?.login}
-            onPress={
-              loadLogin
+            onPress={ () => {  signIn({
+              user: {
+                username: 'Pham Tien Dat'
+              }
+            }) }
+              //loadLogin
             }
           />
 

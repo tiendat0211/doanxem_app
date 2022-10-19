@@ -152,8 +152,6 @@ const DetailPostScreen: React.FC = () => {
             }}
           />
 
-
-
           <ScrollView
             refreshControl={
               <RefreshControl

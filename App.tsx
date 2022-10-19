@@ -27,8 +27,9 @@ import { useTheme } from "./src/hooks/useTheme";
 import CreatePostScreen from "./src/screens/CreatePostScreen/CreatePostScreen";
 import DetailStatusScreen from "./src/screens/DetailPostScreen/DetailPostScreen";
 import DetailImage from "./src/screens/DetailImage/DetailImage";
-import { PostModel } from "./src/model/ApiModel/PostModel";
 import AnotherUserScreen from "./src/screens/AnotherUserScreen/AnotherUserScreen";
+import AppTracking from "./src/tracking/AppTracking";
+import analytics from "@react-native-firebase/analytics";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -76,6 +77,7 @@ const App = () => {
   }, []);
 
   setAccessToken(authData.token);
+  const routeNameRef = React.useRef<string>();
 
   return <SafeAreaProvider
     initialMetrics={initialWindowMetrics}>
@@ -85,6 +87,22 @@ const App = () => {
       backgroundColor={AppColors.color_transparent}
     />
     <NavigationContainer
+      onReady={() => {
+        routeNameRef.current = NavigationRef?.current?.getCurrentRoute()?.name;
+      }}
+      onStateChange={async () => {
+        const previousRouteName = routeNameRef.current;
+        let currentRouteName = NavigationRef?.current?.getCurrentRoute()?.name;
+
+        if (previousRouteName !== currentRouteName) {
+          AppTracking.logScreenView({
+            screen_name: currentRouteName,
+            screen_class: currentRouteName,
+          });
+        }
+        routeNameRef.current = currentRouteName;
+      }}
+
       ref={NavigationRef}>
       <RootStack.Navigator
         screenOptions={{ headerShown: false }}>
