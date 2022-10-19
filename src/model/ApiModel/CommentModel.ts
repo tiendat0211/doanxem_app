@@ -10,5 +10,6 @@ export interface CommentModel {
   updated_at: Date;
   commentable_type: string;
   commentable_id: number;
+  time: string;
   user: UserModel;
 }

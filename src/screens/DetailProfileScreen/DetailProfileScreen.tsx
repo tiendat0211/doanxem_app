@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView, PermissionsAndroid, Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -34,7 +34,7 @@ import {
 } from "../../assets/path";
 import AppText from "../../components/AppText/AppText";
 import { useLanguage } from "../../hooks/useLanguage";
-import { fontSize12, fontSize14, fontSize16, fontSize18, fontSize20 } from "../../styles/AppFonts";
+import {dimension, fontSize12, fontSize14, fontSize16, fontSize18, fontSize20} from "../../styles/AppFonts";
 import PressView from "../../components/PressView/PressView";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
@@ -53,30 +53,95 @@ import {
   nameValidFn,
   passLengthValidFn,
 } from "../../components/ValidateEditText/ValidateFunctions";
-
+import ModalFileSelect from "../CreatePostScreen/components/ModalFileSelect";
+import {Asset, CameraOptions, launchCamera, launchImageLibrary} from "react-native-image-picker";
+import {showToastError, showToastErrorMessage, showToastMsg} from "../../utils/Toaster";
+import {createPost, updateProfile} from "../../network/AppAPI";
+import useScreenState from "../../hooks/useScreenState";
+import AppLoading from "../../components/Loading/AppLoading";
 
 const DetailProfileScreen: React.FC = () => {
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
-  const { authData } = useAuth()
+  const { authData, updateUser } = useAuth()
   const user = authData?.user;
-  const [email,setEmail] = useState(user?.email);
+  const {token} = authData
+  const [email,setEmail] = useState(user?.email || '');
   const [phone,setPhone] = useState('');
-  const [name,setName] = useState(user?.name);
+  const [name,setName] = useState(user?.name || '');
   const [isopen,setOpen] = useState(false);
   const [birthDay, setBirthDay] = useState<Date>()
   const [nameValid, setNameValid] = useState(false);
   const [phoneValid, setPhoneValid] = useState(false);
   const [emailValid, setEmailValid] = useState(false);
   const [isValid, setValid] = useState(false);
+  const [isChange, setIsChange] = useState(false);
+  const [avatar, setAvatar] = useState<Asset>({
+    uri: undefined,
+    type: "",
+    fileName: "",
+  });
+  const { isLoading, setLoading, mounted, setError } = useScreenState();
+
+  const getImageFromLib = async () => {
+    try {
+      const res = await launchImageLibrary({
+        mediaType: "photo",
+        quality: 0.5,
+        maxHeight: 1024,
+        maxWidth: 1024,
+      });
+
+      if (res.assets) {
+        console.log('response',res.assets);
+        const img = res.assets[0];
+        setAvatar({
+          uri: img.uri,
+          type: img?.type,
+          fileName: img?.fileName,
+        });
+        setIsChange(true);
+      }
+    } catch (e) {
+      console.error(e);
+      showToastErrorMessage("Ảnh quá dung lượng");
+    }
+  };
+
+  useEffect(() => {
+    if(name === user?.name && email === user?.email) {
+      setIsChange(false)
+    } else {
+      setIsChange(true)
+    }
+  }, [name, email])
 
   useEffect(() =>{
-    if ( !emailValid || !nameValid || !phoneValid){
+    if ( !emailValid || !nameValid ){
       setValid(false)
     }else {
       setValid(true)
     }
-  },[emailValid ,nameValid ,phoneValid])
+  },[emailValid ,nameValid])
+
+  async function update( name: string, avatar: Asset ){
+
+    try {
+      setLoading(true);
+      const res = await updateProfile( avatar, name, token||'');
+      const resJson = await res.json()
+      if (resJson.status === 200) {
+        showToastMsg(resJson?.message)
+        updateUser(resJson?.data);
+      } else {
+        showToastErrorMessage(resJson?.message);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
         <SafeAreaView
@@ -124,7 +189,7 @@ const DetailProfileScreen: React.FC = () => {
               >
                 <Image
                   source={{
-                    uri: user?.avatar
+                    uri: avatar.uri? avatar.uri : user?.avatar
                   }}
                   style={{
                     width: unit100,
@@ -132,13 +197,18 @@ const DetailProfileScreen: React.FC = () => {
                     borderRadius: unit20,
                   }}/>
 
-                <PressView  style={{
-                  padding: unit4,
-                  alignSelf: "center",
-                  marginTop: -unit16,
-                  borderRadius: unit100,
-                  marginBottom: unit8
-                }}>
+                <PressView
+                  style={{
+                    padding: unit4,
+                    alignSelf: "center",
+                    marginTop: -unit16,
+                    borderRadius: unit100,
+                    marginBottom: unit8
+                  }}
+                  onPress={async () => {
+                    await getImageFromLib();
+                  }}
+                >
                   <Image
                     source={IC_EDIT_PROFILE}
                     style={{
@@ -157,7 +227,6 @@ const DetailProfileScreen: React.FC = () => {
                   {user?.email}
                 </AppText>
               </View>
-
 
               <ValidateEditText
                 colorPallet={colorPallet}
@@ -231,7 +300,7 @@ const DetailProfileScreen: React.FC = () => {
 
               <ValidateEditText
                 colorPallet={colorPallet}
-                textValue={email||''}
+                textValue={email}
                 setValue={setEmail}
                 contentStyle={{
                   marginBottom: unit40,
@@ -248,10 +317,12 @@ const DetailProfileScreen: React.FC = () => {
               <AppButton
                 buttonTitle={language?.save}
                 style={{
-                  backgroundColor: isValid? AppColors.color_primary : AppColors.color_opacity,
+                  backgroundColor: (isChange && isValid) ? AppColors.color_primary : AppColors.color_opacity,
                 }}
-                onPress={()=>{}}
-                disabled={!isValid}
+                onPress={async ()=>{
+                  await update(name, avatar);
+                }}
+                disabled={!isChange || !isValid}
               />
             </ScrollView>
           </KeyboardAvoidingView>
@@ -359,7 +430,9 @@ const DetailProfileScreen: React.FC = () => {
              : null
           }
 
-
+          {
+            isLoading ? <AppLoading isOverlay/> : null
+          }
 
         </SafeAreaView>
     )

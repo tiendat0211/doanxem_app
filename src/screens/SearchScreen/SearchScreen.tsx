@@ -1,49 +1,25 @@
 import React, { useState } from "react";
 import {
-  Button,
   FlatList,
-  Image,
-  Platform,
-  RefreshControl,
   SafeAreaView,
-  ScrollView,
   StatusBar,
-  Text,
   View,
 } from "react-native";
 import AppStyles from "../../styles/AppStyles";
-import useAuth from "../../hooks/useAuth";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
-  unit0,
-  unit1,
-  unit100,
-  unit12, unit16,
+  unit12,
   unit20,
-  unit200,
-  unit24,
-  unit30,
-  unit32, unit6,
-  unit60,
-  unit75, unit8,
 } from "../../utils/appUnit";
-import { IC_DRAWER, IC_FILTER, IMG_LOGO, IMG_ONBOARDING, IMG_POST, LOADING_ANIM } from "../../assets/path";
-import AppText from "../../components/AppText/AppText";
+import { IC_DRAWER} from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { fontSize14, fontSize16, fontSize20 } from "../../styles/AppFonts";
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { DrawerActions, NavigationContainer } from "@react-navigation/native";
-import PressView from "../../components/PressView/PressView";
+import { DrawerActions,} from "@react-navigation/native";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import SearchComponent from "./components/SearchComponent";
-import { StatusModel } from "../../model/StatusModel";
-import StatusItem from "../../components/StatusItem/StatusItem";
-import { fakePost, FakeTabs, fakeUserLists } from "../../utils/fakeData";
-import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
+import { FakeTabs} from "../../utils/fakeData";
 import BaseTab from "../HomeScreen/tabs/BaseTab";
 
 

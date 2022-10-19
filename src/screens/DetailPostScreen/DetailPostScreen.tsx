@@ -25,7 +25,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { getPostDetail, postComment, savePost } from "../../network/AppAPI";
+import {getListComment, getPostDetail, postComment, savePost} from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import StatusItem2 from "../../components/StatusItem/StatusItem2";
@@ -39,6 +39,8 @@ import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import PopUp from "../../components/PopUp/PopUp";
 import Snackbar from "react-native-snackbar";
 import { unit20 } from "../../utils/appUnit";
+import AppTracking from "../../tracking/AppTracking";
+import analytics from "@react-native-firebase/analytics";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -62,7 +64,6 @@ const DetailPostScreen: React.FC = () => {
       const res = await getPostDetail(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
         setPostDetail(res?.data?.data);
-        seListComment(res?.data?.data?.comments)
       }
       setError(undefined);
     } catch (e) {
@@ -72,11 +73,23 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
+  async function loadComment(post_uuid = postID) {
+    try {
+      const res = await getListComment(post_uuid);
+      if (ApiHelper.isResSuccess(res)) {
+        seListComment(res?.data?.data?.data);
+      }
+      setError(undefined);
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
+
   async function loadPostDetail2(post_uuid = postID) {
     try {
       const res = await getPostDetail(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
-        setPostDetail(res?.data?.data);
         seListComment(res?.data?.data?.comments)
       }
       setError(undefined);
@@ -87,9 +100,27 @@ const DetailPostScreen: React.FC = () => {
   }
 
   useEffect(() => {
+    const screenStartTime = new Date();
     loadPostDetail().finally(() => {
 
     });
+    loadComment().finally(()=>{
+
+    });
+
+    AppTracking.logCustomEvent("view_post", {
+      post_id: String(postID),
+    });
+
+    return () => {
+      const screenEndTime = new Date();
+      const totalOnScreenTime = screenEndTime.getTime() - screenStartTime.getTime();
+
+      AppTracking.logCustomEvent("view_post_time", {
+        post_id: String(postID),
+        duration_millisecond: totalOnScreenTime,
+      });
+    };
   }, [])
 
   async function comment(post_uuid: string, content: string) {
@@ -97,6 +128,7 @@ const DetailPostScreen: React.FC = () => {
       const res = await postComment(post_uuid, content);
       if (ApiHelper.isResSuccess(res)) {
         await loadPostDetail2(post_uuid)
+        await loadComment(post_uuid)
       } else {
         showToastErrorMessage(res?.data.message)
       }
@@ -129,8 +161,7 @@ const DetailPostScreen: React.FC = () => {
           flex: 1,
         }}
         behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
-
+        keyboardVerticalOffset={ Platform.OS == "ios" ? 0 : 0 }
       >
         <SafeAreaView
           style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>

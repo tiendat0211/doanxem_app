@@ -4,13 +4,11 @@ import UserModel from '../../model/ApiModel/UserModel';
 export interface AuthState {
   user?: UserModel;
   token?: string;
-  //isFirstTimeLogin: boolean;
 }
 
 const initAuthState: AuthState = {
   user: undefined,
   token: '',
-  //isFirstTimeLogin: false,
 };
 
 const authSlice = createSlice({
@@ -25,13 +23,16 @@ const authSlice = createSlice({
         ...payload.payload,
       };
     },
-    // disableFirstTimeLogin: state => {
-    //   state.isFirstTimeLogin = false;
-    // },
+    updateUser: (state, payload: PayloadAction<UserModel>) => {
+      state.user = {
+        ...state.user,
+        ...payload.payload
+      }
+    },
   },
 });
 
-export const { signIn, signOut,  } =
+export const { signIn, signOut, updateUser } =
   authSlice.actions;
 
 export default authSlice;

@@ -93,7 +93,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
                 color: colorPallet.color_text_gray_3
               }}
             >
-              123
+              {comment?.time}
             </AppText>
 
           </PressView>

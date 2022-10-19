@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native";
-import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
+import React, {useEffect} from "react";
+import {NavigationContainer, NavigationContainerRef} from "@react-navigation/native";
+import {initialWindowMetrics, SafeAreaProvider} from "react-native-safe-area-context";
 import HomeScreen from "./src/screens/HomeScreen/HomeScreen";
 import LoginScreen from "./src/screens/LoginScreen/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen/RegisterScreen";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StatusBar } from "react-native";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {StatusBar} from "react-native";
 import AppColors from "./src/styles/AppColors";
 import useAuth from "./src/hooks/useAuth";
-import { addOnUnAuthorizeListener, setAccessToken } from "./src/network/client";
+import {addOnUnAuthorizeListener, setAccessToken} from "./src/network/client";
 import OnboardingSceen from "./src/screens/OnboardingSceen/OnboardingSceen";
 import ForgotPasswordScreen from "./src/screens/ForgotPasswordScreen/ForgotPasswordScreen";
 import VerifyOTPScreen from "./src/screens/VerifyOTPScreen/VerifyOTPScreen";
@@ -23,7 +23,7 @@ import NotiSettingScreen from "./src/screens/NotiSettingScreen/NotiSettingScreen
 import BlockUserScreen from "./src/screens/BlockUserScreen/BlockUserScreen";
 import DetailProfileScreen from "./src/screens/DetailProfileScreen/DetailProfileScreen";
 import ChangPasswordScreen from "./src/screens/ChangePasswordScreen/ChangePasswordScreen";
-import { useTheme } from "./src/hooks/useTheme";
+import {useTheme} from "./src/hooks/useTheme";
 import CreatePostScreen from "./src/screens/CreatePostScreen/CreatePostScreen";
 import DetailStatusScreen from "./src/screens/DetailPostScreen/DetailPostScreen";
 import DetailImage from "./src/screens/DetailImage/DetailImage";
@@ -55,7 +55,7 @@ export type RootStackParamList = {
     postID: string,
   },
   DetailImage: {
-    img_url:string,
+    img_url: string,
   },
   AnotherUserScreen: {
     user_uuid: string,
@@ -66,14 +66,38 @@ export const RootStack = createNativeStackNavigator<RootStackParamList>();
 export const NavigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
 
 const App = () => {
-  const { authData, signOut } = useAuth();
+  const {authData, signOut} = useAuth();
   const user = authData.user;
-  const { colorPallet, theme} = useTheme()
+  const {colorPallet, theme} = useTheme()
 
   useEffect(() => {
     addOnUnAuthorizeListener(() => {
       signOut();
     });
+  }, []);
+
+  useEffect(() => {
+    async function initFirebaseProperties() {
+      if (authData?.user && authData?.token) {
+        const user = authData?.user;
+        await analytics().setUserId(user?.id.toString());
+      }
+    }
+
+    const appStartTime = new Date();
+
+    initFirebaseProperties().finally(() => {
+      console.log("[Firebase] init Firebase Properties");
+    });
+
+    return () => {
+      const appEndTime = new Date();
+      const totalOnAppTime = appEndTime.getTime() - appStartTime.getTime();
+
+      AppTracking.logCustomEvent("use_app_time", {
+        duration_millisecond: totalOnAppTime,
+      });
+    };
   }, []);
 
   setAccessToken(authData.token);
@@ -83,7 +107,7 @@ const App = () => {
     initialMetrics={initialWindowMetrics}>
     <StatusBar
       translucent
-      barStyle={ theme === 'light' ? "dark-content" : "light-content"}
+      barStyle={theme === 'light' ? "dark-content" : "light-content"}
       backgroundColor={AppColors.color_transparent}
     />
     <NavigationContainer
@@ -105,7 +129,7 @@ const App = () => {
 
       ref={NavigationRef}>
       <RootStack.Navigator
-        screenOptions={{ headerShown: false }}>
+        screenOptions={{headerShown: false}}>
         {
           user
             ?
@@ -117,74 +141,74 @@ const App = () => {
 
               <RootStack.Screen
                 name={"HomeScreen"}
-                component={HomeScreen} />
+                component={HomeScreen}/>
 
               <RootStack.Screen
                 name={"SettingScreen"}
-                component={SettingScreen} />
+                component={SettingScreen}/>
 
               <RootStack.Screen
                 name={"FilterScreen"}
-                component={FilterScreen} />
+                component={FilterScreen}/>
 
               <RootStack.Screen
                 name={"LanguageScreen"}
-                component={LanguageScreen} />
+                component={LanguageScreen}/>
               <RootStack.Screen
                 name={"ViewModeScreen"}
-                component={ViewModeScreen} />
+                component={ViewModeScreen}/>
               <RootStack.Screen
                 name={"NotiSettingScreen"}
-                component={NotiSettingScreen} />
+                component={NotiSettingScreen}/>
               <RootStack.Screen
                 name={"BlockUserScreen"}
-                component={BlockUserScreen} />
+                component={BlockUserScreen}/>
               <RootStack.Screen
                 name={"DetailProfileScreen"}
-                component={DetailProfileScreen} />
+                component={DetailProfileScreen}/>
               <RootStack.Screen
                 name={"ChangPasswordScreen"}
-                component={ChangPasswordScreen} />
+                component={ChangPasswordScreen}/>
               <RootStack.Screen
                 name={"CreatePostScreen"}
-                component={CreatePostScreen} />
+                component={CreatePostScreen}/>
               <RootStack.Screen
                 name={"DetailPostScreen"}
-                component={DetailStatusScreen} />
+                component={DetailStatusScreen}/>
               <RootStack.Screen
                 name={"DetailImage"}
-                component={DetailImage} />
+                component={DetailImage}/>
               <RootStack.Screen
                 name={"AnotherUserScreen"}
-                component={AnotherUserScreen} />
+                component={AnotherUserScreen}/>
 
             </>
             :
             <>
               <RootStack.Screen
                 name={"OnboardingSceen"}
-                component={OnboardingSceen} />
+                component={OnboardingSceen}/>
 
               <RootStack.Screen
                 name={"LoginScreen"}
-                component={LoginScreen} />
+                component={LoginScreen}/>
 
               <RootStack.Screen
                 name={"RegisterScreen"}
-                component={RegisterScreen} />
+                component={RegisterScreen}/>
 
               <RootStack.Screen
                 name={"ForgotPasswordScreen"}
-                component={ForgotPasswordScreen} />
+                component={ForgotPasswordScreen}/>
               <RootStack.Screen
                 name={"VerifyOTPScreen"}
-                component={VerifyOTPScreen} />
+                component={VerifyOTPScreen}/>
               <RootStack.Screen
                 name={"RestPassWordScreen"}
-                component={ResetPasswordScreen} />
+                component={ResetPasswordScreen}/>
               <RootStack.Screen
                 name={"RuleWithLoginScreen"}
-                component={RuleWithLoginScreen} />
+                component={RuleWithLoginScreen}/>
             </>
         }
       </RootStack.Navigator>

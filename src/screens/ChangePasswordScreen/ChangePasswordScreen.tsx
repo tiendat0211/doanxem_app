@@ -69,7 +69,8 @@ const ChangPasswordScreen: React.FC = () => {
     try {
       const res = await changePassword(oldPass,newPass,confirm);
       if (ApiHelper.isResSuccess(res)) {
-       showToastMsg(res?.data?.message)
+       showToastMsg(res?.data?.message);
+        clear();
       } else {
         showToastErrorMessage(res.data.message);
       }
@@ -87,6 +88,12 @@ const ChangPasswordScreen: React.FC = () => {
       setValid(true)
     }
   },[newValid ,oldValid,confirmValid])
+
+  function clear(){
+    setOldPass('');
+    setNewPass('');
+    setConfirm('');
+  }
 
 
   return <SafeAreaView
@@ -116,7 +123,7 @@ const ChangPasswordScreen: React.FC = () => {
         flex:1,
       }}
       behavior={Platform.OS == "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
+      keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :0}
     >
       <ScrollView
         contentContainerStyle={{

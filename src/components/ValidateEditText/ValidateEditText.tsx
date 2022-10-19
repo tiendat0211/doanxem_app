@@ -139,7 +139,7 @@ const ValidateEditText: React.FC<ValidateEditTextProps> = props => {
         )}
       </View>
       {
-        (isBlur && textValue.length > 0 && handleErrorText().length > 0)
+        (!isBlur && textValue.length > 0 && handleErrorText().length > 0)
           ? (
             <AppText
               fontType={'semiBold'}

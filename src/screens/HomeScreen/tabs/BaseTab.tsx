@@ -45,6 +45,7 @@ import LottieView from "lottie-react-native";
 import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
 import PopUp from "../../../components/PopUp/PopUp";
 import {fakePost} from "../../../utils/fakeData";
+import {useFocusEffect} from "@react-navigation/native";
 
 interface BaseTabProps {
   type: PostType;
@@ -189,6 +190,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       style={{
         height: unit60,
         alignSelf: "center",
+        alignItems:'center',
       }}
       source={LOADING_ANIM}
       autoPlay
@@ -438,10 +440,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           />
           : null
       }
-
-      {/*{*/}
-      {/*  isLoading && <AppLoading isOverlay/>*/}
-      {/*}*/}
 
     </>
   );

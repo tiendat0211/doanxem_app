@@ -1,4 +1,4 @@
-import { AuthState, signIn, signOut } from "../store/slice/authSlice";
+import { AuthState, signIn, signOut, updateUser } from "../store/slice/authSlice";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { setAccessToken, setLocationHeader } from "../network/client";
 import UserModel from "../model/ApiModel/UserModel";
@@ -18,5 +18,8 @@ export default function useAuth() {
       dispatch(signOut());
     },
     authData,
+    updateUser: (newUserData: UserModel) => {
+      dispatch(updateUser(newUserData));
+    }
   };
 }

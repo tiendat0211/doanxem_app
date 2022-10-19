@@ -175,12 +175,8 @@ const LoginScreen: React.FC = () => {
 
           <AppButton
             buttonTitle={language?.login}
-            onPress={ () => {  signIn({
-              user: {
-                username: 'Pham Tien Dat'
-              }
-            }) }
-              //loadLogin
+            onPress={
+              loadLogin
             }
           />
 
