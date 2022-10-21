@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Reaction);
+export default Reaction;
 
 interface ReactionItemProps extends PressableProps {
   img: any,

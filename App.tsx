@@ -30,6 +30,7 @@ import DetailImage from "./src/screens/DetailImage/DetailImage";
 import AnotherUserScreen from "./src/screens/AnotherUserScreen/AnotherUserScreen";
 import AppTracking from "./src/tracking/AppTracking";
 import analytics from "@react-native-firebase/analytics";
+import {PostModel} from "./src/model/ApiModel/PostModel";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -53,12 +54,13 @@ export type RootStackParamList = {
   CreatePostScreen: undefined,
   DetailPostScreen: {
     postID: string,
+    onUpdatePost: (post?: PostModel) => void,
   },
   DetailImage: {
-    img_url: string,
+    img_url?: string,
   },
   AnotherUserScreen: {
-    user_uuid: string,
+    user_uuid?: string,
   }
 };
 

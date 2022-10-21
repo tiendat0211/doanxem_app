@@ -38,6 +38,7 @@ import VideoPlayer from "react-native-video-player";
 import FastImage from "react-native-fast-image";
 import PopUp from "../PopUp/PopUp";
 import AppColors from "../../styles/AppColors";
+import UserModel from "../../model/ApiModel/UserModel";
 
 interface StatusItemProps{
   post?: PostModel,
@@ -84,7 +85,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         <PressView
           onPress={() => {
             NavigationRef?.current?.navigate("AnotherUserScreen",{
-              user_uuid: post?.user?.user_uuid || ""
+              user_uuid: post?.user?.user_uuid
               }
             )
           }}
