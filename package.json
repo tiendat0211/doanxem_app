@@ -30,6 +30,7 @@
     "lodash": "^4.17.21",
     "lottie-ios": "3.2.3",
     "lottie-react-native": "^5.0.1",
+    "pusher-js": "^7.4.0",
     "react": "17.0.2",
     "react-native": "0.67.4",
     "react-native-bidirectional-infinite-scroll": "^0.3.3",

@@ -193,13 +193,13 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               ?
               <VideoPlayer
                 video={{ uri: post?.image}}
-                videoWidth={1600}
-                videoHeight={1600}
+                videoWidth={Dimensions.get('screen').width}
+                videoHeight={Dimensions.get('screen').width}
                 showDuration={true}
                 defaultMuted={true}
-                thumbnail={{uri: post?.image}}
+                thumbnail={{uri: post?.thumbnail}}
                 style={{
-                  backgroundColor: AppColors.color_transparent_dark
+                  backgroundColor: colorPallet.color_background_1
                 }}
                 customStyles={{
                   playArrow: {

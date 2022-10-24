@@ -28,6 +28,7 @@ export interface PostModel {
   post_reactions: PostReaction[];
   comments: CommentModel[];
   isSaved: boolean;
+  thumbnail:string;
 }
 
 export interface MostReaction {

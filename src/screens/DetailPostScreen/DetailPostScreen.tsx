@@ -38,9 +38,12 @@ import { fontSize18, fontSize20 } from "../../styles/AppFonts";
 import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import PopUp from "../../components/PopUp/PopUp";
 import Snackbar from "react-native-snackbar";
-import { unit20 } from "../../utils/appUnit";
+import {unit1, unit20, unit5} from "../../utils/appUnit";
 import AppTracking from "../../tracking/AppTracking";
 import analytics from "@react-native-firebase/analytics";
+import {AppPusher} from "../../utils/AppConfig";
+import {PusherCommment} from "../../model/ApiModel/PusherCommment";
+import UserModel from "../../model/ApiModel/UserModel";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -49,18 +52,18 @@ const DetailPostScreen: React.FC = () => {
   const { postID, onUpdatePost } = useRoute<DetailStatusScreenProps>().params;
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
-  const [listComment, seListComment] = useState<CommentModel[]>([]);
+  const [listComment, setListComment] = useState<CommentModel[]>([]);
   const [userComment, setUserComment] = useState('');
   const { isLoading, setLoading, error, setError, mounted } = useScreenState();
   const [postDetail, setPostDetail] = useState<PostModel>();
   const scrollViewRef = useRef<ScrollView>(null);
   const [isOpen, setOpen] = useState(false);
   const [saved, setISSaved] = useState(false);
+  const {authData} = useAuth()
+  const user = authData.user;
+  const [load,setLoad] = useState('Đang đăng...');
+  const [listCommentError, setListCommentError] = useState<CommentModel[]>([]);
 
-  useEffect(() => {
-    console.log({postDetail})
-
-  }, [postDetail])
 
   async function loadPostDetail(post_uuid = postID) {
     try {
@@ -94,7 +97,7 @@ const DetailPostScreen: React.FC = () => {
     try {
       const res = await getListComment(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
-        seListComment(res?.data?.data?.data);
+        setListComment(res?.data?.data?.data);
       }
       setError(undefined);
     } catch (e) {
@@ -130,17 +133,67 @@ const DetailPostScreen: React.FC = () => {
   }, [])
 
   async function comment(post_uuid: string, content: string) {
+    const now = new Date();
+    const fakeId = now.getTime();
+
+    const newComment : CommentModel = {
+      id: fakeId,
+      user_id: user?.id ,
+      content: userComment,
+      upvote: 0,
+      downvote: 0,
+      created_at: now,
+      updated_at: now,
+      user: user,
+    }
+
+    setListComment(prev=>{
+      return[
+        newComment,
+        ...prev,
+      ]
+    })
+
     try {
       const res = await postComment(post_uuid, content);
       if (ApiHelper.isResSuccess(res)) {
-        await loadPostDetail(post_uuid)
-        await loadComment(post_uuid)
+        const newComment = res.data.data;
+        setListComment(prev => {
+          const newList = [...prev].filter((cmt) => {
+            return cmt.id !== fakeId;
+          });
+          return [
+            newComment,
+            ...newList
+          ]
+        })
       } else {
         showToastErrorMessage(res?.data.message)
+        setListCommentError(prevState => {
+          return [
+            newComment,
+            ...prevState,
+          ]
+        })
+        setListComment(prev=>{
+          return prev.filter((item) => {
+            return item.id !== now.getTime()
+          })
+        })
       }
     } catch (e) {
       setError(e);
-    } finally {
+      setListCommentError(prevState => {
+        return [
+          newComment,
+          ...prevState,
+        ]
+      })
+      setListComment(prev=>{
+        return prev.filter((item) => {
+          return item.id !== now.getTime()
+        })
+      })
     }
   }
 
@@ -158,6 +211,40 @@ const DetailPostScreen: React.FC = () => {
     } finally {
     }
   }
+
+  useEffect(() => {
+    const channel = AppPusher.subscribe(`post.${postID}`).bind(
+      "CommentAndReply",
+      (pusher: PusherCommment)=>{
+        console.log("FINDDDDDDD")
+        const { data , user} = pusher;
+        console.log({data});
+        if (data){
+          const newComment : CommentModel = {
+            id: data.comment_id,
+            user_id: user?.id ,
+            content: userComment,
+            upvote: 0,
+            downvote: 0,
+            user: user,
+            time: data.created_at,
+          }
+          setListComment(prev=>{
+            return[
+              newComment,
+              ...prev,
+            ]
+          })
+        }
+      }
+    );
+
+    channel.reinstateSubscription();
+
+    return () => {
+      channel.cancelSubscription();
+    };
+  }, []);
 
   return (
     <>
@@ -216,6 +303,25 @@ const DetailPostScreen: React.FC = () => {
               }}
             />
 
+            {/*Comment Error*/}
+            {
+              listCommentError.length
+                ? listComment.map((comment) => {
+                  return <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    style={{
+                      borderWidth: unit1,
+                      borderColor: AppColors.color_warning,
+                      borderRadius: unit5,
+                    }}
+                    type={"error"}
+                  />
+                })
+                :
+                null
+            }
+
             {/*Comment*/}
             {
               listComment.length
@@ -223,6 +329,7 @@ const DetailPostScreen: React.FC = () => {
                   return <CommentItem
                     key={comment.id}
                     comment={comment}
+                    type={"success"}
                   />
                 })
                 :
@@ -256,8 +363,6 @@ const DetailPostScreen: React.FC = () => {
             onChangeText={(text) => setUserComment(text)}
             value={userComment}
           />
-
-
 
         </SafeAreaView>
         {
