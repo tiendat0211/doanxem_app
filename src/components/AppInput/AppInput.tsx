@@ -84,18 +84,18 @@ const AppInput: React.FC<AppInput> = (props) => {
           }}
         />
 
-        <PressView
-          onPress={onPressMedia}
-        >
-          <Image
-            source={IC_MEDIA}
-            style={{
-              width: unit24,
-              height: unit24,
-              marginRight: unit14
-            }}
-          />
-        </PressView>
+        {/*<PressView*/}
+        {/*  onPress={onPressMedia}*/}
+        {/*>*/}
+        {/*  <Image*/}
+        {/*    source={IC_MEDIA}*/}
+        {/*    style={{*/}
+        {/*      width: unit24,*/}
+        {/*      height: unit24,*/}
+        {/*      marginRight: unit14*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*</PressView>*/}
 
         <PressView
           onPress={onPressSend}

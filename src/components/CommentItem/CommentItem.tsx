@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Dimensions, Image, StyleProp, View, ViewStyle } from "react-native";
+import {Dimensions, Image, StyleProp, View, ViewProps, ViewStyle} from "react-native";
 import {
-  unit1,
+  unit1, unit10,
   unit100,
   unit12, unit14,
   unit16,
@@ -25,33 +25,49 @@ import {
   IC_SAVE,
   IC_SHAREPOST,
   IC_VIEWMORE,
-  IMG_LOGO,
+  IMG_LOGO, LOADING_ANIM,
 } from "../../assets/path";
 import { CommentModel } from "../../model/ApiModel/CommentModel";
+import LottieView from "lottie-react-native";
+import {NavigationRef} from "../../../App";
+import AppColors from "../../styles/AppColors";
 
+export type CommnetType =
+  | "error"
+  | "success";
 
 interface StatusItemProps {
   styleUserImage?: StyleProp<Image>;
   onPressViewMore?: () => void;
   comment: CommentModel;
   onImagePress?:()=>void;
+  style?: StyleProp<ViewStyle>;
+  type: CommnetType;
+  onPressReSend?:()=> void;
 }
 
 const CommentItem: React.FC<StatusItemProps> = (props) => {
 
-  const { comment,styleUserImage, onPressViewMore} = props;
+  const { comment,styleUserImage, onPressViewMore, style,type,onPressReSend} = props;
   const {colorPallet} = useTheme();
 
   return (
     <>
       <View
-        style={{
+        style={[{
           flexDirection:'row',
           marginLeft: unit20,
           paddingVertical: unit6,
-        }}
+        },style]}
       >
-        <PressView>
+        <PressView
+          onPress={() =>{
+            NavigationRef?.current?.navigate('AnotherUserScreen',{
+              user_uuid:  comment?.user?.user_uuid
+            })
+          }
+          }
+        >
           <Image
             source={{
               uri: comment?.user?.avatar
@@ -108,57 +124,22 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
             {comment?.content}
           </AppText>
 
-          {/*<View*/}
-          {/*  style={{*/}
-          {/*    flexDirection:'row',*/}
-          {/*    paddingTop:unit5,*/}
-          {/*    alignItems: 'center'*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  <Image*/}
-          {/*    source={IC_ARROWRIGHT}*/}
-          {/*    style={{*/}
-          {/*      width: unit16,*/}
-          {/*      height: unit16,*/}
-          {/*    }}*/}
-          {/*  />*/}
-          {/*  <AppText*/}
-          {/*    fontType={'regular'}*/}
-          {/*    style={{*/}
-          {/*      fontSize: unit12,*/}
-          {/*      color: colorPallet.color_text_gray_3,*/}
-          {/*      marginLeft: unit8,*/}
-          {/*      paddingRight: unit12*/}
-          {/*    }}*/}
-          {/*  >*/}
-          {/*    Trả lời*/}
-          {/*  </AppText>*/}
+          {type === 'error' ?
+            <PressView
+              onPress={onPressReSend}
+            >
+              <AppText
+                style={{
+                  fontSize: fontSize14,
+                  color: colorPallet.color_text_gray_3,
+                  lineHeight: unit20
+                }}
+              >
+                Đăng lại
+              </AppText>
+            </PressView>
+             : null}
 
-          {/*  <Image*/}
-          {/*    source={IC_VIEWMORE}*/}
-          {/*    style={{*/}
-          {/*      width: unit16,*/}
-          {/*      height: unit16,*/}
-          {/*    }}*/}
-          {/*  />*/}
-
-          {/*  <PressView*/}
-          {/*    onPress={onPressViewMore}*/}
-          {/*  >*/}
-          {/*    <AppText*/}
-          {/*      fontType={'regular'}*/}
-          {/*      style={{*/}
-          {/*        fontSize: unit12,*/}
-          {/*        color: colorPallet.color_text_gray_3,*/}
-          {/*        marginLeft: unit4,*/}
-          {/*      }}*/}
-          {/*    >*/}
-          {/*      Thêm*/}
-          {/*    </AppText>*/}
-          {/*  </PressView>*/}
-
-
-          {/*</View>*/}
         </View>
       </View>
     </>

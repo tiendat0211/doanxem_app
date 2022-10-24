@@ -34,7 +34,7 @@ const UserProfileItem: React.FC<UserPostItem> = (props) => {
       >
         <FastImage
           source={{
-            uri: post?.image.endsWith('mp4') ? 'https://www.techsmith.com/blog/wp-content/uploads/2019/06/YouTube-Thumbnail-Sizes.png' : post?.image
+            uri: post?.image.endsWith('mp4') ? post?.thumbnail : post?.image
           }}
           style={{
             height: (Dimensions.get('screen').width - unit40 - unit32) / 3,

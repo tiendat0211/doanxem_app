@@ -116,7 +116,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   }
 
   async function loadPosts() {
-    console.log('post',posts[0])
     try {
       setLoading(true);
       setPage(FIRST_PAGE);
@@ -226,8 +225,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   );
 
   function update(updatedPost: PostModel, curPost: PostModel){
-    console.log("update", {updatedPost})
-
     setPosts((prev) => {
       const newList = [...prev];
       for (let i = 0; i < newList.length; i++) {
@@ -236,7 +233,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           cur.total_reactions = updatedPost.total_reactions
           cur.comments_count = updatedPost.comments_count
           cur.user_action = updatedPost.user_action
-          console.log("FINDDDDDDDDDDDDDD")
           break;
         }
       }

@@ -25,6 +25,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import VideoPlayer from "react-native-video-player";
 import FastImage from "react-native-fast-image";
 import ImageViewer from 'react-native-image-zoom-viewer';
+import AppColors from "../../styles/AppColors";
 
 
 
@@ -33,7 +34,7 @@ interface StatusItemProps{
   style?: StyleProp<ViewStyle>,
   onPressComment?: () => void
   onPressImage?: () => void
-  onPressSave?: () => void
+  onPressSave?: () => void,
 }
 
 const StatusItem2: React.FC<StatusItemProps> = (props) => {
@@ -147,10 +148,19 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
             post?.image.endsWith('mp4')
               ? <VideoPlayer
                 video={{ uri: post?.image}}
-                videoWidth={1600}
-                videoHeight={1600}
-                defaultMuted={true}
+                videoWidth={Dimensions.get('screen').width}
+                videoHeight={Dimensions.get('screen').width}
                 showDuration={true}
+                defaultMuted={true}
+                thumbnail={{uri: post?.thumbnail}}
+                style={{
+                  backgroundColor: colorPallet.color_background_1
+                }}
+                customStyles={{
+                  playArrow: {
+                    color: AppColors.color_white,
+                  }
+                }}
               />:
               <FastImage
                 source={{

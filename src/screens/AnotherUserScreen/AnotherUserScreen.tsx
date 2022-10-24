@@ -18,7 +18,7 @@ import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
   unit12,
-  unit16,
+  unit16, unit18,
   unit20,
   unit24,
   unit32,
@@ -71,7 +71,7 @@ const AnotherUserScreen: React.FC = () => {
 
   async function loadProfileUser() {
     try {
-      const res = await getUserProfile(user_uuid);
+      const res = await getUserProfile(user_uuid||'');
       if (ApiHelper.isResSuccess(res)) {
         const user = res?.data?.data;
         setUser(user)
@@ -111,7 +111,7 @@ const AnotherUserScreen: React.FC = () => {
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
-        title={user?.email||''}
+        title={user?.name||''}
         leftIcon={IC_ARROWLEFT}
         leftIconOnClick={() => {
           NavigationRef.current?.goBack();
@@ -190,7 +190,8 @@ const AnotherUserScreen: React.FC = () => {
                 post={item}
                 onPress={()=>{
                   NavigationRef?.current?.navigate("DetailPostScreen",{
-                    postID: item?.post_uuid
+                    postID: item?.post_uuid,
+                    onUpdatePost:()=>{}
                   })
                 }}
               />

@@ -72,7 +72,8 @@ const BaseProfileTab: React.FC<BaseProfileTabProps> = (props) => {
               onPress={()=>{
                 if (type === 'saved' || type === 'approved'){
                   NavigationRef.current?.navigate("DetailPostScreen",{
-                    postID: item?.post_uuid
+                    postID: item?.post_uuid,
+                    onUpdatePost:()=>{}
                   })
                 }
               }}
