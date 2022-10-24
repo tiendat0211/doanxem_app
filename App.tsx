@@ -58,6 +58,7 @@ export type RootStackParamList = {
   },
   DetailImage: {
     img_url?: string,
+    thumbnail?: string,
   },
   AnotherUserScreen: {
     user_uuid?: string,

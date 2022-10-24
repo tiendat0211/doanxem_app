@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, StatusBar} from "react-native";
+import {Dimensions, SafeAreaView, StatusBar} from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import AppStyles from "../../styles/AppStyles";
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -11,7 +11,8 @@ import VideoPlayer from "react-native-video-player";
 type DetailImageScreenProps = RouteProp<RootStackParamList, "DetailImage">;
 
 const DetailImage: React.FC = () => {
-  const { img_url } = useRoute<DetailImageScreenProps>().params;
+  const { img_url , thumbnail} = useRoute<DetailImageScreenProps>().params;
+  const {colorPallet} = useTheme();
 
   return (
     <>
@@ -22,13 +23,19 @@ const DetailImage: React.FC = () => {
           backgroundColor={AppColors.color_transparent}
         />
         {
-          img_url.endsWith('mp4')
+          img_url?.endsWith('mp4')
             ? <VideoPlayer
               video={{ uri: img_url}}
-              videoWidth={1600}
-              videoHeight={1600}
-              defaultMuted={true}
+              videoWidth={Dimensions.get('screen').width}
+              videoHeight={Dimensions.get('screen').width}
               showDuration={true}
+              defaultMuted={true}
+              thumbnail={{uri: thumbnail}}
+              customStyles={{
+                playArrow: {
+                  color: AppColors.color_white,
+                }
+              }}
             />:
             <ImageViewer
               imageUrls={[{

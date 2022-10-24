@@ -35,11 +35,12 @@ interface StatusItemProps{
   onPressComment?: () => void
   onPressImage?: () => void
   onPressSave?: () => void,
+  total_comment: number;
 }
 
 const StatusItem2: React.FC<StatusItemProps> = (props) => {
 
-  const { post, style,onPressComment,onPressImage,onPressSave} = props;
+  const { post, style,onPressComment,onPressImage,onPressSave,total_comment} = props;
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
@@ -192,7 +193,7 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
 
           <FooterItem
             img={IC_COMMENT}
-            title={post?.comments_count.toString()}
+            title={total_comment.toString()}
             style={{
               marginRight: unit24
             }}

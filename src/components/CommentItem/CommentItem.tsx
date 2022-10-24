@@ -31,6 +31,7 @@ import { CommentModel } from "../../model/ApiModel/CommentModel";
 import LottieView from "lottie-react-native";
 import {NavigationRef} from "../../../App";
 import AppColors from "../../styles/AppColors";
+import useAuth from "../../hooks/useAuth";
 
 export type CommnetType =
   | "error"
@@ -44,20 +45,26 @@ interface StatusItemProps {
   style?: StyleProp<ViewStyle>;
   type: CommnetType;
   onPressReSend?:()=> void;
+  onPressReply?:() => void;
+  replyCommentID?: number;
 }
 
 const CommentItem: React.FC<StatusItemProps> = (props) => {
 
-  const { comment,styleUserImage, onPressViewMore, style,type,onPressReSend} = props;
+  const { comment,styleUserImage, onPressViewMore, style,type,onPressReSend,onPressReply,replyCommentID} = props;
   const {colorPallet} = useTheme();
+  const {authData} = useAuth();
+  const user = authData.user;
 
   return (
     <>
       <View
         style={[{
           flexDirection:'row',
-          marginLeft: unit20,
+          paddingHorizontal: unit20,
           paddingVertical: unit6,
+          backgroundColor:  replyCommentID === comment?.id ? colorPallet.color_background_4 : colorPallet.color_background_1,
+          borderRadius: unit20,
         },style]}
       >
         <PressView
@@ -83,13 +90,20 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
         <View
           style={{
             flexDirection:'column',
-            marginRight: unit80
+            marginRight: unit80,
           }}
         >
           <PressView
+            onPress={() =>{
+              NavigationRef?.current?.navigate('AnotherUserScreen',{
+                user_uuid:  comment?.user?.user_uuid
+              })
+            }
+            }
             style={{
               flexDirection:'row',
-              marginBottom:unit4
+              marginBottom:unit4,
+
           }}
           >
             <AppText
@@ -123,6 +137,33 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
           >
             {comment?.content}
           </AppText>
+          {/*<PressView*/}
+          {/*  onPress={onPressReply}*/}
+          {/*  style={{*/}
+          {/*    flexDirection:'row',*/}
+          {/*    alignItems:'center',*/}
+          {/*    marginTop: unit5,*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Image*/}
+          {/*    source={IC_ARROWRIGHT}*/}
+          {/*    style={{*/}
+          {/*      width: unit16,*/}
+          {/*      height: unit16,*/}
+          {/*      marginRight: unit8*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*  <AppText*/}
+          {/*    style={{*/}
+          {/*      fontSize: fontSize14,*/}
+          {/*      color: colorPallet.color_text_gray_3,*/}
+          {/*      lineHeight: unit20*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    Trả lời*/}
+          {/*  </AppText>*/}
+
+          {/*</PressView>*/}
 
           {type === 'error' ?
             <PressView
@@ -141,6 +182,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
              : null}
 
         </View>
+
       </View>
     </>
   )

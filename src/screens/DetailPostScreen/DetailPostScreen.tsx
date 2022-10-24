@@ -42,8 +42,8 @@ import {unit1, unit20, unit5} from "../../utils/appUnit";
 import AppTracking from "../../tracking/AppTracking";
 import analytics from "@react-native-firebase/analytics";
 import {AppPusher} from "../../utils/AppConfig";
-import {PusherCommment} from "../../model/ApiModel/PusherCommment";
 import UserModel from "../../model/ApiModel/UserModel";
+import {PusherCommment} from "../../model/ApiModel/PusherCommment";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -61,8 +61,10 @@ const DetailPostScreen: React.FC = () => {
   const [saved, setISSaved] = useState(false);
   const {authData} = useAuth()
   const user = authData.user;
-  const [load,setLoad] = useState('Đang đăng...');
   const [listCommentError, setListCommentError] = useState<CommentModel[]>([]);
+  const [valid, setValid] = useState(false);
+  const [commentID,setCommentID] = useState(0)
+  const [userName,setUserName] = useState('')
 
 
   async function loadPostDetail(post_uuid = postID) {
@@ -83,6 +85,7 @@ const DetailPostScreen: React.FC = () => {
     NavigationRef?.current?.goBack();
     // call when go back
     onUpdatePost(postDetail);
+    AppPusher.unsubscribe(`post.${postID}`)
     return true;
   }
 
@@ -167,6 +170,7 @@ const DetailPostScreen: React.FC = () => {
             ...newList
           ]
         })
+        await loadPostDetail()
       } else {
         showToastErrorMessage(res?.data.message)
         setListCommentError(prevState => {
@@ -214,27 +218,29 @@ const DetailPostScreen: React.FC = () => {
 
   useEffect(() => {
     const channel = AppPusher.subscribe(`post.${postID}`).bind(
-      "CommentAndReply",
+      "App\\Events\\CommentAndReply",
       (pusher: PusherCommment)=>{
-        console.log("FINDDDDDDD")
-        const { data , user} = pusher;
-        console.log({data});
+        const { data , user } = pusher;
         if (data){
-          const newComment : CommentModel = {
-            id: data.comment_id,
-            user_id: user?.id ,
-            content: userComment,
-            upvote: 0,
-            downvote: 0,
-            user: user,
-            time: data.created_at,
+          if (user.user_uuid !== authData?.user?.user_uuid){
+
+            const newComment : CommentModel = {
+              id: data.comment_id,
+              user_id: user?.id ,
+              content: data.content,
+              upvote: 0,
+              downvote: 0,
+              user: user,
+              time: data.created_at,
+            }
+            setListComment(prev=>{
+              return[
+                newComment,
+                ...prev,
+              ]
+            })
           }
-          setListComment(prev=>{
-            return[
-              newComment,
-              ...prev,
-            ]
-          })
+
         }
       }
     );
@@ -291,7 +297,8 @@ const DetailPostScreen: React.FC = () => {
               post={postDetail}
               onPressImage={() => {
                 NavigationRef.current?.navigate("DetailImage", {
-                  img_url: postDetail?.image
+                  img_url: postDetail?.image,
+                  thumbnail: postDetail?.thumbnail,
                 })
               }}
               onPressComment={() => {
@@ -301,12 +308,13 @@ const DetailPostScreen: React.FC = () => {
                 setOpen(true);
                 setISSaved(postDetail?.isSaved || false);
               }}
+              total_comment={listComment.length}
             />
 
             {/*Comment Error*/}
             {
               listCommentError.length
-                ? listComment.map((comment) => {
+                ? listCommentError.map((comment) => {
                   return <CommentItem
                     key={comment.id}
                     comment={comment}
@@ -327,10 +335,17 @@ const DetailPostScreen: React.FC = () => {
               listComment.length
                 ? listComment.map((comment) => {
                   return <CommentItem
-                    key={comment.id}
-                    comment={comment}
-                    type={"success"}
-                  />
+                      key = {comment.id}
+                      comment={comment}
+                      type={"success"}
+                      replyCommentID={commentID}
+                      onPressReply={()=>{
+                        setCommentID(comment?.id);
+                        setUserName(comment?.user?.name||'');
+                      }}
+
+                    />
+
                 })
                 :
                 <View
@@ -360,8 +375,23 @@ const DetailPostScreen: React.FC = () => {
               scrollViewRef.current?.scrollToEnd();
               Keyboard.dismiss();
             }}
-            onChangeText={(text) => setUserComment(text)}
+            onChangeText={
+            (text) => {
+              if (text.length){
+                setUserComment(text);
+                setValid(true)
+              }
+
+            }
+          }
             value={userComment}
+            disable={!valid}
+            userName={userName}
+            onPressCancel={()=>{
+              setUserName('')
+              setCommentID(0)
+            }}
+
           />
 
         </SafeAreaView>

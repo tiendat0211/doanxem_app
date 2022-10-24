@@ -11,5 +11,5 @@ interface Comment {
   comment_id: number;
   reply_id: number;
   created_at: string;
-  comment_type: string;
+  type: string;
 }
