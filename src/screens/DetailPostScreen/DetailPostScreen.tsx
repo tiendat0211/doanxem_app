@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert, BackHandler, Dimensions, FlatList,
+  BackHandler,
   Keyboard, KeyboardAvoidingView, Platform,
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  ScrollViewProps,
   StatusBar,
-  TextInput,
   View,
 } from "react-native";
 import AppStyles from "../../styles/AppStyles";
@@ -15,8 +13,7 @@ import useAuth from "../../hooks/useAuth";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
-  IC_ARROWLEFT, IC_BLOCKUSER, IC_DOWNLOAD, IC_HIDE, IC_WARNING,
-  IMG_LOGO, IMG_POST,
+  IC_ARROWLEFT,
 } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import { NavigationRef, RootStackParamList } from "../../../App";
@@ -25,25 +22,20 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import {getListComment, getPostDetail, postComment, savePost} from "../../network/AppAPI";
+import { getListComment, getPostDetail, postComment, savePost } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import StatusItem2 from "../../components/StatusItem/StatusItem2";
 import AppLoading from "../../components/Loading/AppLoading";
 import { CommentModel } from "../../model/ApiModel/CommentModel";
-import EmptyView from "../../components/EmptyView/EmptyView";
-import EmptyViewForList from "../../components/EmptyViewForList/EmptyViewForList";
 import AppText from "../../components/AppText/AppText";
 import { fontSize18, fontSize20 } from "../../styles/AppFonts";
 import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import PopUp from "../../components/PopUp/PopUp";
-import Snackbar from "react-native-snackbar";
-import {unit1, unit20, unit5} from "../../utils/appUnit";
+import { unit1, unit20, unit5 } from "../../utils/appUnit";
 import AppTracking from "../../tracking/AppTracking";
-import analytics from "@react-native-firebase/analytics";
-import {AppPusher} from "../../utils/AppConfig";
-import UserModel from "../../model/ApiModel/UserModel";
-import {PusherCommment} from "../../model/ApiModel/PusherCommment";
+import { AppPusher } from "../../utils/AppConfig";
+import { PusherCommment } from "../../model/ApiModel/PusherCommment";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -59,7 +51,7 @@ const DetailPostScreen: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [isOpen, setOpen] = useState(false);
   const [saved, setISSaved] = useState(false);
-  const {authData} = useAuth()
+  const { authData } = useAuth()
   const user = authData.user;
   const [listCommentError, setListCommentError] = useState<CommentModel[]>([]);
   const [valid, setValid] = useState(false);
@@ -139,9 +131,9 @@ const DetailPostScreen: React.FC = () => {
     const now = new Date();
     const fakeId = now.getTime();
 
-    const newComment : CommentModel = {
+    const newComment: CommentModel = {
       id: fakeId,
-      user_id: user?.id ,
+      user_id: user?.id,
       content: userComment,
       upvote: 0,
       downvote: 0,
@@ -150,8 +142,8 @@ const DetailPostScreen: React.FC = () => {
       user: user,
     }
 
-    setListComment(prev=>{
-      return[
+    setListComment(prev => {
+      return [
         newComment,
         ...prev,
       ]
@@ -159,14 +151,15 @@ const DetailPostScreen: React.FC = () => {
 
     try {
       const res = await postComment(post_uuid, content);
+
       if (ApiHelper.isResSuccess(res)) {
-        const newComment = res.data.data;
+        const dataSuccess = res.data.data;
         setListComment(prev => {
           const newList = [...prev].filter((cmt) => {
             return cmt.id !== fakeId;
           });
           return [
-            newComment,
+            dataSuccess,
             ...newList
           ]
         })
@@ -174,12 +167,17 @@ const DetailPostScreen: React.FC = () => {
       } else {
         showToastErrorMessage(res?.data.message)
         setListCommentError(prevState => {
-          return [
-            newComment,
-            ...prevState,
-          ]
+          if (newComment?.content) {
+            return [
+              newComment,
+              ...prevState,
+            ]
+          } else {
+            return []
+          }
+
         })
-        setListComment(prev=>{
+        setListComment(prev => {
           return prev.filter((item) => {
             return item.id !== now.getTime()
           })
@@ -188,12 +186,19 @@ const DetailPostScreen: React.FC = () => {
     } catch (e) {
       setError(e);
       setListCommentError(prevState => {
-        return [
-          newComment,
-          ...prevState,
-        ]
+        if (newComment?.content !== '') {
+          return [
+            newComment,
+            ...prevState,
+          ]
+        } else {
+          return [
+
+          ]
+        }
+
       })
-      setListComment(prev=>{
+      setListComment(prev => {
         return prev.filter((item) => {
           return item.id !== now.getTime()
         })
@@ -260,7 +265,7 @@ const DetailPostScreen: React.FC = () => {
           flex: 1,
         }}
         behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={ Platform.OS == "ios" ? 0 : 0 }
+        keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 0}
       >
         <SafeAreaView
           style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
@@ -314,16 +319,24 @@ const DetailPostScreen: React.FC = () => {
             {/*Comment Error*/}
             {
               listCommentError.length
-                ? listCommentError.map((comment) => {
+                ? listCommentError.map((cmt) => {
                   return <CommentItem
-                    key={comment.id}
-                    comment={comment}
+                    key={cmt.id}
+                    comment={cmt}
                     style={{
                       borderWidth: unit1,
                       borderColor: AppColors.color_warning,
                       borderRadius: unit5,
                     }}
                     type={"error"}
+                    onPressReSend={async () => {
+                      await comment(postDetail?.post_uuid!, cmt?.content)
+                      setListCommentError(prevState => {
+                        return prevState.filter(item => {
+                          return item.created_at !== cmt.created_at
+                        })
+                      })
+                    }}
                   />
                 })
                 :
