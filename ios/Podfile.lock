@@ -12,6 +12,8 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.67.4)
   - Firebase (9.6.0):
     - Firebase/Core (= 9.6.0)
+  - Firebase/Analytics (9.6.0):
+    - Firebase/Core
   - Firebase/Core (9.6.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (~> 9.6.0)
@@ -522,6 +524,10 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNFBAnalytics (15.7.0):
+    - Firebase/Analytics (= 9.6.0)
+    - React-Core
+    - RNFBApp
   - RNFBApp (15.7.0):
     - Firebase/CoreOnly (= 9.6.0)
     - React-Core
@@ -666,6 +672,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -829,6 +836,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-clipboard/clipboard"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFBAnalytics:
+    :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFS:
@@ -936,6 +945,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 4efdcd2f7378421b29467c9de58f43552b60cf5b
   RNCClipboard: f1736c75ab85b627a4d57587edb4b60999c4dd80
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
+  RNFBAnalytics: 9b5790e2b3d96c11ae1c02be6430e778f11801ed
   RNFBApp: c3c9e694e9d34c14250a069916eb05785c5f3c32
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 4defbd70b2faf3d6761b82fa7880285241762cb0

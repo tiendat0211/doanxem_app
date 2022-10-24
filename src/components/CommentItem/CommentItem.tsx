@@ -56,7 +56,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
       <View
         style={[{
           flexDirection:'row',
-          marginLeft: unit20,
+          paddingLeft: unit20,
           paddingVertical: unit6,
         },style]}
       >

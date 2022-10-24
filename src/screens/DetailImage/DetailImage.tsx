@@ -7,6 +7,8 @@ import AppColors from "../../styles/AppColors";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { NavigationRef, RootStackParamList } from "../../../App";
 import VideoPlayer from "react-native-video-player";
+import AppBar from "../../components/AppBar/AppBar";
+import { IC_ARROWLEFT } from "../../assets/path";
 
 type DetailImageScreenProps = RouteProp<RootStackParamList, "DetailImage">;
 
@@ -21,8 +23,17 @@ const DetailImage: React.FC = () => {
           barStyle={"light-content" }
           backgroundColor={AppColors.color_transparent}
         />
+        <AppBar
+        title=""
+        leftIcon={IC_ARROWLEFT}
+        containerStyle={{
+          backgroundColor:AppColors.color_transparent_dark
+        }}
+        leftIconOnClick={()=>{
+          NavigationRef.current?.goBack()
+        }}/>
         {
-          img_url.endsWith('mp4')
+          img_url?.endsWith('mp4')
             ? <VideoPlayer
               video={{ uri: img_url}}
               videoWidth={1600}

@@ -29,7 +29,7 @@ import DetailStatusScreen from "./src/screens/DetailPostScreen/DetailPostScreen"
 import DetailImage from "./src/screens/DetailImage/DetailImage";
 import AnotherUserScreen from "./src/screens/AnotherUserScreen/AnotherUserScreen";
 import AppTracking from "./src/tracking/AppTracking";
-import analytics from "@react-native-firebase/analytics";
+// import analytics from "@react-native-firebase/analytics";
 import {PostModel} from "./src/model/ApiModel/PostModel";
 
 export type RootStackParamList = {
@@ -78,29 +78,29 @@ const App = () => {
     });
   }, []);
 
-  useEffect(() => {
-    async function initFirebaseProperties() {
-      if (authData?.user && authData?.token) {
-        const user = authData?.user;
-        await analytics().setUserId(user?.id.toString());
-      }
-    }
+  // useEffect(() => {
+  //   async function initFirebaseProperties() {
+  //     if (authData?.user && authData?.token) {
+  //       const user = authData?.user;
+  //       await analytics().setUserId(user?.id.toString());
+  //     }
+  //   }
 
-    const appStartTime = new Date();
+  //   const appStartTime = new Date();
 
-    initFirebaseProperties().finally(() => {
-      console.log("[Firebase] init Firebase Properties");
-    });
+  //   initFirebaseProperties().finally(() => {
+  //     console.log("[Firebase] init Firebase Properties");
+  //   });
 
-    return () => {
-      const appEndTime = new Date();
-      const totalOnAppTime = appEndTime.getTime() - appStartTime.getTime();
+  //   return () => {
+  //     const appEndTime = new Date();
+  //     const totalOnAppTime = appEndTime.getTime() - appStartTime.getTime();
 
-      AppTracking.logCustomEvent("use_app_time", {
-        duration_millisecond: totalOnAppTime,
-      });
-    };
-  }, []);
+  //     AppTracking.logCustomEvent("use_app_time", {
+  //       duration_millisecond: totalOnAppTime,
+  //     });
+  //   };
+  // }, []);
 
   setAccessToken(authData.token);
   const routeNameRef = React.useRef<string>();
