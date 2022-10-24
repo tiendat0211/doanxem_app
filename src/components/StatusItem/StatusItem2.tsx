@@ -53,7 +53,13 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
         },style]}
       >
         {/* User of Status */}
-        <View
+        <PressView
+          onPress={() => {
+            NavigationRef?.current?.navigate("AnotherUserScreen",{
+                user_uuid: post?.user?.user_uuid
+              }
+            )
+          }}
           style={{
             flexDirection: 'row',
             alignItems:'center',
@@ -100,7 +106,7 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
             </AppText>
           </View>
 
-        </View>
+        </PressView>
 
         {/* Content */}
         <PressView

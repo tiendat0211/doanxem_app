@@ -58,8 +58,6 @@ const ProfileScreen: React.FC = () => {
   );
 
   const handleSheetChange = useCallback((index: any) => {
-    // eslint-disable-next-line no-console
-    console.log('handleSheetChange', index);
   }, []);
 
 

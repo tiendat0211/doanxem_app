@@ -1,6 +1,5 @@
 import React, { memo, useState } from "react";
 import { Image, PressableProps, StyleSheet, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { IC_ANGRY, IC_HAHA, IC_LIKE, IC_LOVE, IC_REACTION, IC_SAD2, IC_WOW } from "../../assets/path";
 import { unit1, unit10, unit12, unit19, unit24, unit28, unit3, unit60, unit80 } from "../../utils/appUnit";
 import { AppFonts, fontSize14 } from "../../styles/AppFonts";
@@ -9,8 +8,6 @@ import PressView from "../../components/PressView/PressView";
 import { useTheme } from "../../hooks/useTheme";
 import { postReaction } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
-import Snackbar from "react-native-snackbar";
-import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import useScreenState from "../../hooks/useScreenState";
 import AppColors from "../../styles/AppColors";
 
@@ -210,7 +207,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Reaction);
+export default Reaction;
 
 interface ReactionItemProps extends PressableProps {
   img: any,

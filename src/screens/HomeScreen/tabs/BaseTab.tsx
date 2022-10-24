@@ -9,7 +9,7 @@ import {
   Image,
   Dimensions,
   Platform,
-  StatusBar,
+  StatusBar, BackHandler, FlatList,
 } from "react-native";
 import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
@@ -44,7 +44,6 @@ import Snackbar from "react-native-snackbar";
 import LottieView from "lottie-react-native";
 import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
 import PopUp from "../../../components/PopUp/PopUp";
-import {fakePost} from "../../../utils/fakeData";
 
 interface BaseTabProps {
   type: PostType;
@@ -65,6 +64,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [isOpen, setOpen] = useState(false);
   const [isSaveButton, setSaveButton] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [updatePostDetail,setUpdatePostDetail] = useState<PostModel>();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -116,6 +116,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   }
 
   async function loadPosts() {
+    console.log('post',posts[0])
     try {
       setLoading(true);
       setPage(FIRST_PAGE);
@@ -189,6 +190,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       style={{
         height: unit60,
         alignSelf: "center",
+        alignItems:'center',
       }}
       source={LOADING_ANIM}
       autoPlay
@@ -223,6 +225,26 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     []
   );
 
+  function update(updatedPost: PostModel, curPost: PostModel){
+    console.log("update", {updatedPost})
+
+    setPosts((prev) => {
+      const newList = [...prev];
+      for (let i = 0; i < newList.length; i++) {
+        const cur = newList[i];
+        if(cur.post_uuid === curPost.post_uuid) {
+          cur.total_reactions = updatedPost.total_reactions
+          cur.comments_count = updatedPost.comments_count
+          cur.user_action = updatedPost.user_action
+          console.log("FINDDDDDDDDDDDDDD")
+          break;
+        }
+      }
+      return newList
+    })
+
+  }
+
 
   return (
     <>
@@ -241,6 +263,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           onEndReached={async () => {
              await loadMore()
           }}
+          extraData={posts}
           FooterLoadingIndicator={renderFooterView}
           onEndReachedThreshold={0.5}
           renderItem={({ item, index }) => {
@@ -249,12 +272,24 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               post={item}
               onPressComment={() => {
                 NavigationRef.current?.navigate("DetailPostScreen",{
-                  postID: item?.post_uuid
+                  postID: item?.post_uuid,
+                  onUpdatePost: (updatedPost?: PostModel) => {
+                    if(!updatedPost) {
+                      return;
+                    }
+                    update(updatedPost,item);
+                  }
                 });
               }}
               onPressImage={() => {
                 NavigationRef.current?.navigate("DetailPostScreen",{
-                  postID: item?.post_uuid
+                  postID: item?.post_uuid,
+                  onUpdatePost: (updatedPost?: PostModel) => {
+                    if(!updatedPost) {
+                      return;
+                    }
+                    update(updatedPost,item);
+                  }
                 });
               }}
               openBottomSheet={()=>{
@@ -268,7 +303,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
                 setPostID(item?.id);
                 setIsSaved(item?.isSaved);
               }}
-            />;
+             />;
           }}
           onStartReached={async ()=>{}}
           refreshControl={
@@ -438,10 +473,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           />
           : null
       }
-
-      {/*{*/}
-      {/*  isLoading && <AppLoading isOverlay/>*/}
-      {/*}*/}
 
     </>
   );

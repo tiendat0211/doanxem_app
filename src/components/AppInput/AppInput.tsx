@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Button, Image, Keyboard, Platform, PressableProps, StyleProp, TextInput, TextStyle, View } from "react-native";
+import {
+  Image,
+  Keyboard,
+  TextInput,
+  View
+} from "react-native";
 import AppColors from "../../styles/AppColors";
 import { AppFonts, dimension, fontSize16, fontSize18 } from "../../styles/AppFonts";
 import AppText, { AppFontType } from "../AppText/AppText";
@@ -7,12 +12,9 @@ import PressView from "../PressView/PressView";
 import {
   unit1,
   unit10,
-  unit100,
   unit12,
   unit14,
-  unit155,
   unit16,
-  unit165, unit180,
   unit20, unit200,
   unit24,
   unit5,
@@ -26,12 +28,10 @@ interface AppInput {
   onPressMedia?: () => void,
   onChangeText: (value: string) => void,
   value: string,
-  isFocus?: boolean,
-  setFocus?:(isFocus: boolean)=>void,
 }
 
 const AppInput: React.FC<AppInput> = (props) => {
-  const { onPressSend,onPressMedia,  onChangeText, value,isFocus,setFocus} = props;
+  const { onPressSend,onPressMedia,  onChangeText, value} = props;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [isBlur,setBlur] = useState(true)
@@ -78,14 +78,10 @@ const AppInput: React.FC<AppInput> = (props) => {
           value={value}
           onBlur={() => {
             setBlur(true);
-            if (setFocus) {
-              setFocus(false);
-            }
           }}
           onFocus={() => {
             setBlur(false);
           }}
-          autoFocus={isFocus}
         />
 
         <PressView

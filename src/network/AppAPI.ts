@@ -9,6 +9,7 @@ export const FIRST_PAGE = 1;
 import fs from "react-native-fs";
 import AppConfig from "../utils/AppConfig";
 import { CommentModel } from "../model/ApiModel/CommentModel";
+import {PaginateResponse} from "../model/ApiModel/PaginateResponse";
 
 
 export function login(email: string, password: string) {
@@ -89,7 +90,6 @@ export function createPost(token: string, title: string, imageAssets: Asset, ) {
     name: imageAssets.fileName
   });
   data.append("title", title);
-  console.log('data',data);
 
   const requestOptions = {
     method: 'POST',
@@ -136,4 +136,34 @@ export function changePassword(password: string, newpassword: string, confirm: s
     new_password: newpassword,
     confirm_password: confirm,
   });
+}
+
+export function getListComment(post_uuid: string) {
+  return apiClient.get<BaseResponse<PaginateResponse<CommentModel[]>>>("v1/posts/comments",{
+    params:{
+      post_uuid,
+    }
+  });
+}
+
+export function updateProfile(avatar: Asset, name: string, token: string,) {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + token);
+  const data = new FormData();
+
+  data.append('avatar', {
+    uri: avatar.uri,
+    type: avatar.type,
+    name: avatar.fileName
+  });
+  data.append("name", name);
+
+  const requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: data,
+    redirect: 'follow'
+  };
+
+  return fetch(AppConfig.baseURL + "v1/user/edit", requestOptions)
 }

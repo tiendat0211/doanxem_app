@@ -1,28 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, FlatList, ListRenderItem, RefreshControl, View } from "react-native";
-import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
 import { useLanguage } from "../../../hooks/useLanguage";
-import PressView from "../../../components/PressView/PressView";
-import { unit1, unit10, unit12, unit16, unit17, unit20, unit24, unit400 } from "../../../utils/appUnit";
-import { NavigationRef } from "../../../../App";
-import { IC_BLOCKUSER, IC_DOWNLOAD, IC_HIDE, IC_WARNING, IMG_LOGO, IMG_POST } from "../../../assets/path";
-import AppText from "../../../components/AppText/AppText";
-import { AppFonts, fontSize16 } from "../../../styles/AppFonts";
+import { unit20, } from "../../../utils/appUnit";
 import BottomSheet, {
-  BottomSheetBackdrop,
   BottomSheetFlatList,
-  BottomSheetVirtualizedList,
 } from "@gorhom/bottom-sheet";
-import SelectItem from "../../../components/SelectItem/SelectItem";
-import RNFetchBlob from "rn-fetch-blob";
 import useScreenState from "../../../hooks/useScreenState";
 import { PostModel } from "../../../model/ApiModel/PostModel";
-import StatusItem from "../../../components/StatusItem/StatusItem";
 import { FIRST_PAGE, getUserPosts, UserPostType } from "../../../network/AppAPI";
 import ApiHelper from "../../../utils/ApiHelper";
 import { useFocusEffect } from "@react-navigation/native";
 import UserPostItem from "../../../components/UserPostItem/UserPostItem";
+import {NavigationRef} from "../../../../App";
 
 interface BaseProfileTabProps {
   type: UserPostType;
@@ -56,24 +46,6 @@ const BaseProfileTab: React.FC<BaseProfileTabProps> = (props) => {
       });
     }, []),
   );
-  // render
-  const renderItem = useCallback(
-    ({ item, index }) => (
-      <View
-        style={{
-          flexDirection:'row'
-        }}
-      >
-        <UserPostItem
-          key={item.id}
-          post={item}
-        />
-      </View>
-
-    ),
-    []
-  );
-
 
   return (
     <>
@@ -97,6 +69,13 @@ const BaseProfileTab: React.FC<BaseProfileTabProps> = (props) => {
             return <UserPostItem
               key={item.id}
               post={item}
+              onPress={()=>{
+                if (type === 'saved' || type === 'approved'){
+                  NavigationRef.current?.navigate("DetailPostScreen",{
+                    postID: item?.post_uuid
+                  })
+                }
+              }}
             />
           }}
           numColumns={3}

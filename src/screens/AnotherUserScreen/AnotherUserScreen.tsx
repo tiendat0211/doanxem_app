@@ -38,6 +38,7 @@ import useScreenState from "../../hooks/useScreenState";
 import {getUserProfile } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import UserModel from "../../model/ApiModel/UserModel";
+import AppTracking from "../../tracking/AppTracking";
 
 type AnotherUserScreenProps = RouteProp<RootStackParamList, "AnotherUserScreen">;
 
@@ -84,7 +85,22 @@ const AnotherUserScreen: React.FC = () => {
   }
 
   useEffect(()=>{
+    const screenStartTime = new Date();
     loadProfileUser().finally(()=>{});
+
+    AppTracking.logCustomEvent("view_profile_user", {
+      user_id: String(user_uuid),
+    });
+
+    return () => {
+      const screenEndTime = new Date();
+      const totalOnScreenTime = screenEndTime.getTime() - screenStartTime.getTime();
+
+      AppTracking.logCustomEvent("view_profile_user_time", {
+        user_id: String(user_uuid),
+        duration_millisecond: totalOnScreenTime,
+      });
+    };
   },[])
 
   return (

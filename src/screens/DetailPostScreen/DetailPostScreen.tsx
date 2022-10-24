@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert, Dimensions, FlatList,
+  Alert, BackHandler, Dimensions, FlatList,
   Keyboard, KeyboardAvoidingView, Platform,
   RefreshControl,
   SafeAreaView,
@@ -25,7 +25,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { getPostDetail, postComment, savePost } from "../../network/AppAPI";
+import {getListComment, getPostDetail, postComment, savePost} from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import StatusItem2 from "../../components/StatusItem/StatusItem2";
@@ -39,12 +39,14 @@ import { showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import PopUp from "../../components/PopUp/PopUp";
 import Snackbar from "react-native-snackbar";
 import { unit20 } from "../../utils/appUnit";
+import AppTracking from "../../tracking/AppTracking";
+import analytics from "@react-native-firebase/analytics";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
 
 const DetailPostScreen: React.FC = () => {
-  const { postID } = useRoute<DetailStatusScreenProps>().params;
+  const { postID, onUpdatePost } = useRoute<DetailStatusScreenProps>().params;
   const { colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [listComment, seListComment] = useState<CommentModel[]>([]);
@@ -53,16 +55,18 @@ const DetailPostScreen: React.FC = () => {
   const [postDetail, setPostDetail] = useState<PostModel>();
   const scrollViewRef = useRef<ScrollView>(null);
   const [isOpen, setOpen] = useState(false);
-  const [isSaved, setSaved] = useState(false);
+  const [saved, setISSaved] = useState(false);
 
+  useEffect(() => {
+    console.log({postDetail})
+
+  }, [postDetail])
 
   async function loadPostDetail(post_uuid = postID) {
     try {
-      setLoading(true)
       const res = await getPostDetail(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
         setPostDetail(res?.data?.data);
-        seListComment(res?.data?.data?.comments)
       }
       setError(undefined);
     } catch (e) {
@@ -72,12 +76,25 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
-  async function loadPostDetail2(post_uuid = postID) {
+  function handleBackButtonClick() {
+    NavigationRef?.current?.goBack();
+    // call when go back
+    onUpdatePost(postDetail);
+    return true;
+  }
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+    };
+  }, [postDetail]);
+
+  async function loadComment(post_uuid = postID) {
     try {
-      const res = await getPostDetail(post_uuid);
+      const res = await getListComment(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
-        setPostDetail(res?.data?.data);
-        seListComment(res?.data?.data?.comments)
+        seListComment(res?.data?.data?.data);
       }
       setError(undefined);
     } catch (e) {
@@ -86,17 +103,38 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
+
   useEffect(() => {
+    setLoading(true)
+    const screenStartTime = new Date();
     loadPostDetail().finally(() => {
 
     });
+    loadComment().finally(()=>{
+
+    });
+
+    AppTracking.logCustomEvent("view_post", {
+      post_id: String(postID),
+    });
+
+    return () => {
+      const screenEndTime = new Date();
+      const totalOnScreenTime = screenEndTime.getTime() - screenStartTime.getTime();
+
+      AppTracking.logCustomEvent("view_post_time", {
+        post_id: String(postID),
+        duration_millisecond: totalOnScreenTime,
+      });
+    };
   }, [])
 
   async function comment(post_uuid: string, content: string) {
     try {
       const res = await postComment(post_uuid, content);
       if (ApiHelper.isResSuccess(res)) {
-        await loadPostDetail2(post_uuid)
+        await loadPostDetail(post_uuid)
+        await loadComment(post_uuid)
       } else {
         showToastErrorMessage(res?.data.message)
       }
@@ -111,7 +149,7 @@ const DetailPostScreen: React.FC = () => {
       const res = await savePost(post_id, action);
       if (ApiHelper.isResSuccess(res)) {
         showToastMsg(res?.data?.message)
-        await loadPostDetail2();
+        await loadPostDetail();
       } else {
         showToastErrorMessage(res.data.message);
       }
@@ -129,8 +167,7 @@ const DetailPostScreen: React.FC = () => {
           flex: 1,
         }}
         behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={ Platform.OS == "ios" ? 0 :150}
-
+        keyboardVerticalOffset={ Platform.OS == "ios" ? 0 : 0 }
       >
         <SafeAreaView
           style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
@@ -141,9 +178,7 @@ const DetailPostScreen: React.FC = () => {
           <AppBar
             title={language?.detailScreen}
             leftIcon={IC_ARROWLEFT}
-            leftIconOnClick={() => {
-              NavigationRef.current?.goBack()
-            }}
+            leftIconOnClick={handleBackButtonClick}
             titleStyle={{
               color: colorPallet.color_text_blue_1
             }}
@@ -169,7 +204,7 @@ const DetailPostScreen: React.FC = () => {
               post={postDetail}
               onPressImage={() => {
                 NavigationRef.current?.navigate("DetailImage", {
-                  img_url: postDetail?.image || ''
+                  img_url: postDetail?.image
                 })
               }}
               onPressComment={() => {
@@ -177,7 +212,7 @@ const DetailPostScreen: React.FC = () => {
               }}
               onPressSave={() => {
                 setOpen(true);
-                setSaved(postDetail?.isSaved || false);
+                setISSaved(postDetail?.isSaved || false);
               }}
             />
 
@@ -232,10 +267,10 @@ const DetailPostScreen: React.FC = () => {
         {
           isOpen ?
             <PopUp
-              mess={isSaved ? 'Bạn có muốn bỏ lưu bài viết này?' : 'Bạn có muốn lưu bài viết này?'}
+              mess={saved ? 'Bạn có muốn bỏ lưu bài viết này?' : 'Bạn có muốn lưu bài viết này?'}
               rightButtonTitle={'Đồng ý'}
               rightButtonPress={async () => {
-                if (isSaved) {
+                if (saved) {
                   setOpen(false);
                   await save(postDetail?.id || 0, 'unsave');
                 } else {

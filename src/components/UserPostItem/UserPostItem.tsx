@@ -15,7 +15,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 
 interface UserPostItem {
   post: PostModel,
-  onPress:()=>void,
+  onPress?:()=>void,
 }
 
 
