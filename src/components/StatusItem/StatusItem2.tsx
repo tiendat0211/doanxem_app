@@ -35,7 +35,7 @@ interface StatusItemProps{
   onPressComment?: () => void
   onPressImage?: () => void
   onPressSave?: () => void,
-  total_comment: number;
+  total_comment?: number;
 }
 
 const StatusItem2: React.FC<StatusItemProps> = (props) => {
@@ -193,7 +193,7 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
 
           <FooterItem
             img={IC_COMMENT}
-            title={total_comment.toString()}
+            title={total_comment?.toString()}
             style={{
               marginRight: unit24
             }}

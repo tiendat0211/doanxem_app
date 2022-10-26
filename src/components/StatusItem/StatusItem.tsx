@@ -237,7 +237,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
           <FooterItem
             img={IC_COMMENT}
-            title={post?.comments_count.toString()}
+            title={ post?.total_comment? post?.total_comment.toString() : '123'}
             style={{
               marginRight: unit24
             }}

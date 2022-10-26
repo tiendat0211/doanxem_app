@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   BackHandler,
   Keyboard, KeyboardAvoidingView, Platform,
   RefreshControl,
@@ -22,7 +23,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { getListComment, getPostDetail, postComment, savePost } from "../../network/AppAPI";
+import {getListComment, getPostDetail, postComment, postReply, savePost} from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import StatusItem2 from "../../components/StatusItem/StatusItem2";
@@ -36,6 +37,7 @@ import { unit1, unit20, unit5 } from "../../utils/appUnit";
 import AppTracking from "../../tracking/AppTracking";
 import { AppPusher } from "../../utils/AppConfig";
 import { PusherCommment } from "../../model/ApiModel/PusherCommment";
+import {ReplyModel} from "../../model/ApiModel/ReplyModel";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -57,13 +59,15 @@ const DetailPostScreen: React.FC = () => {
   const [valid, setValid] = useState(false);
   const [commentID,setCommentID] = useState(0)
   const [userName,setUserName] = useState('')
-
+  const [totalComment,setTotalComment] = useState(0);
+  const [newReply,setNewReply] = useState<ReplyModel>();
 
   async function loadPostDetail(post_uuid = postID) {
     try {
       const res = await getPostDetail(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
         setPostDetail(res?.data?.data);
+        setTotalComment(res?.data?.data.total_comment);
       }
       setError(undefined);
     } catch (e) {
@@ -73,26 +77,11 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
-  function handleBackButtonClick() {
-    NavigationRef?.current?.goBack();
-    // call when go back
-    onUpdatePost(postDetail);
-    AppPusher.unsubscribe(`post.${postID}`)
-    return true;
-  }
-
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
-    };
-  }, [postDetail]);
-
   async function loadComment(post_uuid = postID) {
     try {
       const res = await getListComment(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
-        setListComment(res?.data?.data?.data);
+        setListComment(res?.data?.data);
       }
       setError(undefined);
     } catch (e) {
@@ -137,9 +126,9 @@ const DetailPostScreen: React.FC = () => {
       content: userComment,
       upvote: 0,
       downvote: 0,
-      created_at: now,
-      updated_at: now,
       user: user,
+      total_replies:0,
+      type:'comment'
     }
 
     setListComment(prev => {
@@ -206,6 +195,19 @@ const DetailPostScreen: React.FC = () => {
     }
   }
 
+  async function reply(post_uuid: string, comment_id:number ,content: string) {
+    try {
+      const res = await postReply(post_uuid,comment_id ,content);
+      if (ApiHelper.isResSuccess(res)) {
+        const dataSuccess = res.data.data;
+      } else {
+        showToastErrorMessage(res?.data.message)
+      }
+    } catch (e) {
+      setError(e);
+    }
+  }
+
   async function save(post_id: number, action: string) {
     try {
       const res = await savePost(post_id, action);
@@ -224,28 +226,35 @@ const DetailPostScreen: React.FC = () => {
   useEffect(() => {
     const channel = AppPusher.subscribe(`post.${postID}`).bind(
       "App\\Events\\CommentAndReply",
-      (pusher: PusherCommment)=>{
+      async (pusher: PusherCommment)=>{
         const { data , user } = pusher;
         if (data){
           if (user.user_uuid !== authData?.user?.user_uuid){
-
-            const newComment : CommentModel = {
-              id: data.comment_id,
-              user_id: user?.id ,
-              content: data.content,
-              upvote: 0,
-              downvote: 0,
-              user: user,
-              time: data.created_at,
+            if (data.type === 'comment'){
+              const newComment : CommentModel = {
+                id: data.comment_id,
+                user_id: user?.id ,
+                content: data.content,
+                upvote: 0,
+                downvote: 0,
+                user: user,
+                time: data.time,
+                total_replies:0,
+                type:data.type
+              }
+              setListComment(prev=>{
+                return[
+                  newComment,
+                  ...prev,
+                ]
+              })
+              setTotalComment(data?.total_comments);
+              await loadPostDetail();
             }
-            setListComment(prev=>{
-              return[
-                newComment,
-                ...prev,
-              ]
-            })
+            if (data.type === 'reply'){
+              setTotalComment(data?.total_comments);
+            }
           }
-
         }
       }
     );
@@ -256,6 +265,23 @@ const DetailPostScreen: React.FC = () => {
       channel.cancelSubscription();
     };
   }, []);
+
+
+  function handleBackButtonClick() {
+    NavigationRef?.current?.goBack();
+    // call when go back
+    onUpdatePost(postDetail);
+    AppPusher.unsubscribe(`post.${postID}`)
+    return true;
+  }
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+    };
+  }, [postDetail]);
+
 
   return (
     <>
@@ -307,45 +333,18 @@ const DetailPostScreen: React.FC = () => {
                 })
               }}
               onPressComment={() => {
-                scrollViewRef.current?.scrollToEnd();
+                //scrollViewRef.current?.scrollToEnd();
               }}
               onPressSave={() => {
                 setOpen(true);
                 setISSaved(postDetail?.isSaved || false);
               }}
-              total_comment={listComment.length}
+              total_comment={totalComment}
             />
-
-            {/*Comment Error*/}
-            {
-              listCommentError.length
-                ? listCommentError.map((cmt) => {
-                  return <CommentItem
-                    key={cmt.id}
-                    comment={cmt}
-                    style={{
-                      borderWidth: unit1,
-                      borderColor: AppColors.color_warning,
-                      borderRadius: unit5,
-                    }}
-                    type={"error"}
-                    onPressReSend={async () => {
-                      await comment(postDetail?.post_uuid!, cmt?.content)
-                      setListCommentError(prevState => {
-                        return prevState.filter(item => {
-                          return item.created_at !== cmt.created_at
-                        })
-                      })
-                    }}
-                  />
-                })
-                :
-                null
-            }
 
             {/*Comment*/}
             {
-              listComment.length
+              listComment?.length
                 ? listComment.map((comment) => {
                   return <CommentItem
                       key = {comment.id}
@@ -356,9 +355,8 @@ const DetailPostScreen: React.FC = () => {
                         setCommentID(comment?.id);
                         setUserName(comment?.user?.name||'');
                       }}
-
+                      postUUID={postDetail?.post_uuid}
                     />
-
                 })
                 :
                 <View
@@ -384,8 +382,12 @@ const DetailPostScreen: React.FC = () => {
           <AppInput
             onPressSend={async () => {
               setUserComment('');
-              await comment(postDetail?.post_uuid || '', userComment);
-              scrollViewRef.current?.scrollToEnd();
+              if (commentID){
+                await reply(postDetail?.post_uuid || '', commentID,userComment)
+              }else {
+                await comment(postDetail?.post_uuid || '', userComment);
+              }
+
               Keyboard.dismiss();
             }}
             onChangeText={

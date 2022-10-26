@@ -7,9 +7,11 @@ export interface PusherCommment {
 
 interface Comment {
   post_uuid: string;
+  total_comments: number;
   content: string;
   comment_id: number;
+  total_replies: number;
   reply_id: number;
-  created_at: string;
+  time: string;
   type: string;
 }

@@ -58,11 +58,10 @@ const AppBar: React.FC<AppBarProps> = (
 
   return <View style={[
     styles.container,
-    containerStyle,
     {
       backgroundColor: colorPallet.color_background_1,
       borderBottomColor: colorPallet.color_divider_2 ,
-    }
+    },containerStyle,
   ]}>
     <PressView
       onPress={leftIconOnClick}
@@ -70,11 +69,11 @@ const AppBar: React.FC<AppBarProps> = (
       <Image
         source={leftIcon}
         style={[
-          leftIconStyle,
           styles.leftIcon,
           {
             tintColor: colorPallet.color_text_blue_1
-          }
+          },
+          leftIconStyle,
         ]}
       />
     </PressView>

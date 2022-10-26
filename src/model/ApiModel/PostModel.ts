@@ -19,7 +19,7 @@ export interface PostModel {
   total_reactions: number;
   max_reactions: number;
   most_reaction: MostReaction;
-  comments_count: number;
+  total_comment: number;
   lastest_comment: any[];
   time: string;
   user_action: string;
