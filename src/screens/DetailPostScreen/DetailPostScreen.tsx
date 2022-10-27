@@ -60,14 +60,13 @@ const DetailPostScreen: React.FC = () => {
   const [commentID,setCommentID] = useState(0)
   const [userName,setUserName] = useState('')
   const [totalComment,setTotalComment] = useState(0);
-  const [newReply,setNewReply] = useState<ReplyModel>();
 
   async function loadPostDetail(post_uuid = postID) {
     try {
       const res = await getPostDetail(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
         setPostDetail(res?.data?.data);
-        setTotalComment(res?.data?.data.total_comment);
+        setTotalComment(res?.data?.data.total_comments);
       }
       setError(undefined);
     } catch (e) {
@@ -199,7 +198,7 @@ const DetailPostScreen: React.FC = () => {
     try {
       const res = await postReply(post_uuid,comment_id ,content);
       if (ApiHelper.isResSuccess(res)) {
-        const dataSuccess = res.data.data;
+        await loadPostDetail()
       } else {
         showToastErrorMessage(res?.data.message)
       }

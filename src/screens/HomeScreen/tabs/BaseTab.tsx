@@ -232,7 +232,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         const cur = newList[i];
         if(cur.post_uuid === curPost.post_uuid) {
           cur.total_reactions = updatedPost.total_reactions
-          cur.total_comment = updatedPost.total_comment
+          cur.total_comments = updatedPost.total_comments
           cur.user_action = updatedPost.user_action
           break;
         }
