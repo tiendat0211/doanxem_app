@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'doanxem' do
+target 'DoanXem' do
   config = use_native_modules!
   pod 'Firebase', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
@@ -34,7 +34,7 @@ target 'doanxem' do
   pod 'Permission-Siri', :path => "#{permissions_path}/Siri"
   pod 'Permission-SpeechRecognition', :path => "#{permissions_path}/SpeechRecognition"
   pod 'Permission-StoreKit', :path => "#{permissions_path}/StoreKit"
-  target 'doanxemTests' do
+  target 'DoanXemTests' do
     inherit! :complete
     # Pods for testing
   end
