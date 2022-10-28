@@ -12,12 +12,12 @@ import PressView from "../PressView/PressView";
 import {
   unit1,
   unit10,
-  unit12,
+  unit12, unit13,
   unit14,
   unit16,
   unit20, unit200,
-  unit24,
-  unit5,
+  unit24, unit30, unit4,
+  unit5, unit6, unit8,
 } from "../../utils/appUnit";
 import { useTheme } from "../../hooks/useTheme";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -28,10 +28,13 @@ interface AppInput {
   onPressMedia?: () => void,
   onChangeText: (value: string) => void,
   value: string,
+  disable: boolean,
+  userName?: string,
+  onPressCancel?: () => void,
 }
 
 const AppInput: React.FC<AppInput> = (props) => {
-  const { onPressSend,onPressMedia,  onChangeText, value} = props;
+  const { onPressSend,onPressMedia,  onChangeText, value,disable,userName,onPressCancel} = props;
   const {colorPallet, theme } = useTheme()
   const { language } = useLanguage();
   const [isBlur,setBlur] = useState(true)
@@ -48,6 +51,46 @@ const AppInput: React.FC<AppInput> = (props) => {
         borderTopWidth: unit1
       }}
     >
+      {userName? <View
+        style={{
+          marginBottom: unit8,
+          flexDirection:'row'
+        }}
+      >
+        <AppText
+          style={{
+            fontSize: unit13,
+            color: colorPallet.color_text_gray_3,
+          }}
+        >
+          Đang trả lời {' '}
+          <AppText
+            style={{
+              fontSize: unit14,
+              color: colorPallet.color_text_gray_1,
+            }}
+          >
+            {userName}
+          </AppText>
+        </AppText>
+        <PressView
+          onPress={onPressCancel}
+          style={{
+            marginLeft: unit30
+          }}
+        >
+          <AppText
+            style={{
+              fontSize: unit14,
+              color: colorPallet.color_text_gray_3,
+            }}
+          >
+            Hủy
+          </AppText>
+        </PressView>
+      </View> : null
+
+      }
       <View
         style={{
           backgroundColor: colorPallet.color_background_3,
@@ -99,6 +142,7 @@ const AppInput: React.FC<AppInput> = (props) => {
 
         <PressView
           onPress={onPressSend}
+          disabled={disable}
         >
           <Image
             source={IC_SEND}

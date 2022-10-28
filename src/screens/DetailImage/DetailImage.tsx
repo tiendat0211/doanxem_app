@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, StatusBar} from "react-native";
+import {Dimensions, SafeAreaView, StatusBar, View} from "react-native";
 import { useTheme } from "../../hooks/useTheme";
 import AppStyles from "../../styles/AppStyles";
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -9,16 +9,18 @@ import { NavigationRef, RootStackParamList } from "../../../App";
 import VideoPlayer from "react-native-video-player";
 import AppBar from "../../components/AppBar/AppBar";
 import { IC_ARROWLEFT } from "../../assets/path";
+import {unit100, unit150} from "../../utils/appUnit";
 
 type DetailImageScreenProps = RouteProp<RootStackParamList, "DetailImage">;
 
 const DetailImage: React.FC = () => {
-  const { img_url } = useRoute<DetailImageScreenProps>().params;
+  const { img_url , thumbnail} = useRoute<DetailImageScreenProps>().params;
+  const {colorPallet} = useTheme();
 
   return (
     <>
       <SafeAreaView
-        style={[AppStyles.container,{backgroundColor: 'black', justifyContent:'center'}]}>
+        style={[AppStyles.container,{backgroundColor: 'black'}]}>
         <StatusBar
           barStyle={"light-content" }
           backgroundColor={AppColors.color_transparent}
@@ -27,30 +29,44 @@ const DetailImage: React.FC = () => {
         title=""
         leftIcon={IC_ARROWLEFT}
         containerStyle={{
-          backgroundColor:AppColors.color_transparent_dark
+          backgroundColor:AppColors.color_transparent_dark,
+          borderBottomWidth:0
         }}
         leftIconOnClick={()=>{
           NavigationRef.current?.goBack()
-        }}/>
-        {
-          img_url?.endsWith('mp4')
-            ? <VideoPlayer
-              video={{ uri: img_url}}
-              videoWidth={1600}
-              videoHeight={1600}
-              defaultMuted={true}
-              showDuration={true}
-            />:
-            <ImageViewer
-              imageUrls={[{
-                url: img_url||''
-              }]}
-              //renderHeader={}
-              onSwipeDown={()=>{
-                NavigationRef.current?.goBack()
-              }}
-            />
-        }
+        }}
+        leftIconStyle={{
+          tintColor: AppColors.color_white
+        }}
+        />
+          {
+            img_url?.endsWith('mp4')
+              ? <VideoPlayer
+                video={{ uri: img_url}}
+                videoWidth={Dimensions.get('screen').width}
+                videoHeight={Dimensions.get('screen').width}
+                showDuration={true}
+                defaultMuted={true}
+                thumbnail={{uri: thumbnail}}
+                customStyles={{
+                  playArrow: {
+                    color: AppColors.color_white,
+                  }
+                }}
+                style={{marginTop: unit100}}
+              />:
+              <ImageViewer
+                imageUrls={[{
+                  url: img_url||''
+                }]}
+                //renderHeader={}
+                onSwipeDown={()=>{
+                  NavigationRef.current?.goBack()
+                }}
+
+              />
+          }
+
 
       </SafeAreaView>
     </>

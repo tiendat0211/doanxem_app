@@ -10,6 +10,7 @@ import fs from "react-native-fs";
 import AppConfig from "../utils/AppConfig";
 import { CommentModel } from "../model/ApiModel/CommentModel";
 import {PaginateResponse} from "../model/ApiModel/PaginateResponse";
+import {ReplyModel} from "../model/ApiModel/ReplyModel";
 
 
 export function login(email: string, password: string) {
@@ -139,24 +140,31 @@ export function changePassword(password: string, newpassword: string, confirm: s
 }
 
 export function getListComment(post_uuid: string) {
-  return apiClient.get<BaseResponse<PaginateResponse<CommentModel[]>>>("v1/posts/comments",{
+  return apiClient.get<BaseResponse<CommentModel[]>>("v1/posts/comments",{
     params:{
       post_uuid,
     }
   });
 }
 
-export function updateProfile(avatar: Asset, name: string, token: string,) {
+export function updateProfile(avatar?: Asset, name?: string, token?: string,) {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + token);
   const data = new FormData();
 
-  data.append('avatar', {
-    uri: avatar.uri,
-    type: avatar.type,
-    name: avatar.fileName
-  });
-  data.append("name", name);
+  if (avatar){
+    data.append('avatar', {
+      uri: avatar.uri,
+      type: avatar.type,
+      name: avatar.fileName
+    });
+  }
+
+  if (name){
+    data.append("name", name);
+  }
+
+  console.log(data);
 
   const requestOptions = {
     method: 'POST',
@@ -166,4 +174,19 @@ export function updateProfile(avatar: Asset, name: string, token: string,) {
   };
 
   return fetch(AppConfig.baseURL + "v1/user/edit", requestOptions)
+}
+
+export function getListReply(post_uuid: string, comment_id: number) {
+  return apiClient.get<BaseResponse<ReplyModel[]>>("v1/posts/replies",{
+    params:{
+      post_uuid,
+      comment_id
+    }
+  });
+}
+
+export function postReply(post_uuid: string, comment_id: number,content: string) {
+  return apiClient.post<BaseResponse<ReplyModel>>("v1/replies?post_uuid=" + post_uuid + "&comment_id=" + comment_id, {
+    content,
+  });
 }

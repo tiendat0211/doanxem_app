@@ -1,42 +1,39 @@
-import React, { useState } from "react";
-import {Dimensions, Image, StyleProp, View, ViewProps, ViewStyle} from "react-native";
+import React, {useEffect, useState} from "react";
+import {Image, StyleProp, View, ViewProps, ViewStyle} from "react-native";
 import {
-  unit1, unit10,
   unit100,
-  unit12, unit14,
   unit16,
-  unit18,
   unit20,
-  unit24, unit4,
-  unit40,
-  unit43, unit5, unit50,
-  unit6, unit60, unit70,
-  unit8, unit80,
+  unit24,
+  unit30,
+  unit4,
+  unit43,
+  unit5,
+  unit6,
+  unit8,
+  unit80,
 } from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
-import { fontSize12, fontSize14, fontSize16 } from "../../styles/AppFonts";
-import { useTheme } from "../../hooks/useTheme";
+import {fontSize14} from "../../styles/AppFonts";
+import {useTheme} from "../../hooks/useTheme";
 import PressView from "../PressView/PressView";
-import {
-  IC_ARROWRIGHT,
-  IC_COMMENT,
-  IC_OPTION,
-  IC_REACTION,
-  IC_SAVE,
-  IC_SHAREPOST,
-  IC_VIEWMORE,
-  IMG_LOGO, LOADING_ANIM,
-} from "../../assets/path";
-import { CommentModel } from "../../model/ApiModel/CommentModel";
-import LottieView from "lottie-react-native";
+import {IC_ARROWRIGHT,} from "../../assets/path";
+import {CommentModel} from "../../model/ApiModel/CommentModel";
 import {NavigationRef} from "../../../App";
-import AppColors from "../../styles/AppColors";
+import {ReplyModel} from "../../model/ApiModel/ReplyModel";
+import ReplyItem from "../ReplyItem/ReplyItem";
+import {getListReply} from "../../network/AppAPI";
+import ApiHelper from "../../utils/ApiHelper";
+import {showToastErrorMessage} from "../../utils/Toaster";
+import useScreenState from "../../hooks/useScreenState";
+import {AppPusher} from "../../utils/AppConfig";
+import {PusherCommment} from "../../model/ApiModel/PusherCommment";
 
 export type CommnetType =
   | "error"
   | "success";
 
-interface StatusItemProps {
+interface CommentItemProps extends ViewProps{
   styleUserImage?: StyleProp<Image>;
   onPressViewMore?: () => void;
   comment: CommentModel;
@@ -44,20 +41,86 @@ interface StatusItemProps {
   style?: StyleProp<ViewStyle>;
   type: CommnetType;
   onPressReSend?:()=> void;
+  onPressReply?:() => void;
+  replyCommentID?: number;
+  postUUID?: string;
 }
 
-const CommentItem: React.FC<StatusItemProps> = (props) => {
-
-  const { comment,styleUserImage, onPressViewMore, style,type,onPressReSend} = props;
+const CommentItem: React.FC<CommentItemProps> = (props) => {
+  const { comment,styleUserImage, onPressViewMore, style,type,onPressReSend,onPressReply,replyCommentID,postUUID} = props;
   const {colorPallet} = useTheme();
+  const [isOpen,setOpen] = useState(false)
+  const [listReply,setListReply] = useState<ReplyModel[]>([])
+  const { setError } = useScreenState();
+  const [replies,setReplies] = useState(comment?.total_replies)
+
+
+  async function loadListReply(post_uuid:string, comment_id: number){
+    try {
+      const res = await getListReply(post_uuid,comment_id);
+      if (ApiHelper.isResSuccess(res)) {
+        const data = res?.data?.data;
+        setListReply(data);
+      } else {
+        showToastErrorMessage(res.data.message);
+      }
+    } catch (e) {
+      setError(e);
+    } finally {
+    }
+  }
+
+  useEffect(() => {
+    const channel = AppPusher.bind(
+      "App\\Events\\CommentAndReply",
+      async (pusher: PusherCommment)=>{
+        const { data , user } = pusher;
+        if (data){
+          if (data.type === 'reply'){
+            if (comment?.id === data?.comment_id ){
+              const newReply : ReplyModel = {
+                comment_id: data.comment_id,
+                content: data.content,
+                id: data.reply_id,
+                time: data.time,
+                type: data.type,
+                user: user,
+              }
+              setListReply(prev=>{
+                for (let i = 0; i < prev.length; i++) {
+                  if(prev[i].id === newReply.id) {
+                    return prev;
+                  }
+                }
+                return[
+                  newReply,
+                  ...prev,
+                ]
+              })
+              setReplies(data?.total_replies)
+            }
+          }
+        }
+      }
+    );
+
+    // channel.reinstateSubscription();
+    //
+    // return () => {
+    //   channel.cancelSubscription();
+    // };
+  }, []);
+
 
   return (
     <>
       <View
         style={[{
           flexDirection:'row',
-          paddingLeft: unit20,
+          paddingHorizontal: unit20,
           paddingVertical: unit6,
+          backgroundColor:  replyCommentID === comment?.id ? colorPallet.color_background_4 : colorPallet.color_background_1,
+          borderRadius: unit20,
         },style]}
       >
         <PressView
@@ -83,13 +146,20 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
         <View
           style={{
             flexDirection:'column',
-            marginRight: unit80
+            marginRight: unit80,
           }}
         >
           <PressView
+            onPress={() =>{
+              NavigationRef?.current?.navigate('AnotherUserScreen',{
+                user_uuid:  comment?.user?.user_uuid
+              })
+            }
+            }
             style={{
               flexDirection:'row',
-              marginBottom:unit4
+              marginBottom:unit4,
+
           }}
           >
             <AppText
@@ -124,6 +194,90 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
             {comment?.content}
           </AppText>
 
+          {
+            isOpen
+              ? listReply.map((item,index)=>{
+                return <ReplyItem
+                  key={index}
+                  reply={item}
+                />
+              })
+              : null
+          }
+
+          {
+            type === 'success'
+              ? <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: unit5,
+                }}
+              >
+                {/* Reply */}
+                <PressView
+                  onPress={onPressReply}
+                  style={{
+                    flexDirection:'row',
+                    alignItems:'center',
+                    marginRight: unit30
+                  }}
+                >
+                  <Image
+                    source={IC_ARROWRIGHT}
+                    style={{
+                      width: unit16,
+                      height: unit16,
+                      marginRight: unit8
+                    }}
+                  />
+                  <AppText
+                    style={{
+                      fontSize: fontSize14,
+                      color: colorPallet.color_text_gray_3,
+                      lineHeight: unit20
+                    }}
+                  >
+                    Trả lời
+                  </AppText>
+                </PressView>
+                {
+                  replies?
+                  <PressView
+                    onPress={async ()=>{
+                      setOpen(!isOpen);
+                      await loadListReply(postUUID||'',comment?.id);
+                    }}
+                  >
+                    {
+                      isOpen
+                        ?  <AppText
+                          style={{
+                            fontSize: fontSize14,
+                            color: colorPallet.color_text_gray_3,
+                            lineHeight: unit20
+                          }}
+                        >
+                          Ẩn tất cả phản hồi
+                        </AppText>
+                        : <AppText
+                          style={{
+                            fontSize: fontSize14,
+                            color: colorPallet.color_text_gray_3,
+                            lineHeight: unit20
+                          }}
+                        >
+                          {`Hiển thị ${replies} phản hồi`}
+                        </AppText>
+                    }
+                  </PressView>
+                    : null
+                }
+
+              </View>
+              : null
+          }
+
+
           {type === 'error' ?
             <PressView
               onPress={onPressReSend}
@@ -141,6 +295,7 @@ const CommentItem: React.FC<StatusItemProps> = (props) => {
              : null}
 
         </View>
+
       </View>
     </>
   )

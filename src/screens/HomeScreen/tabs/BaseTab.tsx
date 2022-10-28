@@ -229,13 +229,14 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   );
 
   function update(updatedPost: PostModel, curPost: PostModel){
+
     setPosts((prev) => {
       const newList = [...prev];
       for (let i = 0; i < newList.length; i++) {
         const cur = newList[i];
         if(cur.post_uuid === curPost.post_uuid) {
           cur.total_reactions = updatedPost.total_reactions
-          cur.comments_count = updatedPost.comments_count
+          cur.total_comments = updatedPost.total_comments
           cur.user_action = updatedPost.user_action
           break;
         }
@@ -311,7 +312,10 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           refreshControl={
           <RefreshControl
             refreshing={isLoading}
-            onRefresh={loadPosts}
+            onRefresh={async ()=>{
+              setPosts([]);
+              await loadPosts();
+            }}
           />
         }
           />
