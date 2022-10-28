@@ -125,11 +125,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       if (ApiHelper.isResSuccess(res)) {
         const data = res?.data?.data;
         setPosts(data)
-        console.log("OKKKK", JSON.stringify(posts[0], null, 2));
-        
       } else {
-        console.log("ERRR");
-
         showToastErrorMessage(res.data.message);
       }
     } catch (e) {
@@ -138,8 +134,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       setLoading(false);
     }
   }
-  
-  
+
+
   async function loadMore() {
     try {
       const res = await getListPost(page +1, type) || [];
