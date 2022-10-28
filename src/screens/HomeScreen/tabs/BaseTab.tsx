@@ -44,6 +44,7 @@ import Snackbar from "react-native-snackbar";
 import LottieView from "lottie-react-native";
 import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
 import PopUp from "../../../components/PopUp/PopUp";
+import { sleep } from "../../../utils/Utils";
 
 interface BaseTabProps {
   type: PostType;
@@ -118,12 +119,17 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   async function loadPosts() {
     try {
       setLoading(true);
+      setPosts([])
       setPage(FIRST_PAGE);
       const res = await getListPost(FIRST_PAGE,type);
       if (ApiHelper.isResSuccess(res)) {
         const data = res?.data?.data;
         setPosts(data)
+        console.log("OKKKK", JSON.stringify(posts[0], null, 2));
+        
       } else {
+        console.log("ERRR");
+
         showToastErrorMessage(res.data.message);
       }
     } catch (e) {
@@ -132,7 +138,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       setLoading(false);
     }
   }
-
+  
+  
   async function loadMore() {
     try {
       const res = await getListPost(page +1, type) || [];
@@ -157,9 +164,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     }
   }
 
-  useEffect(() =>{
-    loadPosts().finally(()=>{})
-    },[]);
 
   async function blockUserByID( id: number) {
     try {
@@ -243,6 +247,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   }
 
 
+  useEffect(() =>{
+    loadPosts().finally(()=>{})
+    },[]);
   return (
     <>
       <View
@@ -260,7 +267,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           onEndReached={async () => {
              await loadMore()
           }}
-          extraData={posts}
           FooterLoadingIndicator={renderFooterView}
           onEndReachedThreshold={0.5}
           renderItem={({ item, index }) => {
