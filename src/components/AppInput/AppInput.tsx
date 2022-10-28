@@ -148,7 +148,8 @@ const AppInput: React.FC<AppInput> = (props) => {
             source={IC_SEND}
             style={{
               width: unit24,
-              height: unit24
+              height: unit24,
+              tintColor: disable? colorPallet.color_text_gray_3 : AppColors.color_primary
             }}
           />
         </PressView>

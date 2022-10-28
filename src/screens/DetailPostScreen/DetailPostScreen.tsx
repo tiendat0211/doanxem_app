@@ -391,9 +391,11 @@ const DetailPostScreen: React.FC = () => {
             }}
             onChangeText={
             (text) => {
+              setUserComment(text);
               if (text.length){
-                setUserComment(text);
-                setValid(true)
+                setValid(true);
+              }else {
+                setValid(false);
               }
 
             }
@@ -405,7 +407,6 @@ const DetailPostScreen: React.FC = () => {
               setUserName('')
               setCommentID(0)
             }}
-
           />
 
         </SafeAreaView>
