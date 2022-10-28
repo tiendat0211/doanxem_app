@@ -133,7 +133,7 @@ android {
     compileSdkVersion 31
 
     defaultConfig {
-        applicationId "com.doanxem"
+        applicationId "com.sphoton.doanxem"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
@@ -190,6 +190,10 @@ android {
 
         }
     }
+
+    dexOptions {
+           javaMaxHeapSize "3g"
+        }
 }
 
 dependencies {
