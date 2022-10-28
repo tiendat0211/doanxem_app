@@ -14,6 +14,7 @@
 		555FCE3499FE4515A9B48E79 /* Averta-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3A83257360E24DBF9979E717 /* Averta-Regular.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A182331E5D4F02D9E71273F2 /* libPods-DoanXem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16EBACC45BBFAABEF5AA52B9 /* libPods-DoanXem.a */; };
+		B92FA94D290B8B99009099D3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B92FA94C290B8B99009099D3 /* GoogleService-Info.plist */; };
 		D4A7E60822EF47B38F49F891 /* Averta-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = B2097DD8449543BCA046D139 /* Averta-Semibold.otf */; };
 		DC3E267A75E24102B829C453 /* Averta-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3AFBE6E7B7694EDBB9BBDC1D /* Averta-Bold.otf */; };
 		E3E16F43FDE13270F45338D0 /* libPods-DoanXem-DoanXemTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E176363ABF40B6C12F6AF697 /* libPods-DoanXem-DoanXemTests.a */; };
@@ -47,6 +48,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = DoanXem/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AB48D52E8C48C5758ECD9A8A /* Pods-DoanXem.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DoanXem.release.xcconfig"; path = "Target Support Files/Pods-DoanXem/Pods-DoanXem.release.xcconfig"; sourceTree = "<group>"; };
 		B2097DD8449543BCA046D139 /* Averta-Semibold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Averta-Semibold.otf"; path = "../src/assets/fonts/Averta-Semibold.otf"; sourceTree = "<group>"; };
+		B92FA94C290B8B99009099D3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D05C1445BC9912C6435CFAAA /* Pods-DoanXem-DoanXemTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DoanXem-DoanXemTests.debug.xcconfig"; path = "Target Support Files/Pods-DoanXem-DoanXemTests/Pods-DoanXem-DoanXemTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E176363ABF40B6C12F6AF697 /* libPods-DoanXem-DoanXemTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DoanXem-DoanXemTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -92,6 +94,7 @@
 		13B07FAE1A68108700A75B9A /* DoanXem */ = {
 			isa = PBXGroup;
 			children = (
+				B92FA94C290B8B99009099D3 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -265,6 +268,7 @@
 				DC3E267A75E24102B829C453 /* Averta-Bold.otf in Resources */,
 				555FCE3499FE4515A9B48E79 /* Averta-Regular.otf in Resources */,
 				D4A7E60822EF47B38F49F891 /* Averta-Semibold.otf in Resources */,
+				B92FA94D290B8B99009099D3 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
