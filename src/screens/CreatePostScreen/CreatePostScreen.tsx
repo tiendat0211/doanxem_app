@@ -36,6 +36,8 @@ import VideoPlayer from "react-native-video-player";
 import { createPost } from "../../network/AppAPI";
 import AppButton from "../../components/AppButton/AppButton";
 import Snackbar from "react-native-snackbar";
+import AppLoading from "../../components/Loading/AppLoading";
+import RNFetchBlob from "rn-fetch-blob";
 
 const options = {
   mediaType: 'mixed',
@@ -174,27 +176,72 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
   const {token} = authData
 
-  async function createSinglePost( title: string, img: Asset ){
-    
-    try {
-      const res = await createPost(token || "",title,img);
-      console.log('ress',res);
-      
-      const resJson = await res.json()
-      console.log("OK", resJson.image);
-      if (resJson.status === 200) {
-        showToastMsg(resJson?.message)
-        NavigationRef?.current?.goBack();
-      } else {
-        showToastErrorMessage(resJson?.message);
-      }
-    } catch (e) {
-      console.error(e);
-     setError(e);
-      showToastError(e);
-    } finally {
+  // async function createSinglePost( title: string, img: Asset ){
+  //
+  //   try {
+  //     setLoading(true);
+  //     //const res = await createPost(token || "",title,img);
+  //     const ress = await uploadVideo(img,title);
+  //     console.log({ress});
+  //
+  //     // const resJson = await res.json()
+  //     // console.log("OK", resJson.image);
+  //     // if (resJson.status === 200) {
+  //     //   showToastMsg(resJson?.message)
+  //     //   NavigationRef?.current?.goBack();
+  //     // } else {
+  //     //   showToastErrorMessage(resJson?.message);
+  //     // }
+  //   } catch (e) {
+  //     console.error(e);
+  //    setError(e);
+  //     showToastError(e);
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
+
+  async function createSinglePost (asset: Asset, title: string) {
+    if (asset.uri != null) {
+      setLoading(true)
+      RNFetchBlob.fetch(
+        "POST",
+        "https://doanxem.com/api/v1/posts/store",
+        {
+          Authorization: 'Bearer ' +  token || '123',
+          "Content-Type": "multipart/form-data",
+        },
+        [
+          {
+            name:'title',
+            data: title
+          },
+          {
+            name: 'image',
+            filename: asset.fileName,
+            type: asset.type,
+            data: RNFetchBlob.wrap(asset.uri),
+          },
+        ]
+      )
+        .then(async (resp) => {
+          const resJson = await resp.json();
+          console.log({resJson})
+          if (resJson.status === 200) {
+              showToastMsg(resJson?.message)
+              NavigationRef?.current?.goBack();
+            } else {
+              showToastErrorMessage(resJson?.message);
+            }
+          setLoading(false);
+        })
+        .catch((err) => {
+         showToastError(err);
+        });
     }
   }
+
+
 
 
   const renderLocalImage = () => {
@@ -210,8 +257,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         }}
         showDuration={true}
         defaultMuted={true}
-        
-        thumbnail={{ uri: 'https://www.techsmith.com/blog/wp-content/uploads/2019/06/YouTube-Thumbnail-Sizes.png' }}
       />;
     } else {
       return (
@@ -424,7 +469,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
               backgroundColor: isValid ? AppColors.color_primary : AppColors.color_opacity
             }}
             onPress={ async ()=>{
-               await createSinglePost(script,asset);
+               await createSinglePost(asset,script);
             }}
           />
 
@@ -436,6 +481,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           setIsvisible={setOpenModal}
         />
       </ScrollView>
+      {
+        isLoading ? <AppLoading isOverlay color={AppColors.color_transparent_dark} /> : null
+      }
     </SafeAreaView>
   )
 };
