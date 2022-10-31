@@ -6,7 +6,7 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  StatusBar,
+  StatusBar, TextInput,
   View,
 } from "react-native";
 import AppStyles from "../../styles/AppStyles";
@@ -41,6 +41,7 @@ import {ReplyModel} from "../../model/ApiModel/ReplyModel";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
+export const refInput = React.createRef<TextInput>();
 
 const DetailPostScreen: React.FC = () => {
   const { postID, onUpdatePost } = useRoute<DetailStatusScreenProps>().params;
@@ -55,7 +56,6 @@ const DetailPostScreen: React.FC = () => {
   const [saved, setISSaved] = useState(false);
   const { authData } = useAuth()
   const user = authData.user;
-  const [listCommentError, setListCommentError] = useState<CommentModel[]>([]);
   const [valid, setValid] = useState(false);
   const [commentID,setCommentID] = useState(0)
   const [userName,setUserName] = useState('')
@@ -154,17 +154,6 @@ const DetailPostScreen: React.FC = () => {
         await loadPostDetail()
       } else {
         showToastErrorMessage(res?.data.message)
-        setListCommentError(prevState => {
-          if (newComment?.content) {
-            return [
-              newComment,
-              ...prevState,
-            ]
-          } else {
-            return []
-          }
-
-        })
         setListComment(prev => {
           return prev.filter((item) => {
             return item.id !== now.getTime()
@@ -173,19 +162,6 @@ const DetailPostScreen: React.FC = () => {
       }
     } catch (e) {
       setError(e);
-      setListCommentError(prevState => {
-        if (newComment?.content !== '') {
-          return [
-            newComment,
-            ...prevState,
-          ]
-        } else {
-          return [
-
-          ]
-        }
-
-      })
       setListComment(prev => {
         return prev.filter((item) => {
           return item.id !== now.getTime()
@@ -332,7 +308,7 @@ const DetailPostScreen: React.FC = () => {
                 })
               }}
               onPressComment={() => {
-                //scrollViewRef.current?.scrollToEnd();
+                refInput?.current?.focus();
               }}
               onPressSave={() => {
                 setOpen(true);
@@ -353,6 +329,7 @@ const DetailPostScreen: React.FC = () => {
                       onPressReply={()=>{
                         setCommentID(comment?.id);
                         setUserName(comment?.user?.name||'');
+                        refInput?.current?.focus();
                       }}
                       postUUID={postDetail?.post_uuid}
                     />
@@ -386,14 +363,15 @@ const DetailPostScreen: React.FC = () => {
               }else {
                 await comment(postDetail?.post_uuid || '', userComment);
               }
-
               Keyboard.dismiss();
             }}
             onChangeText={
             (text) => {
+              setUserComment(text);
               if (text.length){
-                setUserComment(text);
-                setValid(true)
+                setValid(true);
+              }else {
+                setValid(false);
               }
 
             }
@@ -405,7 +383,6 @@ const DetailPostScreen: React.FC = () => {
               setUserName('')
               setCommentID(0)
             }}
-
           />
 
         </SafeAreaView>

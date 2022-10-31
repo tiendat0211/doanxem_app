@@ -120,7 +120,7 @@ const CommentItem: React.FC<CommentItemProps> = (props) => {
           paddingHorizontal: unit20,
           paddingVertical: unit6,
           backgroundColor:  replyCommentID === comment?.id ? colorPallet.color_background_4 : colorPallet.color_background_1,
-          borderRadius: unit20,
+          borderRadius: unit5,
         },style]}
       >
         <PressView

@@ -44,7 +44,8 @@ const ReplyItem: React.FC<ReplyItemProps> = (props) => {
           paddingVertical: unit6,
           backgroundColor: colorPallet.color_background_1,
           paddingLeft: unit15,
-          borderRadius: unit20
+          borderRadius: unit5,
+          marginTop: unit4,
         }]}
       >
         <PressView

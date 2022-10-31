@@ -22,6 +22,7 @@ import {
 import { useTheme } from "../../hooks/useTheme";
 import { useLanguage } from "../../hooks/useLanguage";
 import { IC_MEDIA, IC_SEND } from "../../assets/path";
+import {refInput} from "../../screens/DetailPostScreen/DetailPostScreen";
 
 interface AppInput {
   onPressSend: () => void,
@@ -31,13 +32,15 @@ interface AppInput {
   disable: boolean,
   userName?: string,
   onPressCancel?: () => void,
+  focus?:boolean
 }
 
 const AppInput: React.FC<AppInput> = (props) => {
-  const { onPressSend,onPressMedia,  onChangeText, value,disable,userName,onPressCancel} = props;
-  const {colorPallet, theme } = useTheme()
+  const { onPressSend,onPressMedia,  onChangeText, value,disable,userName,onPressCancel, focus} = props;
+  const {colorPallet, theme } = useTheme();
   const { language } = useLanguage();
-  const [isBlur,setBlur] = useState(true)
+  const [isBlur,setBlur] = useState(true);
+
 
   return (
     <View
@@ -103,6 +106,7 @@ const AppInput: React.FC<AppInput> = (props) => {
         }}
       >
         <TextInput
+          ref={refInput}
           style={{
             fontSize: fontSize16,
             fontFamily: AppFonts.regular,
@@ -148,7 +152,8 @@ const AppInput: React.FC<AppInput> = (props) => {
             source={IC_SEND}
             style={{
               width: unit24,
-              height: unit24
+              height: unit24,
+              tintColor: disable? colorPallet.color_text_gray_3 : AppColors.color_primary
             }}
           />
         </PressView>

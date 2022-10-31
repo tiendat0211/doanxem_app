@@ -41,8 +41,8 @@ import AppLoading from "../../components/Loading/AppLoading";
 
 const LoginScreen: React.FC = () => {
 
-  const [email, setEmail] = useState("test12345@gmail.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(true);
   const [passValid, setPassValid] = useState(false);
   const [emailValid, setEmailValid] = useState(false);

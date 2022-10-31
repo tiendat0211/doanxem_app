@@ -8,17 +8,18 @@ import AppColors from "../../styles/AppColors";
 
 interface AppLoadingProps extends ViewProps {
   isOverlay?: boolean;
+  color?: string
 }
 
 function AppLoading(props: AppLoadingProps) {
   const { colorPallet } = useTheme();
-  const { isOverlay } = props;
+  const { isOverlay, color } = props;
   const overlayStyle = isOverlay ? StyleSheet.absoluteFill : undefined;
   return (
     <View
       {...props}
       style={[styles.container, {
-        backgroundColor: isOverlay ? colorPallet.color_background_1 : colorPallet.color_background_1,
+        backgroundColor: isOverlay ? color?  color : colorPallet.color_background_1  : colorPallet.color_background_1,
       }, overlayStyle]}>
       <LottieView
         style={styles.loadingView}
