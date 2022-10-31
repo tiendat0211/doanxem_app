@@ -55,6 +55,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
+  // console.log('Detail_action: ', post?.user_action);
   // const [imgWidth, setImgWidth] = useState(0)
   // const [imgHeight, setImgHeight] = useState(0)
   //
@@ -233,6 +234,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
             total_reactions={post?.total_reactions}
             post_uuid={post?.post_uuid || ''}
             userReaction={post?.user_action}
+            onReaction={() => {}}
           />
 
           <FooterItem

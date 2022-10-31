@@ -36,11 +36,12 @@ interface StatusItemProps{
   onPressImage?: () => void
   onPressSave?: () => void,
   total_comment?: number;
+  onReaction?:() => void;
 }
 
 const StatusItem2: React.FC<StatusItemProps> = (props) => {
 
-  const { post, style,onPressComment,onPressImage,onPressSave,total_comment} = props;
+  const { post, style,onPressComment,onPressImage,onPressSave,total_comment,onReaction} = props;
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
@@ -189,6 +190,7 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
             total_reactions={post?.total_reactions}
             post_uuid={post?.post_uuid || ''}
             userReaction={post?.user_action}
+            onReaction={onReaction}
           />
 
           <FooterItem
