@@ -21,7 +21,7 @@ import AppBar from "../../components/AppBar/AppBar";
 import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { getListComment, getPostDetail, postComment, postReply, savePost } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
@@ -264,6 +264,13 @@ const DetailPostScreen: React.FC = () => {
   }, [postDetail])
 
   const { bottom } = useSafeAreaInsets();
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     loadPostDetail().finally(() => {
+  //     });
+  //   }, []),
+  // );
 
   return (
     <>

@@ -146,7 +146,7 @@ const AnotherUserScreen: React.FC = () => {
       <BottomSheet
         ref={bottomSheetRef}
         style={{
-          backgroundColor: "red",
+          // backgroundColor: "red",
         }}
         handleComponent={renderCustomHandle}
         index={0}

@@ -65,7 +65,7 @@ const ProfileScreen: React.FC = () => {
 
 
   return (
-    <SafeAreaView
+    <View
       style={AppStyles.container}>
       <StatusBar
         barStyle={ theme === 'light' ? "dark-content" : "light-content"}
@@ -176,7 +176,7 @@ const ProfileScreen: React.FC = () => {
       </PressView>
 
 
-    </SafeAreaView>
+    </View>
   )
 };
 
