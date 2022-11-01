@@ -6,7 +6,6 @@ import {
   StatusBar,
   StyleProp,
   StyleSheet,
-  Text,
   TextStyle,
   View,
   ViewStyle,
@@ -14,10 +13,10 @@ import {
 // import { IC_LEFT } from "../../assets/path";
 import { NavigationRef } from "../../../App";
 import PressView from "../PressView/PressView";
-import AppColors from "../../styles/AppColors";
-import { unit1, unit10, unit16, unit18, unit20, unit24, unit6 } from "../../utils/appUnit";
+import { unit1, unit10, unit16, unit18, unit20, unit24 } from "../../utils/appUnit";
 import { useTheme } from "../../hooks/useTheme";
 import AppText from "../AppText/AppText";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type AppBarProps = {
   title: string,
@@ -54,31 +53,34 @@ const AppBar: React.FC<AppBarProps> = (
     };
   }
   const isCenter = titleType === "center";
-  const {colorPallet, theme} = useTheme()
+  const { colorPallet, theme } = useTheme();
+
+  const { top } = useSafeAreaInsets();
 
   return <View style={[
     styles.container,
     {
       backgroundColor: colorPallet.color_background_1,
-      borderBottomColor: colorPallet.color_divider_2 ,
-    },containerStyle,
+      borderBottomColor: colorPallet.color_divider_2,
+      paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : top) + unit10,
+    }, containerStyle,
   ]}>
     <PressView
       onPress={leftIconOnClick}
-     >
+    >
       <Image
         source={leftIcon}
         style={[
           styles.leftIcon,
           {
-            tintColor: colorPallet.color_text_blue_1
+            tintColor: colorPallet.color_text_blue_1,
           },
           leftIconStyle,
         ]}
       />
     </PressView>
     <AppText
-      fontType={'bold'}
+      fontType={"bold"}
       style={[styles.title, titleStyle, {
         textAlign: isCenter ? "center" : "left",
       }]}
@@ -89,11 +91,11 @@ const AppBar: React.FC<AppBarProps> = (
       <Image
         source={rightIcon}
         style={[
-          rightIconStyle ,
+          rightIconStyle,
           styles.rightIcon,
           {
-            tintColor: colorPallet.color_text_blue_1
-          }
+            tintColor: colorPallet.color_text_blue_1,
+          },
         ]}
       />
     </PressView>
@@ -109,7 +111,6 @@ AppBar.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + unit18,
     paddingBottom: unit18,
     paddingHorizontal: unit16,
     alignItems: "center",
