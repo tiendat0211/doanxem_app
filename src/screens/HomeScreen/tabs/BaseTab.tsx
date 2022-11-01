@@ -65,7 +65,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [isOpen, setOpen] = useState(false);
   const [isSaveButton, setSaveButton] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [updatePostDetail,setUpdatePostDetail] = useState<PostModel>();
+  const [extraData, setExtraData] = React.useState(new Date())
+
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -119,7 +120,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   async function loadPosts() {
     try {
       setLoading(true);
-      setPosts([])
+      setPosts([]);
       setPage(FIRST_PAGE);
       const res = await getListPost(FIRST_PAGE,type);
       if (ApiHelper.isResSuccess(res)) {
@@ -224,22 +225,11 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     []
   );
 
-  function update(updatedPost: PostModel, curPost: PostModel){
-
-    setPosts((prev) => {
-      const newList = [...prev];
-      for (let i = 0; i < newList.length; i++) {
-        const cur = newList[i];
-        if(cur.post_uuid === curPost.post_uuid) {
-          cur.total_reactions = updatedPost.total_reactions
-          cur.total_comments = updatedPost.total_comments
-          cur.user_action = updatedPost.user_action
-          break;
-        }
-      }
-      return newList
-    })
-
+  function update(updatedPost: PostModel, index: number){
+    let newPosts = posts;
+    newPosts[index] = updatedPost;
+    setPosts(newPosts);
+    setExtraData(new Date());
   }
 
 
@@ -263,6 +253,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           onEndReached={async () => {
              await loadMore()
           }}
+          extraData={extraData}
           FooterLoadingIndicator={renderFooterView}
           onEndReachedThreshold={0.5}
           renderItem={({ item, index }) => {
@@ -276,7 +267,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
                     if(!updatedPost) {
                       return;
                     }
-                    update(updatedPost,item);
+                    update(updatedPost,index);
                   }
                 });
               }}
@@ -287,7 +278,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
                     if(!updatedPost) {
                       return;
                     }
-                    update(updatedPost,item);
+                    update(updatedPost,index);
                   }
                 });
               }}
@@ -309,7 +300,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           <RefreshControl
             refreshing={isLoading}
             onRefresh={async ()=>{
-              setPosts([]);
               await loadPosts();
             }}
           />

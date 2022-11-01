@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, {memo, useEffect, useState} from "react";
 import { Image, PressableProps, StyleSheet, View } from "react-native";
 import { IC_ANGRY, IC_HAHA, IC_LIKE, IC_LOVE, IC_REACTION, IC_SAD2, IC_WOW } from "../../assets/path";
 import { unit1, unit10, unit12, unit19, unit24, unit28, unit3, unit60, unit80 } from "../../utils/appUnit";
@@ -15,9 +15,15 @@ interface ReactionProps {
   total_reactions?: number;
   post_uuid: string;
   userReaction?: string;
+  onReaction?:()=>void
 }
 
-const images = [
+interface IconProps{
+  id: string,
+  img: any,
+}
+
+const images : IconProps[] = [
   { id: "like", img: IC_LIKE },
   { id: "heart", img: IC_LOVE },
   { id: "haha", img: IC_HAHA },
@@ -47,13 +53,20 @@ const filterReaction = (userReaction: any) => {
 
 const Reaction: React.FC<ReactionProps> = (props) => {
 
-  const { userReaction, total_reactions, post_uuid } = props;
+  const { userReaction, total_reactions, post_uuid , onReaction} = props;
   const { colorPallet } = useTheme();
 
   const [open, setOpen] = useState(false);
-  const [url, setUrl] = useState(filterReaction(userReaction));
-  const [total_reaction, setTotal_reactions] = useState(total_reactions);
+  const [url, setUrl] = useState<IconProps>();
+  const [total_reaction, setTotal_reaction] = useState(total_reactions);
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
+
+  filterReaction(userReaction);
+
+  useEffect(()=>{
+    setUrl(filterReaction(userReaction));
+    setTotal_reaction(total_reactions);
+  },[userReaction,total_reactions])
 
   async function reaction(post_uuid: string, reaction: string){
     const old_reaction = url;
@@ -69,15 +82,15 @@ const Reaction: React.FC<ReactionProps> = (props) => {
           data?.data.angry +
           data?.data.wow +
           data?.data.like;
-        setTotal_reactions(totalReactions <= 0 ? 0 : totalReactions);
+        setTotal_reaction(totalReactions <= 0 ? 0 : totalReactions);
       } else {
         setUrl(old_reaction);
-        setTotal_reactions(old_total_reaction);
+        setTotal_reaction(old_total_reaction);
       }
     }catch (e){
       setError(e);
       setUrl(old_reaction);
-      setTotal_reactions(old_total_reaction);
+      setTotal_reaction(old_total_reaction);
     }finally {
       setOpen(false);
     }
@@ -87,19 +100,28 @@ const Reaction: React.FC<ReactionProps> = (props) => {
     setOpen(false);
     setUrl(images[i]);
     await reaction(post_uuid,images[i].id);
+    if (onReaction) {
+      onReaction();
+    }
   }
 
   const openPress = async () => {
-    if (url.id !== "none") {
+    if (url?.id !== "none") {
       if (open) {
         setOpen(false);
       } else {
         setUrl({ id: "none", img: IC_REACTION });
         await reaction(post_uuid,'none');
+        if (onReaction) {
+          onReaction();
+        }
       }
     } else {
       setUrl(images[0]);
       await reaction(post_uuid,images[0].id);
+      if (onReaction) {
+        onReaction();
+      }
     }
   };
 
@@ -124,7 +146,7 @@ const Reaction: React.FC<ReactionProps> = (props) => {
           onLongPress={openLongPress}
           onPress={openPress}
           style={styles.touch}>
-          <Image style={styles.imageEmoji} source={url.img} />
+          <Image style={styles.imageEmoji} source={url?.img} />
           <View style={styles.viewMostEmoji}>
             <AppText
               style={{

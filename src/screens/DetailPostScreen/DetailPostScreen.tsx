@@ -23,7 +23,7 @@ import { PostModel } from "../../model/ApiModel/PostModel";
 import CommentItem from "../../components/CommentItem/CommentItem";
 import AppInput from "../../components/AppInput/AppInput";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import {getListComment, getPostDetail, postComment, postReply, savePost} from "../../network/AppAPI";
+import {getListComment, getPostDetail, postComment, postReaction, postReply, savePost} from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import StatusItem2 from "../../components/StatusItem/StatusItem2";
@@ -258,6 +258,7 @@ const DetailPostScreen: React.FC = () => {
   }, [postDetail]);
 
 
+
   return (
     <>
       <KeyboardAvoidingView
@@ -309,12 +310,16 @@ const DetailPostScreen: React.FC = () => {
               }}
               onPressComment={() => {
                 refInput?.current?.focus();
+                scrollViewRef?.current?.scrollTo({y: 400});
               }}
               onPressSave={() => {
                 setOpen(true);
                 setISSaved(postDetail?.isSaved || false);
               }}
               total_comment={totalComment}
+              onReaction={async () =>  {
+                await loadPostDetail();
+              }}
             />
 
             {/*Comment*/}
@@ -382,6 +387,9 @@ const DetailPostScreen: React.FC = () => {
             onPressCancel={()=>{
               setUserName('')
               setCommentID(0)
+            }}
+            onFocus={()=>{
+              scrollViewRef?.current?.scrollTo({y: 400});
             }}
           />
 

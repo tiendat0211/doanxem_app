@@ -32,11 +32,11 @@ interface AppInput {
   disable: boolean,
   userName?: string,
   onPressCancel?: () => void,
-  focus?:boolean
+  onFocus:()=>void,
 }
 
 const AppInput: React.FC<AppInput> = (props) => {
-  const { onPressSend,onPressMedia,  onChangeText, value,disable,userName,onPressCancel, focus} = props;
+  const { onPressSend,onPressMedia,  onChangeText, value,disable,userName,onPressCancel, onFocus} = props;
   const {colorPallet, theme } = useTheme();
   const { language } = useLanguage();
   const [isBlur,setBlur] = useState(true);
@@ -128,6 +128,7 @@ const AppInput: React.FC<AppInput> = (props) => {
           }}
           onFocus={() => {
             setBlur(false);
+            onFocus();
           }}
         />
 
