@@ -12,7 +12,7 @@ export function showToastError(e: unknown, options?: Partial<SnackBarOptions>) {
 }
 
 export function showToastErrorMessage(msg?: string, options?: Partial<SnackBarOptions>) {
-  showToastMsg(msg || "Có lỗi xảy ra", {
+  showToastMsg(msg || "Có lỗi xảy ra, vui lòng thử lại!", {
     ...options,
   });
 }

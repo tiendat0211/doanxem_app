@@ -1,33 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Button,
-  Dimensions,
-  FlatList,
-  Image,
-  Platform,
-  RefreshControl,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  View,
-} from "react-native";
+import { Platform, RefreshControl, StatusBar, View } from "react-native";
 import AppStyles from "../../styles/AppStyles";
-import useAuth from "../../hooks/useAuth";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import {
-  unit12,
-  unit16, unit18,
-  unit20,
-  unit24,
-  unit32,
-  unit48, unit56,
-} from "../../utils/appUnit";
-import { IC_ARROWLEFT, IC_CREATE, IC_DRAWER } from "../../assets/path";
+import { unit12, unit16, unit20, unit24 } from "../../utils/appUnit";
+import { IC_ARROWLEFT } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { DrawerActions, NavigationContainer, RouteProp, useRoute } from "@react-navigation/native";
-import PressView from "../../components/PressView/PressView";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { NavigationRef, RootStackParamList } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -35,22 +14,23 @@ import CustomHandle from "../../components/CustomHandle/CustomHandle";
 import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 import UserPostItem from "../../components/UserPostItem/UserPostItem";
 import useScreenState from "../../hooks/useScreenState";
-import {getUserProfile } from "../../network/AppAPI";
+import { getUserProfile } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import UserModel from "../../model/ApiModel/UserModel";
 import AppTracking from "../../tracking/AppTracking";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type AnotherUserScreenProps = RouteProp<RootStackParamList, "AnotherUserScreen">;
 
 const AnotherUserScreen: React.FC = () => {
   const { user_uuid } = useRoute<AnotherUserScreenProps>().params;
-  const { colorPallet , theme} = useTheme()
+  const { colorPallet, theme } = useTheme();
   const { language } = useLanguage();
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
-  const snapPointsVertical = useMemo(() => [ Platform.OS === 'android' ? '69%' : '60%', '87%'], []);
+  const [deviceStatus, setDeviceStatus] = useState("Vertical"); //Horizontal
+  const snapPointsVertical = useMemo(() => [Platform.OS === "android" ? "69%" : "60%", "87%"], []);
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
-  const [user,setUser] = useState<UserModel>();
+  const [user, setUser] = useState<UserModel>();
 
   const renderCustomHandle = useCallback(
     (props) => <CustomHandle
@@ -66,15 +46,15 @@ const AnotherUserScreen: React.FC = () => {
 
   const handleSheetChange = useCallback((index: any) => {
     // eslint-disable-next-line no-console
-    console.log('handleSheetChange', index);
+    console.log("handleSheetChange", index);
   }, []);
 
   async function loadProfileUser() {
     try {
-      const res = await getUserProfile(user_uuid||'');
+      const res = await getUserProfile(user_uuid || "");
       if (ApiHelper.isResSuccess(res)) {
         const user = res?.data?.data;
-        setUser(user)
+        setUser(user);
       }
       setError(undefined);
     } catch (e) {
@@ -84,9 +64,10 @@ const AnotherUserScreen: React.FC = () => {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     const screenStartTime = new Date();
-    loadProfileUser().finally(()=>{});
+    loadProfileUser().finally(() => {
+    });
 
     AppTracking.logCustomEvent("view_profile_user", {
       user_id: String(user_uuid),
@@ -101,34 +82,38 @@ const AnotherUserScreen: React.FC = () => {
         duration_millisecond: totalOnScreenTime,
       });
     };
-  },[])
+  }, []);
 
+  const { top } = useSafeAreaInsets();
   return (
-    <SafeAreaView
-      style={AppStyles.container}>
+    <View
+      style={[AppStyles.container, {
+        paddingTop: Platform.OS === "ios" ? top : undefined,
+        backgroundColor: colorPallet.color_background_1
+      }]}>
       <StatusBar
-        barStyle={ theme === 'light' ? "dark-content" : "light-content"}
+        barStyle={theme === "light" ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
-        title={user?.name||''}
+        title={user?.name || ""}
         leftIcon={IC_ARROWLEFT}
         leftIconOnClick={() => {
           NavigationRef.current?.goBack();
         }}
         titleStyle={{
-          color: colorPallet.color_text_blue_1
+          color: colorPallet.color_text_blue_1,
         }}
         containerStyle={{
           borderBottomColor: colorPallet.color_divider_3,
-          shadowColor:AppColors.color_primary,
-          shadowOffset: {
-            width: 0,
-            height: unit12,
-          },
-          shadowOpacity: 0.58,
-          shadowRadius: unit16,
-          elevation: unit24,
+          // shadowColor: AppColors.color_primary,
+          // shadowOffset: {
+          //   width: 0,
+          //   height: unit12,
+          // },
+          // shadowOpacity: 0.58,
+          // shadowRadius: unit16,
+          // elevation: unit24,
         }}
       />
 
@@ -144,7 +129,7 @@ const AnotherUserScreen: React.FC = () => {
           email={user?.email}
           style={{
             marginVertical: unit24,
-            shadowColor:AppColors.color_primary,
+            shadowColor: AppColors.color_primary,
             shadowOffset: {
               width: 0,
               height: 4,
@@ -173,7 +158,9 @@ const AnotherUserScreen: React.FC = () => {
             backgroundColor: colorPallet.color_background_1,
             flex: 1,
             paddingTop: unit20,
-            paddingHorizontal: unit20
+            paddingHorizontal: unit20,
+            borderTopColor: 'red',
+            borderTopWidth: 1,
           }}
         >
           <BottomSheetFlatList
@@ -184,17 +171,18 @@ const AnotherUserScreen: React.FC = () => {
             }
             data={user?.posts}
             showsVerticalScrollIndicator={false}
-            renderItem={({item, index}) =>{
+            renderItem={({ item, index }) => {
               return <UserPostItem
                 key={item.id}
                 post={item}
-                onPress={()=>{
-                  NavigationRef?.current?.navigate("DetailPostScreen",{
+                onPress={() => {
+                  NavigationRef?.current?.navigate("DetailPostScreen", {
                     postID: item?.post_uuid,
-                    onUpdatePost:()=>{}
-                  })
+                    onUpdatePost: () => {
+                    },
+                  });
                 }}
-              />
+              />;
             }}
             numColumns={3}
           />
@@ -202,8 +190,8 @@ const AnotherUserScreen: React.FC = () => {
         </View>
       </BottomSheet>
 
-    </SafeAreaView>
-  )
+    </View>
+  );
 };
 
 export default AnotherUserScreen;

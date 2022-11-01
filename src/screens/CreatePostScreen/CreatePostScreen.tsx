@@ -1,26 +1,37 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Alert, Dimensions, Image, PermissionsAndroid, Platform, SafeAreaView, StatusBar, Text, TextInput, View, ViewProps } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  PermissionsAndroid,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  Text,
+  TextInput,
+  View,
+  ViewProps,
+} from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { IC_ARROWLEFT, IC_CLOSE, IC_DRAWER, IC_FILTER, IC_HOTTAB, IC_NEWTAB, IC_TOPTAB, IMG_LOGO, IMG_NO_PICTURE } from "../../assets/path";
+import { IC_CLOSE, IMG_NO_PICTURE } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { DrawerActions, NavigationContainer } from "@react-navigation/native";
 import { NavigationRef } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import {
   unit1,
-  unit10, unit100,
+  unit10,
+  unit100,
   unit12,
-  unit132,
   unit14,
   unit144,
   unit16,
   unit20,
   unit22,
-  unit25, unit30, unit4,
-  unit40,
+  unit25,
+  unit30,
+  unit4,
   unit8,
 } from "../../utils/appUnit";
 import AppText from "../../components/AppText/AppText";
@@ -35,12 +46,10 @@ import useAuth from "../../hooks/useAuth";
 import VideoPlayer from "react-native-video-player";
 import { createPost } from "../../network/AppAPI";
 import AppButton from "../../components/AppButton/AppButton";
-import Snackbar from "react-native-snackbar";
 import AppLoading from "../../components/Loading/AppLoading";
-import RNFetchBlob from "rn-fetch-blob";
 
 const options = {
-  mediaType: 'mixed',
+  mediaType: "mixed",
   quality: 0.3,
   storageOptions: {
     skipBackup: true,
@@ -48,8 +57,8 @@ const options = {
   noData: false,
 };
 
-const widthWD = Dimensions.get('window').width
-const heightWD = Dimensions.get('window').height
+const widthWD = Dimensions.get("window").width;
+const heightWD = Dimensions.get("window").height;
 
 interface CreatePostScreenProps extends ViewProps {
 
@@ -58,9 +67,9 @@ interface CreatePostScreenProps extends ViewProps {
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
   const { onApply } = props;
-  const { colorPallet, theme } = useTheme()
+  const { colorPallet, theme } = useTheme();
   const { language } = useLanguage();
-  const [script, setScript] = useState('');
+  const [script, setScript] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [heightImgOrVid, setHeightImgOrVid] = useState(300);
   const [asset, setAsset] = useState<Asset>({
@@ -68,13 +77,13 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
     type: "",
     fileName: "",
   });
-  const [isValid,setValid] = useState(false);
+  const [isValid, setValid] = useState(false);
   const { isLoading, setLoading, mounted, setError } = useScreenState();
 
   const clearData = () => {
-    setScript(''),
-      setAsset({})
-  }
+    setScript(""),
+      setAsset({});
+  };
 
   const getImageFromLib = async () => {
     try {
@@ -86,12 +95,12 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
       });
 
       if (res.assets) {
-        console.log('response',res.assets);
+        console.log("response", res.assets);
         const img = res.assets[0];
         setAsset({
           uri: img.uri,
           type: img?.type,
-          fileName: img?.type === 'video/mp4' && img.fileName?.endsWith('mp4')? img?.fileName :  img?.type === 'video/mp4'? img?.fileName + '.mp4' : img?.fileName,
+          fileName: img?.type === "video/mp4" && img.fileName?.endsWith("mp4") ? img?.fileName : img?.type === "video/mp4" ? img?.fileName + ".mp4" : img?.fileName,
         });
       }
     } catch (e) {
@@ -111,8 +120,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
             "so you can take awesome pictures.",
           buttonNeutral: "Ask Me Later",
           buttonNegative: "Cancel",
-          buttonPositive: "OK"
-        }
+          buttonPositive: "OK",
+        },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log("You can use the camera");
@@ -128,34 +137,34 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
   }
 
   const takePicture = async () => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       const hasPermission = await checkPerMissionCamera();
       if (!hasPermission) {
-        console.log('Vui lòng cấp quyền để sử dụng tính năng này!');
+        console.log("Vui lòng cấp quyền để sử dụng tính năng này!");
         return;
       }
     }
     try {
       const option: CameraOptions = {
         mediaType: "mixed",
-        cameraType: 'back',
+        cameraType: "back",
         presentationStyle: "currentContext",
         maxWidth: dimension.width,
         maxHeight: dimension.height,
-      }
+      };
       const res = await launchCamera(option, (cameraRes) => {
 
       });
 
       if (res.assets) {
         const img = res.assets[0];
-        setHeightImgOrVid(img.height!)
+        setHeightImgOrVid(img.height!);
         setAsset({
           uri: img.uri,
           type: img?.type,
           fileName: img?.fileName,
           height: img.height,
-          width: img.width
+          width: img.width,
         });
       }
     } catch (e) {
@@ -164,39 +173,47 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
     }
   };
 
-  useEffect(()=>{
-    if (script.length>0 && script.trim() !== "" && asset.uri?.length ){
-      setValid(true)
-    }else {
-      setValid(false)
+  useEffect(() => {
+    if (script.length > 0 && script.trim() !== "" && asset.uri?.length) {
+      setValid(true);
+    } else {
+      setValid(false);
     }
-  })
+  });
 
-  const {authData} = useAuth()
+  const { authData } = useAuth();
 
-  const {token} = authData
+  const { token } = authData;
 
-  async function createSinglePost( title: string, img: Asset ){
-
+  async function createSinglePost(title: string, img: Asset) {
     try {
       setLoading(true);
-      const res = await createPost(token || "",title,img);
-      console.log({res});
+      const res = await createPost(token || "", title, img);
+      switch (res.status) {
+        case 200: {
+          const resJson = await res.json();
+          if (resJson.status === 200) {
+            showToastMsg(resJson?.message);
+            NavigationRef?.current?.goBack();
+          } else {
+            showToastErrorMessage(resJson?.message);
+          }
+          break;
+        }
 
-      const resJson = await res.json()
-      console.log("OK", resJson.image);
-      if (resJson.status === 200) {
-        showToastMsg(resJson?.message)
-        NavigationRef?.current?.goBack();
-      } else {
-        showToastErrorMessage(resJson?.message);
+        case 413: {
+          showToastErrorMessage("File quá dung lượng, vui lòng chọn file nhỏ hơn");
+          break;
+        }
+
+        default: {
+          showToastErrorMessage();
+        }
       }
     } catch (e) {
-      console.error(e);
-     setError(e);
       showToastError(e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -242,7 +259,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
   const renderLocalImage = () => {
 
-    if ( asset.type?.slice(0,5) === 'video' ) {
+    if (asset.type?.slice(0, 5) === "video") {
       return <VideoPlayer
         video={{ uri: asset.uri }}
         videoWidth={1600}
@@ -258,8 +275,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
       return (
         <FastImage
           style={{
-            width: '100%',
-            height: heightImgOrVid
+            width: "100%",
+            height: heightImgOrVid,
           }}
           resizeMode={FastImage.resizeMode.contain}
           onLoad={(evt) => {
@@ -271,7 +288,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
           source={
             {
-              uri: asset.uri
+              uri: asset.uri,
             }
           }
         />
@@ -284,21 +301,21 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         backgroundColor: colorPallet.color_background_1,
       }]}>
       <StatusBar
-        barStyle={theme === 'light' ? "dark-content" : "light-content"}
+        barStyle={theme === "light" ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
       <AppBar
-        title={'Mang vui vẻ tới cho đời'}
+        title={"Mang vui vẻ tới cho đời"}
         leftIcon={IC_CLOSE}
         leftIconOnClick={() => {
-          NavigationRef.current?.goBack()
-          clearData()
+          NavigationRef.current?.goBack();
+          clearData();
         }}
         titleStyle={{
-          color: colorPallet.color_text_blue_1
+          color: colorPallet.color_text_blue_1,
         }}
         containerStyle={{
-          borderBottomColor: colorPallet.color_divider_3
+          borderBottomColor: colorPallet.color_divider_3,
         }}
       />
       <ScrollView
@@ -310,13 +327,13 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
       >
         <View
           style={{
-            flexDirection: 'row',
+            flexDirection: "row",
             paddingHorizontal: unit20,
           }}>
           <View
             style={{
-              flexGrow:1,
-              flexDirection: 'row',
+              flexGrow: 1,
+              flexDirection: "row",
             }}
           >
             <AppText
@@ -324,22 +341,22 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
               style={{
                 fontSize: unit14,
                 lineHeight: unit20,
-                color: colorPallet.color_text_blue_3
+                color: colorPallet.color_text_blue_3,
               }}
             >
-              {'Mô tả'}
+              {"Mô tả"}
             </AppText>
 
             {
-              (script.length && script.trim() !== "")?
+              (script.length && script.trim() !== "") ?
                 null
                 :
                 <AppText
                   fontType="bold"
                   style={{
-                    marginStart:unit4,color:AppColors.color_warning,
-                    fontSize:unit14,
-                    lineHeight:unit20,
+                    marginStart: unit4, color: AppColors.color_warning,
+                    fontSize: unit14,
+                    lineHeight: unit20,
                   }}
                 >
                   *
@@ -351,7 +368,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           <AppText
             style={{
               fontSize: unit14,
-              lineHeight: unit20
+              lineHeight: unit20,
             }}
           >
             {script.length}/320
@@ -359,7 +376,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         </View>
         <TextInput
           multiline={true}
-          placeholder={'Kể về niềm vui của bạn đi'}
+          placeholder={"Kể về niềm vui của bạn đi"}
           style={{
             marginTop: unit8,
             paddingBottom: unit12,
@@ -369,12 +386,12 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
             fontSize: unit16,
             lineHeight: unit22,
             color: colorPallet.color_text_gray_2,
-            height: script.length > 200 ? 'auto' : unit144,
+            height: script.length > 200 ? "auto" : unit144,
           }}
           placeholderTextColor={colorPallet.color_text_gray_2}
           maxLength={320}
           onChangeText={(text) => {
-            setScript(text)
+            setScript(text);
           }}
           value={script}
         />
@@ -386,7 +403,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           }}>
           <View
             style={{
-              flexDirection:'row'
+              flexDirection: "row",
             }}
           >
             <AppText
@@ -394,21 +411,21 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
               style={{
                 fontSize: unit14,
                 lineHeight: unit20,
-                color: colorPallet.color_text_blue_3
+                color: colorPallet.color_text_blue_3,
               }}
             > {`Media`}
             </AppText>
 
             {
-              asset.uri?
+              asset.uri ?
                 null
                 :
                 <AppText
                   fontType="bold"
                   style={{
-                    marginStart:unit4,color:AppColors.color_warning,
-                    fontSize:unit14,
-                    lineHeight:unit20,
+                    marginStart: unit4, color: AppColors.color_warning,
+                    fontSize: unit14,
+                    lineHeight: unit20,
                   }}
                 >
                   *
@@ -424,9 +441,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                 <PressView
                   onPress={() => setOpenModal(true)}
                   style={{
-                    width: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
                     marginVertical: unit8,
                   }}>
                   <Text
@@ -441,12 +458,12 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                 style={{
                   height: 300,
                   marginTop: unit10,
-                  backgroundColor: '#C3C8D6',
-                  alignItems:'center',
-                  justifyContent:'center'
+                  backgroundColor: "#C3C8D6",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
                 onPress={() => {
-                  setOpenModal(true)
+                  setOpenModal(true);
                 }}>
                 <Image
                   resizeMode="contain"
@@ -458,14 +475,14 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
               </PressView>
           }
           <AppButton
-            buttonTitle={'Đăng luôn cho nóng'}
+            buttonTitle={"Đăng luôn cho nóng"}
             style={{
               marginTop: unit30,
               marginBottom: unit25,
-              backgroundColor: isValid ? AppColors.color_primary : AppColors.color_opacity
+              backgroundColor: isValid ? AppColors.color_primary : AppColors.color_opacity,
             }}
-            onPress={ async ()=>{
-               await createSinglePost(script,asset);
+            onPress={async () => {
+              await createSinglePost(script, asset);
             }}
           />
 
@@ -481,7 +498,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         isLoading ? <AppLoading isOverlay color={AppColors.color_transparent_dark} /> : null
       }
     </SafeAreaView>
-  )
+  );
 };
 
 export default CreatePostScreen;
