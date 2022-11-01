@@ -173,15 +173,16 @@ PODS:
   - libwebp/mux (1.2.3):
     - libwebp/demux
   - libwebp/webp (1.2.3)
-  - lottie-ios (3.2.3)
+  - lottie-ios (3.4.0)
   - lottie-react-native (5.1.4):
-    - lottie-ios (~> 3.2.3)
+    - lottie-ios (~> 3.4.0)
     - React-Core
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
+  - NextLevelSessionExporter (0.4.6)
   - OpenSSL-Universal (1.1.180)
   - Permission-AppTrackingTransparency (3.6.1):
     - RNPermissions
@@ -422,11 +423,14 @@ PODS:
     - glog
   - react-native-cameraroll (5.0.4):
     - React-Core
+  - react-native-compressor (1.6.1):
+    - NextLevelSessionExporter
+    - React-Core
   - react-native-date-picker (4.2.5):
     - React-Core
   - react-native-image-picker (4.10.0):
     - React-Core
-  - react-native-pager-view (6.0.1):
+  - react-native-pager-view (6.0.2):
     - React-Core
   - react-native-safe-area-context (4.4.1):
     - RCT-Folly
@@ -510,7 +514,7 @@ PODS:
     - React-Core
   - RNCClipboard (1.11.1):
     - React-Core
-  - RNFastImage (8.6.1):
+  - RNFastImage (8.6.3):
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
@@ -641,6 +645,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
+  - react-native-compressor (from `../node_modules/react-native-compressor`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
@@ -697,6 +702,7 @@ SPEC REPOS:
     - libevent
     - libwebp
     - nanopb
+    - NextLevelSessionExporter
     - OpenSSL-Universal
     - PromisesObjC
     - SDWebImage
@@ -782,6 +788,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-cameraroll:
     :path: "../node_modules/@react-native-camera-roll/camera-roll"
+  react-native-compressor:
+    :path: "../node_modules/react-native-compressor"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
   react-native-image-picker:
@@ -873,9 +881,10 @@ SPEC CHECKSUMS:
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
-  lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
-  lottie-react-native: 94604847f4b2e82922fb5097e6d39ab1925edfc7
+  lottie-ios: 69495122151a378fdc7d1bb4c5930347e37baf1f
+  lottie-react-native: b702fab740cdb952a8e2354713d3beda63ff97b0
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  NextLevelSessionExporter: 4d8aa5e617f1c709724f2453efe5d4628480f65a
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   Permission-AppTrackingTransparency: 9eedbc3b5a2907b8cb2c971461754616eac1661d
   Permission-BluetoothPeripheral: 67708853584bb9208c76d36d0e0ea4eafb97ea5b
@@ -910,9 +919,10 @@ SPEC CHECKSUMS:
   React-jsinspector: f4775ea9118cbe1f72b834f0f842baa7a99508d8
   React-logger: a1f028f6d8639a3f364ef80419e5e862e1115250
   react-native-cameraroll: 38b40d9033e4077b6c603f92f95c6d05fa7907df
+  react-native-compressor: ebcf8bc36f8e44581a8f831583caee8a27e55a01
   react-native-date-picker: 55193347d8d0f40948f441ffd4e5db6f0a8fbe13
   react-native-image-picker: 4bc9ed38c8be255b515d8c88babbaf74973f91a8
-  react-native-pager-view: 3051346698a0ba0c4e13e40097cc11b00ee03cca
+  react-native-pager-view: 592421df0259bf7a7a4fe85b74c24f3f39905605
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   React-perflogger: 0afaf2f01a47fd0fc368a93bfbb5bd3b26db6e7f
@@ -930,9 +940,9 @@ SPEC CHECKSUMS:
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
   RNCClipboard: 2834e1c4af68697089cdd455ee4a4cdd198fa7dd
-  RNFastImage: 3207b9eb17c2425d574ca40db35185db6e324f4e
-  RNFBAnalytics: 51dead78037dad24388aaf4652bde6f464e6ce79
-  RNFBApp: 19b77166a07d45a1d36c41af77dd77127acb5a74
+  RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
+  RNFBAnalytics: 4e38343d06b7541807d52fe11727f71aa635ffbf
+  RNFBApp: 3976c7928aa054c4fdcd0d029dececa0b3397ee5
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
   RNLocalize: 0df7970cfc60389f00eb62fd7c097dc75af3fb4f
@@ -946,6 +956,6 @@ SPEC CHECKSUMS:
   Yoga: d6b6a80659aa3e91aaba01d0012e7edcbedcbecd
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 01d67647cd06c25986a6093b229cd7832e8a58d9
+PODFILE CHECKSUM: 3873d6c20213cee04c266deebccd8df74b8f8a80
 
 COCOAPODS: 1.11.3
