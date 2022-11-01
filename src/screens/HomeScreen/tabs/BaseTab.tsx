@@ -34,6 +34,7 @@ import LottieView from "lottie-react-native";
 import PopUp from "../../../components/PopUp/PopUp";
 import { sleep } from "../../../utils/Utils";
 import useAuth from "../../../hooks/useAuth";
+import { useScrollToTop } from "@react-navigation/native";
 
 interface BaseTabProps {
   type: PostType;
@@ -56,6 +57,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [isSaved, setIsSaved] = useState(false);
   const [extraData, setExtraData] = React.useState(new Date())
   const user = useAuth()?.authData?.user
+  const ref = React.useRef(null);
+
+  useScrollToTop(ref);
 
   const [currentUserId, setCurrentuserId] = useState(user?.id)
 
@@ -237,6 +241,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         }}
       >
         <FlatList
+        ref={ref}
           style={{
             paddingTop: unit24,
           }}
