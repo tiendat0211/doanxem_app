@@ -31,6 +31,7 @@ import AnotherUserScreen from "./src/screens/AnotherUserScreen/AnotherUserScreen
 import AppTracking from "./src/tracking/AppTracking";
 import {PostModel} from "./src/model/ApiModel/PostModel";
 import analytics from "@react-native-firebase/analytics";
+import ProfileScreen from "./src/screens/ProfileScreen/ProfileSceen";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -55,6 +56,9 @@ export type RootStackParamList = {
   DetailPostScreen: {
     postID: string,
     onUpdatePost: (post?: PostModel) => void,
+  },
+  ProfileScreen: {
+    goback: boolean,
   },
   DetailImage: {
     img_url?: string,
@@ -175,9 +179,16 @@ const App = () => {
               <RootStack.Screen
                 name={"CreatePostScreen"}
                 component={CreatePostScreen}/>
+                <RootStack.Screen
+                name={"ProfileScreen"}
+                component={ProfileScreen}/>
               <RootStack.Screen
                 name={"DetailPostScreen"}
-                component={DetailStatusScreen}/>
+                component={DetailStatusScreen}
+                // options={{
+                //   gestureEnabled :false
+                // }}
+                />
               <RootStack.Screen
                 name={"DetailImage"}
                 component={DetailImage}/>

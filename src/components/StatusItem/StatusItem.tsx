@@ -39,6 +39,7 @@ import FastImage from "react-native-fast-image";
 import PopUp from "../PopUp/PopUp";
 import AppColors from "../../styles/AppColors";
 import UserModel from "../../model/ApiModel/UserModel";
+import useAuth from "../../hooks/useAuth";
 
 interface StatusItemProps{
   post?: PostModel,
@@ -55,6 +56,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
+  const user = useAuth()?.authData.user
   // console.log('Detail_action: ', post?.user_action);
   // const [imgWidth, setImgWidth] = useState(0)
   // const [imgHeight, setImgHeight] = useState(0)
@@ -85,10 +87,17 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         {/* User of Status */}
         <PressView
           onPress={() => {
-            NavigationRef?.current?.navigate("AnotherUserScreen",{
-              user_uuid: post?.user?.user_uuid
-              }
-            )
+            if(post?.user_id == user?.id){
+              NavigationRef.current?.navigate('ProfileScreen',{
+                goback:true
+              })
+            } else{
+              NavigationRef?.current?.navigate("AnotherUserScreen",{
+                user_uuid: post?.user?.user_uuid
+                }
+              )
+            }
+            
           }}
           style={{
             flexDirection: 'row',

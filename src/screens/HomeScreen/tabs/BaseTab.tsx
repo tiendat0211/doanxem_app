@@ -45,6 +45,7 @@ import LottieView from "lottie-react-native";
 import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
 import PopUp from "../../../components/PopUp/PopUp";
 import { sleep } from "../../../utils/Utils";
+import useAuth from "../../../hooks/useAuth";
 
 interface BaseTabProps {
   type: PostType;
@@ -54,7 +55,7 @@ interface BaseTabProps {
 const BaseTab: React.FC<BaseTabProps> = (props) => {
   const { colorPallet, theme } = useTheme();
   const { language } = useLanguage();
-  const {type} = props;
+  const { type } = props;
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
   const [page, setPage] = useState(FIRST_PAGE);
   const [imgSrc, setImgSrc] = useState('');
@@ -66,7 +67,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   const [isSaveButton, setSaveButton] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [extraData, setExtraData] = React.useState(new Date())
+  const user = useAuth()?.authData?.user
 
+  const [currentUserId, setCurrentuserId] = useState(user?.id)
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -122,7 +125,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       setLoading(true);
       setPosts([]);
       setPage(FIRST_PAGE);
-      const res = await getListPost(FIRST_PAGE,type);
+      const res = await getListPost(FIRST_PAGE, type);
       if (ApiHelper.isResSuccess(res)) {
         const data = res?.data?.data;
         setPosts(data)
@@ -139,7 +142,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
 
   async function loadMore() {
     try {
-      const res = await getListPost(page +1, type) || [];
+      const res = await getListPost(page + 1, type) || [];
       if (ApiHelper.isResSuccess(res)) {
         const moreData = res?.data?.data;
         if (!moreData) {
@@ -149,7 +152,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           setPosts((prevList) => {
             return [...prevList, ...moreData];
           });
-          setPage(page+1);
+          setPage(page + 1);
           console.log(page)
         }
       } else {
@@ -162,7 +165,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   }
 
 
-  async function blockUserByID( id: number) {
+  async function blockUserByID(id: number) {
     try {
       const res = await blockUser(id);
 
@@ -190,7 +193,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       style={{
         height: unit60,
         alignSelf: "center",
-        alignItems:'center',
+        alignItems: 'center',
       }}
       source={LOADING_ANIM}
       autoPlay
@@ -198,9 +201,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     />;
   }
 
-  async function save(post_id: number, action: string){
+  async function save(post_id: number, action: string) {
     try {
-      const res = await savePost(post_id,action);
+      const res = await savePost(post_id, action);
       if (ApiHelper.isResSuccess(res)) {
         showToastMsg(res?.data?.message)
         await loadPosts();
@@ -225,7 +228,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     []
   );
 
-  function update(updatedPost: PostModel, index: number){
+  function update(updatedPost: PostModel, index: number) {
     let newPosts = posts;
     newPosts[index] = updatedPost;
     setPosts(newPosts);
@@ -233,9 +236,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   }
 
 
-  useEffect(() =>{
-    loadPosts().finally(()=>{})
-    },[]);
+  useEffect(() => {
+    loadPosts().finally(() => { })
+  }, []);
   return (
     <>
       <View
@@ -251,7 +254,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           data={posts}
           keyExtractor={(item, index) => String(item.id + "index" + index)}
           onEndReached={async () => {
-             await loadMore()
+            await loadMore()
           }}
           extraData={extraData}
           FooterLoadingIndicator={renderFooterView}
@@ -261,50 +264,51 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               key={index}
               post={item}
               onPressComment={() => {
-                NavigationRef.current?.navigate("DetailPostScreen",{
+                NavigationRef.current?.navigate("DetailPostScreen", {
                   postID: item?.post_uuid,
                   onUpdatePost: (updatedPost?: PostModel) => {
-                    if(!updatedPost) {
+                    if (!updatedPost) {
                       return;
                     }
-                    update(updatedPost,index);
+                    update(updatedPost, index);
                   }
                 });
               }}
               onPressImage={() => {
-                NavigationRef.current?.navigate("DetailPostScreen",{
+                NavigationRef.current?.navigate("DetailPostScreen", {
                   postID: item?.post_uuid,
                   onUpdatePost: (updatedPost?: PostModel) => {
-                    if(!updatedPost) {
+                    if (!updatedPost) {
                       return;
                     }
-                    update(updatedPost,index);
+                    update(updatedPost, index);
                   }
                 });
               }}
-              openBottomSheet={()=>{
+              openBottomSheet={() => {
+                setCurrentuserId(item?.user_id)
                 openBottomSheet();
                 setImgSrc(item?.image)
                 setBlockID(item?.user?.id)
               }}
-              onPressSave={()=>{
+              onPressSave={() => {
                 setOpen(true);
                 setSaveButton(true);
                 setPostID(item?.id);
                 setIsSaved(item?.isSaved);
               }}
-             />;
+            />;
           }}
-          onStartReached={async ()=>{}}
+          onStartReached={async () => { }}
           refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={async ()=>{
-              await loadPosts();
-            }}
-          />
-        }
-          />
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={async () => {
+                await loadPosts();
+              }}
+            />
+          }
+        />
 
       </View>
 
@@ -370,19 +374,23 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
             marginBottom: unit12,
           }}
         >
-          <SelectItem
-            title={"Chặn người dùng này"}
-            rightImageSource={IC_BLOCKUSER}
-            rightImageProps={{ tintColor: colorPallet.color_text_blue_3 }}
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16,
-            }}
-            onPress={async ()=>{
-             setOpen(true);
-             setSaveButton(false);
-            }}
-          />
+          {currentUserId !== user?.id &&
+            <SelectItem
+              title={"Chặn người dùng này"}
+              rightImageSource={IC_BLOCKUSER}
+              rightImageProps={{ tintColor: colorPallet.color_text_blue_3 }}
+              appTxtStyle={{
+                fontFamily: AppFonts.semiBold,
+                fontSize: unit16,
+              }}
+              onPress={async () => {
+                setOpen(true);
+                setSaveButton(false);
+              }}
+            />
+
+          }
+
         </View>
 
         <View
@@ -433,25 +441,25 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         isOpen ?
           <PopUp
             style={{
-              height: Dimensions.get("screen").height - unit150 ,
+              height: Dimensions.get("screen").height - unit150,
             }}
             mess={
               isSaveButton ?
-                  isSaved? 'Bạn có muốn bỏ lưu bài viết này?'
-                    : 'Bạn có muốn lưu bài viết này?'
+                isSaved ? 'Bạn có muốn bỏ lưu bài viết này?'
+                  : 'Bạn có muốn lưu bài viết này?'
                 : 'Bạn muốn chặn người dùng này?'
             }
             rightButtonTitle={'Đồng ý'}
-            rightButtonPress={async ()=> {
-              if (isSaveButton){
-                if (isSaved){
+            rightButtonPress={async () => {
+              if (isSaveButton) {
+                if (isSaved) {
                   setOpen(false);
-                  await save(postID,'unsave');
-                }else {
+                  await save(postID, 'unsave');
+                } else {
                   setOpen(false);
-                  await save(postID,'save');
+                  await save(postID, 'save');
                 }
-              }else {
+              } else {
                 setOpen(false);
                 closeBottomSheet();
                 await blockUserByID(blockID);
@@ -459,7 +467,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
 
             }}
             leftButtonTitle={'Từ chối'}
-            leftButtonPress={()=>{
+            leftButtonPress={() => {
               setOpen(false);
             }}
           />

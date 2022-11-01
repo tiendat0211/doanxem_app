@@ -240,20 +240,25 @@ const DetailPostScreen: React.FC = () => {
   }, []);
 
 
-  function handleBackButtonClick() {
-    NavigationRef?.current?.goBack();
-    // call when go back
-    onUpdatePost(postDetail);
-    AppPusher.unsubscribe(`post.${postID}`);
-    return true;
-  }
+  // function handleBackButtonClick() {
+    
+  //   NavigationRef?.current?.goBack();
+  //   // call when go back
+  //   // onUpdatePost(postDetail);
+  //   // AppPusher.unsubscribe(`post.${postID}`);
+  //   return true;
+  // }
+
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+  //   return () => {
+  //     BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+  //   };
+  // }, [postDetail]);
 
   useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
-    };
-  }, [postDetail]);
+    onUpdatePost(postDetail);
+  }, [postDetail])
 
 
   return (
@@ -275,7 +280,9 @@ const DetailPostScreen: React.FC = () => {
           <AppBar
             title={language?.detailScreen}
             leftIcon={IC_ARROWLEFT}
-            leftIconOnClick={handleBackButtonClick}
+            leftIconOnClick={()=>{
+              NavigationRef.current?.goBack()
+            }}
             titleStyle={{
               color: colorPallet.color_text_blue_1,
             }}

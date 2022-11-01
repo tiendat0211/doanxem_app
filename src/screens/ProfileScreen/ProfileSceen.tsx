@@ -13,11 +13,11 @@ import {
   unit32,
   unit48, unit56,
 } from "../../utils/appUnit";
-import {IC_CREATE, IC_DRAWER,} from "../../assets/path";
+import {IC_ARROWLEFT, IC_CREATE, IC_DRAWER,} from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { DrawerActions, NavigationContainer } from "@react-navigation/native";
+import { DrawerActions, NavigationContainer, RouteProp, useRoute } from "@react-navigation/native";
 import PressView from "../../components/PressView/PressView";
-import { NavigationRef } from "../../../App";
+import { NavigationRef, RootStackParamList } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import BottomSheet from "@gorhom/bottom-sheet";
 import ApprovedTab from "./ProfileTabs/ApprovedTab";
@@ -34,10 +34,12 @@ export type ProfileParamList = {
 };
 
 const Tab = createMaterialTopTabNavigator<ProfileParamList>();
+type ProfileScreenProps = RouteProp<RootStackParamList, "ProfileScreen">;
 
 
 const ProfileScreen: React.FC = () => {
   const { colorPallet , theme} = useTheme()
+  const route = useRoute<ProfileScreenProps>()
   const { language } = useLanguage();
   const {authData} = useAuth()
   const user = authData.user
@@ -71,9 +73,13 @@ const ProfileScreen: React.FC = () => {
       />
       <AppBar
         title={language?.User_profile}
-        leftIcon={IC_DRAWER}
+        leftIcon={route?.params?.goback ? IC_ARROWLEFT  : IC_DRAWER}
         leftIconOnClick={() => {
-          NavigationRef.current?.dispatch(DrawerActions.openDrawer)
+          if(route?.params?.goback){
+            NavigationRef.current?.goBack()
+          } else{
+            NavigationRef.current?.dispatch(DrawerActions.openDrawer)
+          }
         }}
         titleStyle={{
           color: colorPallet.color_text_blue_1
