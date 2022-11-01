@@ -4,7 +4,6 @@ import {
   Image,
   PermissionsAndroid,
   Platform,
-  SafeAreaView,
   StatusBar,
   Text,
   TextInput,
@@ -14,28 +13,11 @@ import {
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { IC_CLOSE, IMG_NO_PICTURE } from "../../assets/path";
-import { useLanguage } from "../../hooks/useLanguage";
+import { IC_CLOSE } from "../../assets/path";
 import { NavigationRef } from "../../../App";
-import AppBar from "../../components/AppBar/AppBar";
-import { ScrollView } from "react-native-gesture-handler";
-import {
-  unit1,
-  unit10,
-  unit100,
-  unit12,
-  unit14,
-  unit144,
-  unit16,
-  unit20,
-  unit22,
-  unit25,
-  unit30,
-  unit4,
-  unit8,
-} from "../../utils/appUnit";
+import { unit10, unit100, unit12, unit14, unit16, unit20, unit4, unit5, unit8, unit80 } from "../../utils/appUnit";
 import AppText from "../../components/AppText/AppText";
-import { dimension, fontSize12 } from "../../styles/AppFonts";
+import { dimension, fontSize12, fontSize16, fontSize18 } from "../../styles/AppFonts";
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { showToastError, showToastErrorMessage, showToastMsg } from "../../utils/Toaster";
 import ModalFileSelect from "./components/ModalFileSelect";
@@ -45,8 +27,9 @@ import useScreenState from "../../hooks/useScreenState";
 import useAuth from "../../hooks/useAuth";
 import VideoPlayer from "react-native-video-player";
 import { createPost } from "../../network/AppAPI";
-import AppButton from "../../components/AppButton/AppButton";
 import AppLoading from "../../components/Loading/AppLoading";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AppBarV2 from "../../components/AppBar/AppBarV2";
 
 const options = {
   mediaType: "mixed",
@@ -58,17 +41,13 @@ const options = {
 };
 
 const widthWD = Dimensions.get("window").width;
-const heightWD = Dimensions.get("window").height;
 
 interface CreatePostScreenProps extends ViewProps {
-
   onApply?: () => void;
 }
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
-  const { onApply } = props;
   const { colorPallet, theme } = useTheme();
-  const { language } = useLanguage();
   const [script, setScript] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [heightImgOrVid, setHeightImgOrVid] = useState(300);
@@ -78,11 +57,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
     fileName: "",
   });
   const [isValid, setValid] = useState(false);
-  const { isLoading, setLoading, mounted, setError } = useScreenState();
+  const { isLoading, setLoading } = useScreenState();
 
   const clearData = () => {
-    setScript(""),
-      setAsset({});
+    setScript("");
+    setAsset({});
   };
 
   const getImageFromLib = async () => {
@@ -152,10 +131,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
         maxWidth: dimension.width,
         maxHeight: dimension.height,
       };
-      const res = await launchCamera(option, (cameraRes) => {
-
-      });
-
+      const res = await launchCamera(option);
       if (res.assets) {
         const img = res.assets[0];
         setHeightImgOrVid(img.height!);
@@ -217,48 +193,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
     }
   }
 
-  // async function createSinglePost (asset: Asset, title: string) {
-  //   if (asset.uri != null) {
-  //     setLoading(true)
-  //     RNFetchBlob.fetch(
-  //       "POST",
-  //       "https://doanxem.com/api/v1/posts/store",
-  //       {
-  //         Authorization: 'Bearer ' +  token || '123',
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //       [
-  //         {
-  //           name:'title',
-  //           data: title
-  //         },
-  //         {
-  //           name: 'image',
-  //           filename: asset.fileName,
-  //           type: asset.type,
-  //           data: RNFetchBlob.wrap(asset.uri),
-  //         },
-  //       ]
-  //     )
-  //       .then(async (resp) => {
-  //         const resJson = await resp.json();
-  //         console.log({resJson})
-  //         if (resJson.status === 200) {
-  //             showToastMsg(resJson?.message)
-  //             NavigationRef?.current?.goBack();
-  //           } else {
-  //             showToastErrorMessage(resJson?.message);
-  //           }
-  //         setLoading(false);
-  //       })
-  //       .catch((err) => {
-  //        showToastError(err);
-  //       });
-  //   }
-  // }
-
   const renderLocalImage = () => {
-
     if (asset.type?.slice(0, 5) === "video") {
       return <VideoPlayer
         video={{ uri: asset.uri }}
@@ -281,11 +216,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
           resizeMode={FastImage.resizeMode.contain}
           onLoad={(evt) => {
             const { width, height } = evt.nativeEvent;
-
             const heightScaled = (height / width) * widthWD;
             setHeightImgOrVid(heightScaled);
           }}
-
           source={
             {
               uri: asset.uri,
@@ -296,208 +229,249 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
     }
   };
   return (
-    <SafeAreaView
-      style={[AppStyles.container, {
-        backgroundColor: colorPallet.color_background_1,
-      }]}>
+    <>
       <StatusBar
         barStyle={theme === "light" ? "dark-content" : "light-content"}
         backgroundColor={AppColors.color_transparent}
       />
-      <AppBar
-        title={"Mang vui vẻ tới cho đời"}
-        leftIcon={IC_CLOSE}
-        leftIconOnClick={() => {
-          NavigationRef.current?.goBack();
-          clearData();
-        }}
-        titleStyle={{
-          color: colorPallet.color_text_blue_1,
-        }}
-        containerStyle={{
-          borderBottomColor: colorPallet.color_divider_3,
-        }}
-      />
-      <ScrollView
-        style={{
-          paddingTop: unit12,
-          paddingBottom: unit20,
-          flex: 1,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            paddingHorizontal: unit20,
-          }}>
-          <View
-            style={{
-              flexGrow: 1,
-              flexDirection: "row",
-            }}
-          >
-            <AppText
-              fontType="bold"
-              style={{
-                fontSize: unit14,
-                lineHeight: unit20,
-                color: colorPallet.color_text_blue_3,
+      <View
+        style={[AppStyles.container, {
+          backgroundColor: colorPallet.color_background_1,
+        }]}>
+
+        <AppBarV2
+          title={"Tạo niềm vui"}
+          left={
+            <PressView
+              onPress={() => {
+                NavigationRef.current?.goBack();
               }}
             >
-              {"Mô tả"}
-            </AppText>
-
-            {
-              (script.length && script.trim() !== "") ?
-                null
-                :
-                <AppText
-                  fontType="bold"
-                  style={{
-                    marginStart: unit4, color: AppColors.color_warning,
-                    fontSize: unit14,
-                    lineHeight: unit20,
-                  }}
-                >
-                  *
-                </AppText>
-            }
-
-          </View>
-
-          <AppText
-            style={{
-              fontSize: unit14,
-              lineHeight: unit20,
-            }}
-          >
-            {script.length}/320
-          </AppText>
-        </View>
-        <TextInput
-          multiline={true}
-          placeholder={"Kể về niềm vui của bạn đi"}
-          style={{
-            marginTop: unit8,
-            paddingBottom: unit12,
-            paddingHorizontal: unit20,
-            borderBottomWidth: unit1,
-            borderBottomColor: colorPallet.color_divider_2,
-            fontSize: unit16,
-            lineHeight: unit22,
-            color: colorPallet.color_text_gray_2,
-            height: script.length > 200 ? "auto" : unit144,
+              <Image
+                source={IC_CLOSE}
+                style={[
+                  AppStyles.icon24,
+                  {
+                    tintColor: colorPallet.color_text_blue_1,
+                  },
+                ]}
+              />
+            </PressView>
+          }
+          right={
+            <PressView
+              onPress={() => createSinglePost(script, asset)}
+              style={[{
+                backgroundColor: isValid ? AppColors.color_primary : AppColors.color_opacity,
+                borderColor: AppColors.color_primary,
+                borderRadius: unit8,
+              }]}
+              disabled={!isValid}>
+              <AppText
+                fontType={"bold"}
+                style={[{
+                  textAlign: "center",
+                  fontSize: fontSize18,
+                  color: "white",
+                  paddingVertical: unit5,
+                  paddingHorizontal: unit10,
+                }]}>
+                {"Đăng"}
+              </AppText>
+            </PressView>
+          }
+          titleStyle={{
+            paddingVertical: 1,
+            color: colorPallet.color_text_gray_1,
           }}
-          placeholderTextColor={colorPallet.color_text_gray_2}
-          maxLength={320}
-          onChangeText={(text) => {
-            setScript(text);
+          containerStyle={{
+            borderBottomColor: colorPallet.color_divider_3,
           }}
-          value={script}
         />
 
-        <View
+        <KeyboardAwareScrollView
           style={{
-            marginTop: unit14,
-            paddingHorizontal: unit20,
+            flex: 1,
           }}>
           <View
             style={{
               flexDirection: "row",
-            }}
-          >
+              paddingHorizontal: unit20,
+              paddingVertical: unit10,
+            }}>
+            <View
+              style={{
+                flexGrow: 1,
+                flexDirection: "row",
+              }}
+            >
+              <AppText
+                fontType="bold"
+                style={{
+                  fontSize: unit14,
+                  lineHeight: unit20,
+                  color: colorPallet.color_text_blue_3,
+                }}
+              >
+                {"Mô tả"}
+              </AppText>
+
+              {
+                (script.length && script.trim() !== "") ?
+                  null
+                  :
+                  <AppText
+                    fontType="bold"
+                    style={{
+                      marginStart: unit4, color: AppColors.color_warning,
+                      fontSize: unit14,
+                      lineHeight: unit20,
+                    }}
+                  >
+                    *
+                  </AppText>
+              }
+
+            </View>
+
             <AppText
-              fontType="bold"
               style={{
                 fontSize: unit14,
                 lineHeight: unit20,
-                color: colorPallet.color_text_blue_3,
+                color: colorPallet.color_text_gray_1,
               }}
-            > {`Media`}
+            >
+              {script.length}/320
             </AppText>
+          </View>
+
+          <TextInput
+            multiline={true}
+            placeholder={"Kể về niềm vui của bạn đi"}
+            style={{
+              fontSize: fontSize16,
+              color: colorPallet.color_text_gray_2,
+              marginBottom: unit20,
+              paddingHorizontal: unit16,
+              height: script?.length < 100 ? unit100 : "auto",
+            }}
+            placeholderTextColor={colorPallet.color_text_gray_2}
+            maxLength={320}
+            onChangeText={setScript}
+            value={script}
+          />
+
+          <View style={{
+            width: widthWD,
+            height: 1,
+            backgroundColor: colorPallet.color_divider_1,
+            marginVertical: unit16,
+          }} />
+
+          <View
+            style={{
+              marginTop: unit14,
+            }}>
+            <View
+              style={{
+                flexDirection: "row",
+              }}>
+              <AppText
+                fontType="bold"
+                style={{
+                  fontSize: unit14,
+                  lineHeight: unit20,
+                  color: colorPallet.color_text_blue_3,
+                  paddingHorizontal: unit20,
+                  marginBottom: unit12,
+                }}
+              > {`Media`}
+              </AppText>
+
+              {
+                asset.uri ?
+                  null
+                  :
+                  <AppText
+                    fontType="bold"
+                    style={{
+                      marginStart: unit4, color: AppColors.color_warning,
+                      fontSize: unit14,
+                      lineHeight: unit20,
+                    }}
+                  >
+                    *
+                  </AppText>
+              }
+
+            </View>
 
             {
               asset.uri ?
-                null
+                <>
+                  {renderLocalImage()}
+                  <PressView
+                    onPress={() => setOpenModal(true)}
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginVertical: unit8,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: fontSize12,
+                        color: AppColors.color_primary,
+                      }}>{`Bạn có thể tải lại phương tiện`}</Text>
+                  </PressView>
+                </>
                 :
-                <AppText
-                  fontType="bold"
-                  style={{
-                    marginStart: unit4, color: AppColors.color_warning,
-                    fontSize: unit14,
-                    lineHeight: unit20,
-                  }}
-                >
-                  *
-                </AppText>
-            }
-
-          </View>
-
-          {
-            asset.uri ?
-              <>
-                {renderLocalImage()}
                 <PressView
-                  onPress={() => setOpenModal(true)}
                   style={{
-                    width: "100%",
+                    marginTop: unit10,
                     alignItems: "center",
                     justifyContent: "center",
-                    marginVertical: unit8,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: fontSize12,
-                      color: AppColors.color_primary,
-                    }}>{`Bạn có thể tải lại phương tiện`}</Text>
-                </PressView>
-              </>
-              :
-              <PressView
-                style={{
-                  height: 300,
-                  marginTop: unit10,
-                  backgroundColor: "#C3C8D6",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onPress={() => {
-                  setOpenModal(true);
-                }}>
-                <Image
-                  resizeMode="contain"
-                  style={{
-                    width: unit100,
-                    height: unit100,
+                    borderRadius: unit8,
+                    margin: unit16,
+                    paddingVertical: unit80,
+                    borderWidth: 1,
+                    borderStyle: "dashed",
+                    borderColor: colorPallet.color_divider_1,
                   }}
-                  source={IMG_NO_PICTURE} />
-              </PressView>
-          }
-          <AppButton
-            buttonTitle={"Đăng luôn cho nóng"}
-            style={{
-              marginTop: unit30,
-              marginBottom: unit25,
-              backgroundColor: isValid ? AppColors.color_primary : AppColors.color_opacity,
-            }}
-            onPress={async () => {
-              await createSinglePost(script, asset);
-            }}
-          />
+                  onPress={() => {
+                    setOpenModal(true);
+                  }}>
+                  <View>
 
-        </View>
-        <ModalFileSelect
-          onChooseGallery={getImageFromLib}
-          onChooseTakePicture={takePicture}
-          isVisible={openModal}
-          setIsvisible={setOpenModal}
-        />
-      </ScrollView>
+                    <AppText
+                      fontType={"semiBold"}
+                      style={{
+                        color: colorPallet.color_text_gray_2,
+                      }}>{"Thêm ảnh/video"}</AppText>
+
+                  </View>
+                </PressView>
+            }
+          </View>
+
+          <View style={{
+            height: 100,
+          }} />
+
+
+        </KeyboardAwareScrollView>
+
+
+      </View>
       {
         isLoading ? <AppLoading isOverlay color={AppColors.color_transparent_dark} /> : null
       }
-    </SafeAreaView>
+      <ModalFileSelect
+        onChooseGallery={getImageFromLib}
+        onChooseTakePicture={takePicture}
+        isVisible={openModal}
+        setIsvisible={setOpenModal}
+      />
+    </>
   );
 };
 

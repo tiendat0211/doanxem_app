@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   TextInput,
@@ -36,6 +35,7 @@ import PopUp from "../../components/PopUp/PopUp";
 import AppTracking from "../../tracking/AppTracking";
 import { AppPusher } from "../../utils/AppConfig";
 import { PusherCommment } from "../../model/ApiModel/PusherCommment";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 type DetailStatusScreenProps = RouteProp<RootStackParamList, "DetailPostScreen">;
@@ -47,7 +47,7 @@ const DetailPostScreen: React.FC = () => {
   const { language } = useLanguage();
   const [listComment, setListComment] = useState<CommentModel[]>([]);
   const [userComment, setUserComment] = useState("");
-  const { isLoading, setLoading, error, setError, mounted } = useScreenState();
+  const { isLoading, setLoading } = useScreenState();
   const [postDetail, setPostDetail] = useState<PostModel>();
   const scrollViewRef = useRef<ScrollView>(null);
   const [isOpen, setOpen] = useState(false);
@@ -65,10 +65,12 @@ const DetailPostScreen: React.FC = () => {
       if (ApiHelper.isResSuccess(res)) {
         setPostDetail(res?.data?.data);
         setTotalComment(res?.data?.data.total_comments);
+      } else {
+        showToastErrorMessage(res.data.message);
       }
-      setError(undefined);
     } catch (e) {
-      setError(e);
+      console.error(e);
+      showToastErrorMessage();
     } finally {
       setLoading(false);
     }
@@ -79,10 +81,12 @@ const DetailPostScreen: React.FC = () => {
       const res = await getListComment(post_uuid);
       if (ApiHelper.isResSuccess(res)) {
         setListComment(res?.data?.data);
+      } else {
+        showToastErrorMessage(res.data.message);
       }
-      setError(undefined);
     } catch (e) {
-      setError(e);
+      console.error(e);
+      showToastErrorMessage();
     } finally {
     }
   }
@@ -159,7 +163,6 @@ const DetailPostScreen: React.FC = () => {
         });
       }
     } catch (e) {
-      setError(e);
       setListComment(prev => {
         return prev.filter((item) => {
           return item.id !== now.getTime();
@@ -177,7 +180,7 @@ const DetailPostScreen: React.FC = () => {
         showToastErrorMessage(res?.data.message);
       }
     } catch (e) {
-      setError(e);
+      showToastErrorMessage();
     }
   }
 
@@ -191,7 +194,7 @@ const DetailPostScreen: React.FC = () => {
         showToastErrorMessage(res.data.message);
       }
     } catch (e) {
-      setError(e);
+      showToastErrorMessage();
     } finally {
     }
   }
@@ -255,6 +258,7 @@ const DetailPostScreen: React.FC = () => {
     };
   }, [postDetail]);
 
+  const { bottom } = useSafeAreaInsets();
 
   return (
     <>
@@ -266,8 +270,11 @@ const DetailPostScreen: React.FC = () => {
         behavior={Platform.OS == "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 0}
       >
-        <SafeAreaView
-          style={[AppStyles.container, { backgroundColor: colorPallet.color_background_1 }]}>
+        <View
+          style={[AppStyles.container, {
+            backgroundColor: colorPallet.color_background_1,
+            paddingBottom: bottom,
+          }]}>
           <StatusBar
             barStyle={theme === "light" ? "dark-content" : "light-content"}
             backgroundColor={AppColors.color_transparent}
@@ -390,7 +397,7 @@ const DetailPostScreen: React.FC = () => {
             }}
           />
 
-        </SafeAreaView>
+        </View>
         {
           isLoading ? <AppLoading isOverlay /> : null
         }

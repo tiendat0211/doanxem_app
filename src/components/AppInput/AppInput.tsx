@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import {
   Image,
-  Keyboard,
+  Keyboard, Platform,
   TextInput,
-  View
+  View,
 } from "react-native";
 import AppColors from "../../styles/AppColors";
 import { AppFonts, dimension, fontSize16, fontSize18 } from "../../styles/AppFonts";
@@ -113,7 +113,7 @@ const AppInput: React.FC<AppInput> = (props) => {
             color: colorPallet.color_text_gray_1,
             flexGrow:1,
             width: dimension.width - unit200,
-            paddingVertical: unit5
+            paddingVertical: unit5,
           }}
           numberOfLines={2}
           placeholder={language?.placeholder_input}
@@ -131,19 +131,6 @@ const AppInput: React.FC<AppInput> = (props) => {
             onFocus();
           }}
         />
-
-        {/*<PressView*/}
-        {/*  onPress={onPressMedia}*/}
-        {/*>*/}
-        {/*  <Image*/}
-        {/*    source={IC_MEDIA}*/}
-        {/*    style={{*/}
-        {/*      width: unit24,*/}
-        {/*      height: unit24,*/}
-        {/*      marginRight: unit14*/}
-        {/*    }}*/}
-        {/*  />*/}
-        {/*</PressView>*/}
 
         <PressView
           onPress={onPressSend}

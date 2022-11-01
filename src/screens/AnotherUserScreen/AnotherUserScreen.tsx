@@ -3,7 +3,7 @@ import { Platform, RefreshControl, StatusBar, View } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { unit12, unit16, unit20, unit24 } from "../../utils/appUnit";
+import { unit20, unit24 } from "../../utils/appUnit";
 import { IC_ARROWLEFT } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -88,8 +88,7 @@ const AnotherUserScreen: React.FC = () => {
   return (
     <View
       style={[AppStyles.container, {
-        paddingTop: Platform.OS === "ios" ? top : undefined,
-        backgroundColor: colorPallet.color_background_1
+        backgroundColor: colorPallet.color_background_1,
       }]}>
       <StatusBar
         barStyle={theme === "light" ? "dark-content" : "light-content"}
@@ -106,6 +105,7 @@ const AnotherUserScreen: React.FC = () => {
         }}
         containerStyle={{
           borderBottomColor: colorPallet.color_divider_3,
+          height: 100,
           // shadowColor: AppColors.color_primary,
           // shadowOffset: {
           //   width: 0,
@@ -145,6 +145,9 @@ const AnotherUserScreen: React.FC = () => {
 
       <BottomSheet
         ref={bottomSheetRef}
+        style={{
+          backgroundColor: "red",
+        }}
         handleComponent={renderCustomHandle}
         index={0}
         snapPoints={snapPointsVertical}
@@ -159,8 +162,6 @@ const AnotherUserScreen: React.FC = () => {
             flex: 1,
             paddingTop: unit20,
             paddingHorizontal: unit20,
-            borderTopColor: 'red',
-            borderTopWidth: 1,
           }}
         >
           <BottomSheetFlatList

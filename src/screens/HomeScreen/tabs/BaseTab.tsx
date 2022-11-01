@@ -1,16 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Alert,
-  Animated,
-  ListRenderItem,
-  RefreshControl,
-  Text,
-  View,
-  Image,
-  Dimensions,
-  Platform,
-  StatusBar, BackHandler, FlatList,
-} from "react-native";
+import { Dimensions, FlatList, RefreshControl, Text, View } from "react-native";
 import AppColors from "../../../styles/AppColors";
 import { useTheme } from "../../../hooks/useTheme";
 import { useLanguage } from "../../../hooks/useLanguage";
@@ -18,14 +7,14 @@ import PressView from "../../../components/PressView/PressView";
 import {
   unit1,
   unit10,
-  unit100,
-  unit12, unit15, unit150,
+  unit12,
+  unit150,
   unit16,
   unit17,
   unit20,
-  unit24, unit250,
+  unit24,
   unit400,
-  unit50, unit60,
+  unit60,
 } from "../../../utils/appUnit";
 import { NavigationRef } from "../../../../App";
 import { IC_BLOCKUSER, IC_DOWNLOAD, IC_HIDE, IC_WARNING, LOADING_ANIM } from "../../../assets/path";
@@ -42,9 +31,7 @@ import ApiHelper from "../../../utils/ApiHelper";
 import { showToastErrorMessage, showToastMsg } from "../../../utils/Toaster";
 import Snackbar from "react-native-snackbar";
 import LottieView from "lottie-react-native";
-import { BidirectionalFlatList } from "../../../components/InfiniteFlatList/BidirectionalFlatList";
 import PopUp from "../../../components/PopUp/PopUp";
-import { sleep } from "../../../utils/Utils";
 
 interface BaseTabProps {
   type: PostType;
@@ -54,18 +41,18 @@ interface BaseTabProps {
 const BaseTab: React.FC<BaseTabProps> = (props) => {
   const { colorPallet, theme } = useTheme();
   const { language } = useLanguage();
-  const {type} = props;
+  const { type } = props;
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
   const [page, setPage] = useState(FIRST_PAGE);
-  const [imgSrc, setImgSrc] = useState('');
-  const [posts, setPosts] = useState<PostModel[]>([])
-  const [blockID, setBlockID] = useState(0)
+  const [imgSrc, setImgSrc] = useState("");
+  const [posts, setPosts] = useState<PostModel[]>([]);
+  const [blockID, setBlockID] = useState(0);
   const [isHasMore, setHasMore] = useState(true);
   const [postID, setPostID] = useState(0);
   const [isOpen, setOpen] = useState(false);
   const [isSaveButton, setSaveButton] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [extraData, setExtraData] = React.useState(new Date())
+  const [extraData, setExtraData] = React.useState(new Date());
 
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -122,10 +109,10 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       setLoading(true);
       setPosts([]);
       setPage(FIRST_PAGE);
-      const res = await getListPost(FIRST_PAGE,type);
+      const res = await getListPost(FIRST_PAGE, type);
       if (ApiHelper.isResSuccess(res)) {
         const data = res?.data?.data;
-        setPosts(data)
+        setPosts(data);
       } else {
         showToastErrorMessage(res.data.message);
       }
@@ -139,7 +126,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
 
   async function loadMore() {
     try {
-      const res = await getListPost(page +1, type) || [];
+      const res = await getListPost(page + 1, type) || [];
       if (ApiHelper.isResSuccess(res)) {
         const moreData = res?.data?.data;
         if (!moreData) {
@@ -149,8 +136,8 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           setPosts((prevList) => {
             return [...prevList, ...moreData];
           });
-          setPage(page+1);
-          console.log(page)
+          setPage(page + 1);
+          console.log(page);
         }
       } else {
         showToastErrorMessage(res.data.message);
@@ -162,7 +149,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   }
 
 
-  async function blockUserByID( id: number) {
+  async function blockUserByID(id: number) {
     try {
       const res = await blockUser(id);
 
@@ -190,7 +177,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       style={{
         height: unit60,
         alignSelf: "center",
-        alignItems:'center',
+        alignItems: "center",
       }}
       source={LOADING_ANIM}
       autoPlay
@@ -198,11 +185,11 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
     />;
   }
 
-  async function save(post_id: number, action: string){
+  async function save(post_id: number, action: string) {
     try {
-      const res = await savePost(post_id,action);
+      const res = await savePost(post_id, action);
       if (ApiHelper.isResSuccess(res)) {
-        showToastMsg(res?.data?.message)
+        showToastMsg(res?.data?.message);
         await loadPosts();
       } else {
         showToastErrorMessage(res.data.message);
@@ -222,10 +209,10 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         appearsOnIndex={0}
       />
     ),
-    []
+    [],
   );
 
-  function update(updatedPost: PostModel, index: number){
+  function update(updatedPost: PostModel, index: number) {
     let newPosts = posts;
     newPosts[index] = updatedPost;
     setPosts(newPosts);
@@ -233,9 +220,10 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   }
 
 
-  useEffect(() =>{
-    loadPosts().finally(()=>{})
-    },[]);
+  useEffect(() => {
+    loadPosts().finally(() => {
+    });
+  }, []);
   return (
     <>
       <View
@@ -244,67 +232,67 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           flex: 1,
         }}
       >
-        <BidirectionalFlatList
+        <FlatList
           style={{
             paddingTop: unit24,
           }}
           data={posts}
           keyExtractor={(item, index) => String(item.id + "index" + index)}
           onEndReached={async () => {
-             await loadMore()
+            await loadMore();
           }}
           extraData={extraData}
-          FooterLoadingIndicator={renderFooterView}
-          onEndReachedThreshold={0.5}
+          //FooterLoadingIndicator={renderFooterView}
+          onEndReachedThreshold={1}
           renderItem={({ item, index }) => {
             return <StatusItem
               key={index}
               post={item}
               onPressComment={() => {
-                NavigationRef.current?.navigate("DetailPostScreen",{
+                NavigationRef.current?.navigate("DetailPostScreen", {
                   postID: item?.post_uuid,
                   onUpdatePost: (updatedPost?: PostModel) => {
-                    if(!updatedPost) {
+                    if (!updatedPost) {
                       return;
                     }
-                    update(updatedPost,index);
-                  }
+                    update(updatedPost, index);
+                  },
                 });
               }}
               onPressImage={() => {
-                NavigationRef.current?.navigate("DetailPostScreen",{
+                NavigationRef.current?.navigate("DetailPostScreen", {
                   postID: item?.post_uuid,
                   onUpdatePost: (updatedPost?: PostModel) => {
-                    if(!updatedPost) {
+                    if (!updatedPost) {
                       return;
                     }
-                    update(updatedPost,index);
-                  }
+                    update(updatedPost, index);
+                  },
                 });
               }}
-              openBottomSheet={()=>{
+              openBottomSheet={() => {
                 openBottomSheet();
-                setImgSrc(item?.image)
-                setBlockID(item?.user?.id)
+                setImgSrc(item?.image);
+                setBlockID(item?.user?.id);
               }}
-              onPressSave={()=>{
+              onPressSave={() => {
                 setOpen(true);
                 setSaveButton(true);
                 setPostID(item?.id);
                 setIsSaved(item?.isSaved);
               }}
-             />;
+            />;
           }}
-          onStartReached={async ()=>{}}
+          //onStartReached={async ()=>{}}
           refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={async ()=>{
-              await loadPosts();
-            }}
-          />
-        }
-          />
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={async () => {
+                await loadPosts();
+              }}
+            />
+          }
+        />
 
       </View>
 
@@ -337,7 +325,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
             }}
             onPress={() => {
               downloadImage(imgSrc);
-              closeBottomSheet()
+              closeBottomSheet();
             }}
           />
         </View>
@@ -378,9 +366,9 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
               fontFamily: AppFonts.semiBold,
               fontSize: unit16,
             }}
-            onPress={async ()=>{
-             setOpen(true);
-             setSaveButton(false);
+            onPress={async () => {
+              setOpen(true);
+              setSaveButton(false);
             }}
           />
         </View>
@@ -433,33 +421,33 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         isOpen ?
           <PopUp
             style={{
-              height: Dimensions.get("screen").height - unit150 ,
+              height: Dimensions.get("screen").height - unit150,
             }}
             mess={
               isSaveButton ?
-                  isSaved? 'Bạn có muốn bỏ lưu bài viết này?'
-                    : 'Bạn có muốn lưu bài viết này?'
-                : 'Bạn muốn chặn người dùng này?'
+                isSaved ? "Bạn có muốn bỏ lưu bài viết này?"
+                  : "Bạn có muốn lưu bài viết này?"
+                : "Bạn muốn chặn người dùng này?"
             }
-            rightButtonTitle={'Đồng ý'}
-            rightButtonPress={async ()=> {
-              if (isSaveButton){
-                if (isSaved){
+            rightButtonTitle={"Đồng ý"}
+            rightButtonPress={async () => {
+              if (isSaveButton) {
+                if (isSaved) {
                   setOpen(false);
-                  await save(postID,'unsave');
-                }else {
+                  await save(postID, "unsave");
+                } else {
                   setOpen(false);
-                  await save(postID,'save');
+                  await save(postID, "save");
                 }
-              }else {
+              } else {
                 setOpen(false);
                 closeBottomSheet();
                 await blockUserByID(blockID);
               }
 
             }}
-            leftButtonTitle={'Từ chối'}
-            leftButtonPress={()=>{
+            leftButtonTitle={"Từ chối"}
+            leftButtonPress={() => {
               setOpen(false);
             }}
           />
