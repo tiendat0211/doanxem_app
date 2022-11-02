@@ -20,6 +20,7 @@ import PressView from "../PressView/PressView";
 import {NavigationRef} from "../../../App";;
 import useAuth from "../../hooks/useAuth";
 import {ReplyModel} from "../../model/ApiModel/ReplyModel";
+import {StackActions} from "@react-navigation/native";
 
 
 
@@ -50,9 +51,15 @@ const ReplyItem: React.FC<ReplyItemProps> = (props) => {
       >
         <PressView
           onPress={() =>{
-            NavigationRef?.current?.navigate('AnotherUserScreen',{
-              user_uuid:  reply?.user?.user_uuid
-            })
+            if(reply?.user_id === user?.id){
+              NavigationRef.current?.navigate('ProfileScreen',{
+                goback:true
+              })
+            } else{
+              NavigationRef?.current?.dispatch(StackActions.push('AnotherUserScreen',{
+                user_uuid:  reply?.user?.user_uuid
+              }))
+            }
           }
           }
         >
@@ -76,9 +83,15 @@ const ReplyItem: React.FC<ReplyItemProps> = (props) => {
         >
           <PressView
             onPress={() =>{
-              NavigationRef?.current?.navigate('AnotherUserScreen',{
-                user_uuid:  reply?.user?.user_uuid
-              })
+              if(reply?.user_id === user?.id){
+                NavigationRef.current?.navigate('ProfileScreen',{
+                  goback:true
+                })
+              } else{
+                NavigationRef?.current?.dispatch(StackActions.push('AnotherUserScreen',{
+                  user_uuid:  reply?.user?.user_uuid
+                }))
+              }
             }
             }
             style={{

@@ -32,6 +32,7 @@ import AppTracking from "./src/tracking/AppTracking";
 import { PostModel } from "./src/model/ApiModel/PostModel";
 import analytics from "@react-native-firebase/analytics";
 import ProfileScreen from "./src/screens/ProfileScreen/ProfileSceen";
+import AppStateTrackingWrapper from "./src/tracking/AppStateTrackingWrapper";
 
 export type RootStackParamList = {
   SplashScreen: undefined,
@@ -110,7 +111,8 @@ const App = () => {
   setAccessToken(authData.token);
   const routeNameRef = React.useRef<string>();
 
-  return <SafeAreaProvider
+  return <AppStateTrackingWrapper>
+  <SafeAreaProvider
     initialMetrics={initialWindowMetrics}>
     <StatusBar
       translucent
@@ -237,7 +239,8 @@ const App = () => {
         }
       </RootStack.Navigator>
     </NavigationContainer>
-  </SafeAreaProvider>;
+  </SafeAreaProvider>
+  </AppStateTrackingWrapper>;
 };
 
 

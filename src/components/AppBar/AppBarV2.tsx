@@ -1,9 +1,13 @@
 import React from "react";
-import { Platform, StatusBar, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
+import {Image, Platform, Pressable, StatusBar, StyleProp, StyleSheet, TextStyle, View, ViewStyle} from "react-native";
 import { unit1, unit10, unit16, unit18, unit20, unit24 } from "../../utils/appUnit";
 import { useTheme } from "../../hooks/useTheme";
 import AppText from "../AppText/AppText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {NavigationRef} from "../../../App";
+import {IC_CLOSE} from "../../assets/path";
+import AppStyles from "../../styles/AppStyles";
+import PressView from "../PressView/PressView";
 
 type AppBarProps = {
   title: string,
@@ -41,10 +45,9 @@ const AppBarV2: React.FC<AppBarProps> = (
 
 
     <View style={{
-
       flex: 1,
-    }
-    } />
+    }}
+    />
 
     <AppText
       fontType={"bold"}
@@ -52,8 +55,8 @@ const AppBarV2: React.FC<AppBarProps> = (
         textAlign: "center",
         position: "absolute",
         top: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : top) + unit10,
-        left: 0,
-        right: 0,
+        left: 100,
+        right: 100,
       }]}
     >{title}
     </AppText>
@@ -74,9 +77,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: unit20,
-    flexGrow: 1,
     fontWeight: "500",
-    paddingHorizontal: unit10,
   },
   leftIcon: {
     width: unit24,

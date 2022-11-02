@@ -93,7 +93,7 @@ const AppTopTabBar: React.FC<AppTopTabBarProps> = (props) => {
             <AppText
               fontType={"bold"}
               style={{
-                color: focus ? AppColors.color_primary : colorPallet.color_text_blue_1,
+                color: focus ? AppColors.color_primary : colorPallet.color_text_blue_3,
                 fontSize: fontSize18,
                 marginBottom: unit4,
                 marginTop: unit10,

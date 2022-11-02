@@ -56,7 +56,7 @@ import {
 import ModalFileSelect from "../CreatePostScreen/components/ModalFileSelect";
 import {Asset, CameraOptions, launchCamera, launchImageLibrary} from "react-native-image-picker";
 import {showToastError, showToastErrorMessage, showToastMsg} from "../../utils/Toaster";
-import {createPost, updateProfile} from "../../network/AppAPI";
+import {createPost, updateName, updateProfile} from "../../network/AppAPI";
 import useScreenState from "../../hooks/useScreenState";
 import AppLoading from "../../components/Loading/AppLoading";
 
@@ -125,14 +125,14 @@ const DetailProfileScreen: React.FC = () => {
   },[emailValid ,nameValid])
 
   async function update( name: string, avatar: Asset ){
-
     try {
       setLoading(true);
-      const res = await updateProfile( avatar, name, token||'');
+      const res = avatar.fileName? await updateProfile( avatar, name, token||'') : await updateName( name, token||'');
       const resJson = await res.json()
       if (resJson.status === 200) {
         showToastMsg(resJson?.message)
         updateUser(resJson?.data);
+        setIsChange(false)
       } else {
         showToastErrorMessage(resJson?.message);
       }

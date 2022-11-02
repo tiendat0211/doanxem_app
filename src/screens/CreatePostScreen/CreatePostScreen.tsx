@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
-  Image,
+  Image, Keyboard,
   PermissionsAndroid,
   Platform,
   StatusBar,
@@ -13,9 +13,22 @@ import {
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { IC_CLOSE } from "../../assets/path";
+import {IC_CLOSE, IC_NO_IMAGE} from "../../assets/path";
 import { NavigationRef } from "../../../App";
-import { unit10, unit100, unit12, unit14, unit16, unit20, unit4, unit5, unit8, unit80 } from "../../utils/appUnit";
+import {
+  unit1,
+  unit10,
+  unit100,
+  unit12,
+  unit14,
+  unit16,
+  unit20,
+  unit32,
+  unit4,
+  unit5, unit6,
+  unit8,
+  unit80
+} from "../../utils/appUnit";
 import AppText from "../../components/AppText/AppText";
 import { dimension, fontSize12, fontSize16, fontSize18 } from "../../styles/AppFonts";
 import { Asset, CameraOptions, launchCamera, launchImageLibrary } from "react-native-image-picker";
@@ -163,6 +176,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
   async function createSinglePost(title: string, img: Asset) {
     try {
+      Keyboard.dismiss();
       setLoading(true);
       const res = await createPost(token || "", title, img);
       switch (res.status) {
@@ -198,10 +212,9 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
       return <VideoPlayer
         video={{ uri: asset.uri }}
         videoWidth={1600}
-        videoHeight={900}
+        videoHeight={1600}
         style={{
           marginTop: unit12,
-          backgroundColor: AppColors.color_transparent_dark,
         }}
         showDuration={true}
         defaultMuted={true}
@@ -310,7 +323,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                 style={{
                   fontSize: unit14,
                   lineHeight: unit20,
-                  color: colorPallet.color_text_blue_3,
+                  color: colorPallet.color_text_blue_1,
                 }}
               >
                 {"Mô tả"}
@@ -363,8 +376,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
 
           <View style={{
             width: widthWD,
-            height: 1,
-            backgroundColor: colorPallet.color_divider_1,
+            height: unit1,
+            backgroundColor: colorPallet.color_divider_2,
             marginVertical: unit16,
           }} />
 
@@ -381,7 +394,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                 style={{
                   fontSize: unit14,
                   lineHeight: unit20,
-                  color: colorPallet.color_text_blue_3,
+                  color: colorPallet.color_text_blue_1,
                   paddingLeft: unit20,
                   marginBottom: unit12,
                 }}
@@ -395,7 +408,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                   <AppText
                     fontType="bold"
                     style={{
-                      marginStart: unit4, 
+                      marginStart: unit4,
                       color: AppColors.color_warning,
                       fontSize: unit14,
                       lineHeight: unit20,
@@ -418,11 +431,11 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                       justifyContent: "center",
                       marginVertical: unit8,
                     }}>
-                    <Text
+                    <AppText
                       style={{
                         fontSize: fontSize12,
                         color: AppColors.color_primary,
-                      }}>{`Bạn có thể tải lại phương tiện`}</Text>
+                      }}>{`Bạn có thể tải lại phương tiện`}</AppText>
                   </PressView>
                 </>
                 :
@@ -436,13 +449,20 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                     paddingVertical: unit80,
                     borderWidth: 1,
                     borderStyle: "dashed",
-                    borderColor: colorPallet.color_divider_1,
+                    borderColor: colorPallet.color_divider_2,
                   }}
                   onPress={() => {
                     setOpenModal(true);
                   }}>
-                  <View>
-
+                  <View style={{alignItems:'center'}}>
+                    <Image
+                      source={IC_NO_IMAGE}
+                      style={{
+                        width: unit32,
+                        height: unit32,
+                        marginBottom: unit6
+                      }}
+                    />
                     <AppText
                       fontType={"semiBold"}
                       style={{

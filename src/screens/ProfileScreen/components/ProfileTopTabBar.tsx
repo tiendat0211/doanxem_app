@@ -11,7 +11,7 @@ import {fontSize12, fontSize16, fontSize18, fontSize8} from "../../../styles/App
 import AppColors from "../../../styles/AppColors";
 import {
   unit10,
-  unit2,
+  unit2, unit20,
   unit24,
   unit4,
   unit6,
@@ -60,6 +60,7 @@ const ProfileTopTabBar: React.FC<ProfileTopTabBarProps> = (props) => {
         style={[styles.bottomTabBar, {
           borderTopColor: colorPallet.color_divider_1,
           backgroundColor: colorPallet.color_background_1,
+          paddingBottom: unit20
         }]}>
         {
           routes.map((route, index) => {

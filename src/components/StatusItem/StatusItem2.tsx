@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Dimensions, Image, ImageProps, StyleProp, View, ViewStyle } from "react-native";
+import React, {useEffect, useRef, useState} from "react";
+import {Dimensions, Image, ImageProps, StyleProp, useWindowDimensions, View, ViewStyle} from "react-native";
 import { unit1, unit100, unit12, unit16, unit18, unit20, unit24, unit300, unit40, unit8 } from "../../utils/appUnit";
 import AppText from "../AppText/AppText";
 import { fontSize12, fontSize14, fontSize16 } from "../../styles/AppFonts";
@@ -45,6 +45,28 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
   const {colorPallet} = useTheme();
   const [viewMore, setViewMore] = useState(true);
   const { language } = useLanguage();
+
+  const { width } = useWindowDimensions();
+  const imageRef = React.createRef<Image>();
+
+
+  function getSize() {
+    try {
+      if (!post?.image?.toLowerCase()?.endsWith("mp4") && !post?.image?.toLowerCase()?.endsWith("mov")) {
+        Image.getSize(post?.image || "", (_width, _height) => {
+          imageRef.current?.setNativeProps({
+            height: (width * _height) / _width,
+          });
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    getSize();
+  });
 
   return (
     <>
@@ -164,15 +186,16 @@ const StatusItem2: React.FC<StatusItemProps> = (props) => {
                   }
                 }}
               />:
-              <FastImage
+              <Image
+                ref={imageRef}
                 source={{
                   uri: post?.image
                 }}
                 style={{
-                  width: Dimensions.get('screen').width,
-                  height: Dimensions.get('screen').width,
+                  width,
+                  height: width,
                 }}
-                resizeMode={FastImage.resizeMode.contain}
+                resizeMode={"contain"}
               />
           }
         </PressView>
