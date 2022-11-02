@@ -382,7 +382,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                   fontSize: unit14,
                   lineHeight: unit20,
                   color: colorPallet.color_text_blue_3,
-                  paddingHorizontal: unit20,
+                  paddingLeft: unit20,
                   marginBottom: unit12,
                 }}
               > {`Media`}
@@ -395,7 +395,8 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = (props) => {
                   <AppText
                     fontType="bold"
                     style={{
-                      marginStart: unit4, color: AppColors.color_warning,
+                      marginStart: unit4, 
+                      color: AppColors.color_warning,
                       fontSize: unit14,
                       lineHeight: unit20,
                     }}
