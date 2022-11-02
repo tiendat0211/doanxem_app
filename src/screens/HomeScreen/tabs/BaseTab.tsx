@@ -35,6 +35,7 @@ import PopUp from "../../../components/PopUp/PopUp";
 import { sleep } from "../../../utils/Utils";
 import useAuth from "../../../hooks/useAuth";
 import { useScrollToTop } from "@react-navigation/native";
+import AppTracking from "../../../tracking/AppTracking";
 
 interface BaseTabProps {
   type: PostType;
@@ -198,6 +199,15 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
       if (ApiHelper.isResSuccess(res)) {
         showToastMsg(res?.data?.message);
         await loadPosts();
+        if (action === 'save'){
+          AppTracking.logCustomEvent("save_post", {
+            post_id: String(post_id),
+          });
+        }else {
+          AppTracking.logCustomEvent("un_save_post", {
+            post_id: String(post_id),
+          });
+        }
       } else {
         showToastErrorMessage(res.data.message);
       }

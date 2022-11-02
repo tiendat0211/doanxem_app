@@ -154,6 +154,10 @@ const DetailPostScreen: React.FC = () => {
           ];
         });
         await loadPostDetail();
+        AppTracking.logCustomEvent("comment_post", {
+          post_id: String(postID),
+          user_id:String(user?.user_uuid)
+        });
       } else {
         showToastErrorMessage(res?.data.message);
         setListComment(prev => {
@@ -176,6 +180,10 @@ const DetailPostScreen: React.FC = () => {
       const res = await postReply(post_uuid, comment_id, content);
       if (ApiHelper.isResSuccess(res)) {
         await loadPostDetail();
+        AppTracking.logCustomEvent("comment_post", {
+          post_id: String(postID),
+          user_id:String(user?.user_uuid)
+        });
       } else {
         showToastErrorMessage(res?.data.message);
       }
@@ -190,6 +198,9 @@ const DetailPostScreen: React.FC = () => {
       if (ApiHelper.isResSuccess(res)) {
         showToastMsg(res?.data?.message);
         await loadPostDetail();
+        AppTracking.logCustomEvent("save_post", {
+          post_id: String(postID),
+        });
       } else {
         showToastErrorMessage(res.data.message);
       }

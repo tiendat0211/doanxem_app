@@ -10,6 +10,8 @@ import { postReaction } from "../../network/AppAPI";
 import ApiHelper from "../../utils/ApiHelper";
 import useScreenState from "../../hooks/useScreenState";
 import AppColors from "../../styles/AppColors";
+import AppTracking from "../../tracking/AppTracking";
+import useAuth from "../../hooks/useAuth";
 
 interface ReactionProps {
   total_reactions?: number;
@@ -60,6 +62,8 @@ const Reaction: React.FC<ReactionProps> = (props) => {
   const [url, setUrl] = useState<IconProps>();
   const [total_reaction, setTotal_reaction] = useState(total_reactions);
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
+  const  {authData} = useAuth();
+  const  user = authData?.user
 
   filterReaction(userReaction);
 
@@ -83,6 +87,10 @@ const Reaction: React.FC<ReactionProps> = (props) => {
           data?.data.wow +
           data?.data.like;
         setTotal_reaction(totalReactions <= 0 ? 0 : totalReactions);
+        AppTracking.logCustomEvent("reaction_post", {
+          post_id: String(post_uuid),
+          user_id: String(user?.user_uuid),
+        });
       } else {
         setUrl(old_reaction);
         setTotal_reaction(old_total_reaction);
