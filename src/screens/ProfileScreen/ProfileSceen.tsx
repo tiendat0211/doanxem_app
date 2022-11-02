@@ -6,6 +6,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
+  unit112,
   unit12,
   unit16,
   unit20,
@@ -26,6 +27,7 @@ import SavedTab from "./ProfileTabs/SavedTab";
 import CustomHandle from "../../components/CustomHandle/CustomHandle";
 import UserProfileItem from "../../components/UserProfileItem/UserProfileItem";
 import ProfileTopTabBar from "./components/ProfileTopTabBar";
+import { dimension } from "../../styles/AppFonts";
 
 export type ProfileParamList = {
   ApprovedTab: undefined;
@@ -46,7 +48,7 @@ const ProfileScreen: React.FC = () => {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
-  const snapPointsVertical = useMemo(() => [ Platform.OS === 'android' ? '69%' : Platform.OS === 'ios' ? '66%' : '100%', '87%'], []);
+  const snapPointsVertical = useMemo(() => [ Platform.OS === 'android' ? '69%' : Platform.OS === 'ios' ? '66%' : '100%', dimension?.height - unit112], []);
   const renderCustomHandle = useCallback(
     (props) => <CustomHandle
       {...props}

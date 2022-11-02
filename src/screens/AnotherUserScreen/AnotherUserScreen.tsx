@@ -3,7 +3,7 @@ import { Platform, RefreshControl, StatusBar, View } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { unit20, unit24 } from "../../utils/appUnit";
+import { unit10, unit110, unit112, unit115, unit120, unit150, unit170, unit20, unit200, unit24, unit240, unit242, unit245, unit250, unit260, unit270 } from "../../utils/appUnit";
 import { IC_ARROWLEFT } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -19,6 +19,7 @@ import ApiHelper from "../../utils/ApiHelper";
 import UserModel from "../../model/ApiModel/UserModel";
 import AppTracking from "../../tracking/AppTracking";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { dimension } from "../../styles/AppFonts";
 
 type AnotherUserScreenProps = RouteProp<RootStackParamList, "AnotherUserScreen">;
 
@@ -28,7 +29,7 @@ const AnotherUserScreen: React.FC = () => {
   const { language } = useLanguage();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState("Vertical"); //Horizontal
-  const snapPointsVertical = useMemo(() => [Platform.OS === "android" ? "69%" : "60%", "87%"], []);
+  const snapPointsVertical = useMemo(() => [Platform.OS === "ios" ? dimension?.height - unit242 : 500, dimension?.height - unit112 ], []);
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
   const [user, setUser] = useState<UserModel>();
 
@@ -146,7 +147,7 @@ const AnotherUserScreen: React.FC = () => {
       <BottomSheet
         ref={bottomSheetRef}
         style={{
-          // backgroundColor: "red",
+          backgroundColor: "red",
         }}
         handleComponent={renderCustomHandle}
         index={0}
