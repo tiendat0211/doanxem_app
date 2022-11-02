@@ -66,7 +66,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         {/* User of Status */}
         <PressView
           onPress={() => {
-            if(post?.user_id == user?.id){
+            if(post?.user_id === user?.id){
               NavigationRef.current?.navigate('ProfileScreen',{
                 goback:true
               })
@@ -76,7 +76,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                 }
               )
             }
-            
+
           }}
           style={{
             flexDirection: "row",
@@ -109,7 +109,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               fontType={"semiBold"}
               style={{
                 fontSize: fontSize16,
-                color: colorPallet.color_text_blue_3,
+                color: colorPallet.color_text_blue_1,
               }}
             >
               {post?.user?.name}

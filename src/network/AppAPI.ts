@@ -176,6 +176,25 @@ export function updateProfile(avatar?: Asset, name?: string, token?: string,) {
   return fetch(AppConfig.baseURL + "v1/user/edit", requestOptions)
 }
 
+export function updateName( name: string, token?: string,) {
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", "Bearer " + token);
+  const data = new FormData();
+
+  if (name){
+    data.append("name", name);
+  }
+
+  const requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: data,
+    redirect: 'follow'
+  };
+
+  return fetch(AppConfig.baseURL + "v1/user/edit", requestOptions)
+}
+
 export function getListReply(post_uuid: string, comment_id: number) {
   return apiClient.get<BaseResponse<ReplyModel[]>>("v1/posts/replies",{
     params:{

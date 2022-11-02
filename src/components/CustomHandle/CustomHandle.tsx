@@ -8,6 +8,7 @@ import Animated, {
   useDerivedValue,
 } from "react-native-reanimated";
 import { toRad } from "react-native-redash";
+import {useTheme} from "../../hooks/useTheme";
 
 // @ts-ignore
 export const transformOrigin = ({ x, y }, ...transformations) => {
@@ -26,6 +27,9 @@ interface HandleProps extends BottomSheetHandleProps {
 }
 
 const CustomHandle: React.FC<HandleProps> = ({ style, animatedIndex }) => {
+
+  const {colorPallet} = useTheme()
+
   //#region animations
   const indicatorTransformOriginY = useDerivedValue(() =>
     interpolate(animatedIndex.value, [0, 1, 2], [-1, 0, 1], Extrapolate.CLAMP)
@@ -103,7 +107,7 @@ const CustomHandle: React.FC<HandleProps> = ({ style, animatedIndex }) => {
   // render
   return (
     <Animated.View
-      style={[containerStyle, containerAnimatedStyle]}
+      style={[containerStyle, containerAnimatedStyle,{backgroundColor:colorPallet.color_background_1, borderBottomColor: colorPallet.color_background_1,}]}
       renderToHardwareTextureAndroid={true}
     >
       <Animated.View style={[leftIndicatorStyle, leftIndicatorAnimatedStyle]} />

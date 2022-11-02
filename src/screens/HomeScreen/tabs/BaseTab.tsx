@@ -7,12 +7,12 @@ import PressView from "../../../components/PressView/PressView";
 import {
   unit1,
   unit10,
-  unit12,
+  unit12, unit135, unit140,
   unit150,
   unit16,
   unit17,
-  unit20,
-  unit24,
+  unit20, unit200,
+  unit24, unit270, unit300, unit350,
   unit400,
   unit60,
 } from "../../../utils/appUnit";
@@ -115,7 +115,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
   async function loadPosts() {
     try {
       setLoading(true);
-      setPosts([]);
       setPage(FIRST_PAGE);
       const res = await getListPost(FIRST_PAGE, type);
       if (ApiHelper.isResSuccess(res)) {
@@ -252,7 +251,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           }}
           extraData={extraData}
           //FooterLoadingIndicator={renderFooterView}
-          onEndReachedThreshold={1}
+          onEndReachedThreshold={5}
           renderItem={({ item, index }) => {
             return <StatusItem
               key={index}
@@ -317,7 +316,10 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         ref={bottomSheetRef}
         backdropComponent={renderBackdrop}
         index={-1}
-        snapPoints={[unit400]}>
+        snapPoints={[unit270]}>
+        <View
+          style={{flexGrow:1}}
+        >
         <View
           style={{
             backgroundColor: colorPallet.color_background_1,
@@ -340,6 +342,26 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
           />
         </View>
 
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    backgroundColor: colorPallet.color_background_1,*/}
+        {/*    borderRadius: unit10,*/}
+        {/*    marginHorizontal: unit20,*/}
+        {/*    marginBottom: unit12,*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <SelectItem*/}
+        {/*    title={"Báo cáo bài viết"}*/}
+        {/*    rightImageSource={IC_WARNING}*/}
+        {/*    rightImageProps={{ tintColor: colorPallet.color_text_blue_3 }}*/}
+
+        {/*    appTxtStyle={{*/}
+        {/*      fontFamily: AppFonts.semiBold,*/}
+        {/*      fontSize: unit16,*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*</View>*/}
+
         <View
           style={{
             backgroundColor: colorPallet.color_background_1,
@@ -348,27 +370,6 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
             marginBottom: unit12,
           }}
         >
-          <SelectItem
-            title={"Báo cáo bài viết"}
-            rightImageSource={IC_WARNING}
-            rightImageProps={{ tintColor: colorPallet.color_text_blue_3 }}
-
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16,
-            }}
-          />
-        </View>
-
-        <View
-          style={{
-            backgroundColor: colorPallet.color_background_1,
-            borderRadius: unit10,
-            marginHorizontal: unit20,
-            marginBottom: unit12,
-          }}
-        >
-          {currentUserId !== user?.id &&
             <SelectItem
               title={"Chặn người dùng này"}
               rightImageSource={IC_BLOCKUSER}
@@ -382,28 +383,26 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
                 setSaveButton(false);
               }}
             />
-
-          }
-
         </View>
 
-        <View
-          style={{
-            backgroundColor: colorPallet.color_background_1,
-            borderRadius: unit10,
-            marginHorizontal: unit20,
-            marginBottom: unit12,
-          }}
-        >
-          <SelectItem
-            title={"Ẩn bài viết này"}
-            rightImageSource={IC_HIDE}
-            rightImageProps={{ tintColor: colorPallet.color_text_blue_3 }}
-            appTxtStyle={{
-              fontFamily: AppFonts.semiBold,
-              fontSize: unit16,
-            }}
-          />
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    backgroundColor: colorPallet.color_background_1,*/}
+        {/*    borderRadius: unit10,*/}
+        {/*    marginHorizontal: unit20,*/}
+        {/*    marginBottom: unit12,*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <SelectItem*/}
+        {/*    title={"Ẩn bài viết này"}*/}
+        {/*    rightImageSource={IC_HIDE}*/}
+        {/*    rightImageProps={{ tintColor: colorPallet.color_text_blue_3 }}*/}
+        {/*    appTxtStyle={{*/}
+        {/*      fontFamily: AppFonts.semiBold,*/}
+        {/*      fontSize: unit16,*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*</View>*/}
         </View>
 
         <PressView
@@ -412,7 +411,7 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
             backgroundColor: colorPallet.color_background_1,
             borderRadius: unit10,
             marginHorizontal: unit20,
-            marginBottom: unit12,
+            marginBottom: unit20,
             alignItems: "center",
             paddingVertical: unit17,
             borderWidth: unit1,
@@ -435,13 +434,13 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
         isOpen ?
           <PopUp
             style={{
-              height: Dimensions.get("screen").height - unit150,
+              height: Dimensions.get("screen").height - unit135,
             }}
             mess={
               isSaveButton ?
                 isSaved ? "Bạn có muốn bỏ lưu bài viết này?"
                   : "Bạn có muốn lưu bài viết này?"
-                : "Bạn muốn chặn người dùng này?"
+                : currentUserId === user?.id ? "Bạn không thể tự chặn bản thân" : "Bạn muốn chặn người dùng này?"
             }
             rightButtonTitle={"Đồng ý"}
             rightButtonPress={async () => {
@@ -454,13 +453,17 @@ const BaseTab: React.FC<BaseTabProps> = (props) => {
                   await save(postID, "save");
                 }
               } else {
-                setOpen(false);
-                closeBottomSheet();
-                await blockUserByID(blockID);
+                if (currentUserId === user?.id ){
+                  setOpen(false);
+                }else {
+                  setOpen(false);
+                  closeBottomSheet();
+                  await blockUserByID(blockID);
+                }
               }
 
             }}
-            leftButtonTitle={"Từ chối"}
+            leftButtonTitle={currentUserId !== user?.id ? "Từ chối" : ""}
             leftButtonPress={() => {
               setOpen(false);
             }}

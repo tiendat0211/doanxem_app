@@ -29,6 +29,7 @@ import useScreenState from "../../hooks/useScreenState";
 import {AppPusher} from "../../utils/AppConfig";
 import {PusherCommment} from "../../model/ApiModel/PusherCommment";
 import {StackActions} from "@react-navigation/native";
+import useAuth from "../../hooks/useAuth";
 
 export type CommnetType =
   | "error"
@@ -112,6 +113,8 @@ const CommentItem: React.FC<CommentItemProps> = (props) => {
     // };
   }, []);
 
+  const user = useAuth()?.authData.user
+
 
   return (
     <>
@@ -126,9 +129,15 @@ const CommentItem: React.FC<CommentItemProps> = (props) => {
       >
         <PressView
           onPress={() =>{
-            NavigationRef?.current?.dispatch(StackActions.replace('AnotherUserScreen',{
-              user_uuid:  comment?.user?.user_uuid
-            }))
+            if(comment?.user_id === user?.id){
+              NavigationRef.current?.navigate('ProfileScreen',{
+                goback:true
+              })
+            } else{
+              NavigationRef?.current?.dispatch(StackActions.push('AnotherUserScreen',{
+                user_uuid:  comment?.user?.user_uuid
+              }))
+            }
           }
           }
         >
@@ -152,9 +161,15 @@ const CommentItem: React.FC<CommentItemProps> = (props) => {
         >
           <PressView
             onPress={() =>{
-              NavigationRef?.current?.navigate('AnotherUserScreen',{
-                user_uuid:  comment?.user?.user_uuid
-              })
+              if(comment?.user_id === user?.id){
+                NavigationRef.current?.navigate('ProfileScreen',{
+                  goback:true
+                })
+              } else{
+                NavigationRef?.current?.dispatch(StackActions.push('AnotherUserScreen',{
+                  user_uuid:  comment?.user?.user_uuid
+                }))
+              }
             }
             }
             style={{

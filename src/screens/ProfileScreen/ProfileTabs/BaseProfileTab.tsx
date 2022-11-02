@@ -10,7 +10,7 @@ import useScreenState from "../../../hooks/useScreenState";
 import { PostModel } from "../../../model/ApiModel/PostModel";
 import { FIRST_PAGE, getUserPosts, UserPostType } from "../../../network/AppAPI";
 import ApiHelper from "../../../utils/ApiHelper";
-import { useFocusEffect } from "@react-navigation/native";
+import {StackActions, useFocusEffect} from "@react-navigation/native";
 import UserPostItem from "../../../components/UserPostItem/UserPostItem";
 import {NavigationRef} from "../../../../App";
 
@@ -71,10 +71,10 @@ const BaseProfileTab: React.FC<BaseProfileTabProps> = (props) => {
               post={item}
               onPress={()=>{
                 if (type === 'saved' || type === 'approved'){
-                  NavigationRef.current?.navigate("DetailPostScreen",{
+                  NavigationRef?.current?.dispatch(StackActions.push("DetailPostScreen",{
                     postID: item?.post_uuid,
                     onUpdatePost:()=>{}
-                  })
+                  }))
                 }
               }}
             />

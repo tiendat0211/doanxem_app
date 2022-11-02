@@ -3,7 +3,25 @@ import { Platform, RefreshControl, StatusBar, View } from "react-native";
 import AppStyles from "../../styles/AppStyles";
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
-import { unit10, unit110, unit112, unit115, unit120, unit150, unit170, unit20, unit200, unit24, unit240, unit242, unit245, unit250, unit260, unit270 } from "../../utils/appUnit";
+import {
+  unit10,
+  unit110,
+  unit112,
+  unit115,
+  unit120,
+  unit150,
+  unit170,
+  unit20,
+  unit200,
+  unit24,
+  unit240,
+  unit242,
+  unit245,
+  unit250,
+  unit260,
+  unit270,
+  unit30
+} from "../../utils/appUnit";
 import { IC_ARROWLEFT } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
 import {RouteProp, StackActions, useRoute} from "@react-navigation/native";
@@ -29,7 +47,7 @@ const AnotherUserScreen: React.FC = () => {
   const { language } = useLanguage();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState("Vertical"); //Horizontal
-  const snapPointsVertical = useMemo(() => [Platform.OS === "ios" ? dimension?.height - unit242 : 500, dimension?.height - unit112 ], []);
+  const snapPointsVertical = useMemo(() =>  [Platform.OS === "ios" ? dimension?.height - unit242 : dimension?.height - unit170, Platform.OS === "ios" ? dimension?.height - unit112 : dimension?.height - unit30 ], []);
   const { isLoading, setLoading, mounted, error, setError } = useScreenState();
   const [user, setUser] = useState<UserModel>();
 
@@ -106,7 +124,6 @@ const AnotherUserScreen: React.FC = () => {
         }}
         containerStyle={{
           borderBottomColor: colorPallet.color_divider_3,
-          height: 100,
           // shadowColor: AppColors.color_primary,
           // shadowOffset: {
           //   width: 0,
@@ -147,7 +164,7 @@ const AnotherUserScreen: React.FC = () => {
       <BottomSheet
         ref={bottomSheetRef}
         style={{
-          backgroundColor: "red",
+          //backgroundColor: "red",
         }}
         handleComponent={renderCustomHandle}
         index={0}

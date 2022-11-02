@@ -6,13 +6,14 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import AppColors from "../../styles/AppColors";
 import { useTheme } from "../../hooks/useTheme";
 import {
+  unit100,
   unit112,
-  unit12,
-  unit16,
+  unit12, unit150,
+  unit16, unit17, unit170,
   unit20,
-  unit24,
-  unit32,
-  unit48, unit56,
+  unit24, unit242, unit30,
+  unit32, unit40,
+  unit48, unit50, unit56, unit70,
 } from "../../utils/appUnit";
 import {IC_ARROWLEFT, IC_CREATE, IC_DRAWER,} from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -48,15 +49,11 @@ const ProfileScreen: React.FC = () => {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [deviceStatus, setDeviceStatus] = useState('Vertical'); //Horizontal
-  const snapPointsVertical = useMemo(() => [ Platform.OS === 'android' ? '69%' : Platform.OS === 'ios' ? '66%' : '100%', dimension?.height - unit112], []);
+  const snapPointsVertical = useMemo(() => [Platform.OS === "ios" ? dimension?.height - unit242 : dimension?.height - unit170, Platform.OS === "ios" ? dimension?.height - unit112 : dimension?.height - unit30 ], []);
   const renderCustomHandle = useCallback(
     (props) => <CustomHandle
       {...props}
       title="Custom Handle Example"
-      style={{
-        borderBottomColor: colorPallet.color_background_1,
-        backgroundColor: colorPallet.color_background_1,
-      }}
     />,
     [],
   );
