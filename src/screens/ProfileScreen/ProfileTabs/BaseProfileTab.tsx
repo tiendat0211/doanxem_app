@@ -53,7 +53,7 @@ const BaseProfileTab: React.FC<BaseProfileTabProps> = (props) => {
         style={{
           backgroundColor: colorPallet.color_background_1,
           flex: 1,
-          paddingTop: unit20,
+          //marginTop: unit20,
           paddingHorizontal: unit20
         }}
       >

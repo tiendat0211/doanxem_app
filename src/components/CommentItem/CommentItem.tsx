@@ -28,6 +28,7 @@ import {showToastErrorMessage} from "../../utils/Toaster";
 import useScreenState from "../../hooks/useScreenState";
 import {AppPusher} from "../../utils/AppConfig";
 import {PusherCommment} from "../../model/ApiModel/PusherCommment";
+import {StackActions} from "@react-navigation/native";
 
 export type CommnetType =
   | "error"
@@ -125,9 +126,9 @@ const CommentItem: React.FC<CommentItemProps> = (props) => {
       >
         <PressView
           onPress={() =>{
-            NavigationRef?.current?.navigate('AnotherUserScreen',{
+            NavigationRef?.current?.dispatch(StackActions.replace('AnotherUserScreen',{
               user_uuid:  comment?.user?.user_uuid
-            })
+            }))
           }
           }
         >

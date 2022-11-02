@@ -115,7 +115,7 @@ const DetailPostScreen: React.FC = () => {
         duration_millisecond: totalOnScreenTime,
       });
     };
-  }, []);
+  }, [postID]);
 
   async function comment(post_uuid: string, content: string) {
     const now = new Date();
@@ -244,7 +244,7 @@ const DetailPostScreen: React.FC = () => {
 
 
   // function handleBackButtonClick() {
-    
+
   //   NavigationRef?.current?.goBack();
   //   // call when go back
   //   // onUpdatePost(postDetail);

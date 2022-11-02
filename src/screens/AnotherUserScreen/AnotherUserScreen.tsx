@@ -6,7 +6,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { unit20, unit24 } from "../../utils/appUnit";
 import { IC_ARROWLEFT } from "../../assets/path";
 import { useLanguage } from "../../hooks/useLanguage";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import {RouteProp, StackActions, useRoute} from "@react-navigation/native";
 import { NavigationRef, RootStackParamList } from "../../../App";
 import AppBar from "../../components/AppBar/AppBar";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -177,11 +177,11 @@ const AnotherUserScreen: React.FC = () => {
                 key={item.id}
                 post={item}
                 onPress={() => {
-                  NavigationRef?.current?.navigate("DetailPostScreen", {
+                  NavigationRef?.current?.dispatch(StackActions.push("DetailPostScreen", {
                     postID: item?.post_uuid,
                     onUpdatePost: () => {
                     },
-                  });
+                  }));
                 }}
               />;
             }}
