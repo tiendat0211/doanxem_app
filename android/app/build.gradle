@@ -133,7 +133,7 @@ android {
     compileSdkVersion 31
 
     defaultConfig {
-        applicationId "com.sphoton.doanxem"
+        applicationId "com.sphoton.letsguess"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
